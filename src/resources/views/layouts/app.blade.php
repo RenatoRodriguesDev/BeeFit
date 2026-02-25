@@ -56,7 +56,13 @@
         <div class="flex-1 flex flex-col">
 
             <main class="flex-1 p-6 md:p-10 overflow-y-auto pb-24 md:pb-10">
-                @yield('content')
+
+                @isset($slot)
+                    {{ $slot }}
+                @else
+                    @yield('content')
+                @endisset
+
             </main>
 
         </div>
@@ -87,6 +93,7 @@
 
     </nav>
     @livewireScripts
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 
 </html>

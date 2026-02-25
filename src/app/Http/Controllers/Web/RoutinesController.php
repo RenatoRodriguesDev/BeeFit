@@ -15,4 +15,16 @@ class RoutinesController extends Controller
 
         return view('routines.index', compact('routines'));
     }
+
+    public function show(Routine $routine)
+    {
+        abort_unless($routine->user_id === auth()->id(), 403);
+
+        $routine->load([
+            'routineExercises.exercise.translations',
+            'routineExercises.sets'
+        ]);
+
+        return view('routines.show', compact('routine'));
+    }
 }

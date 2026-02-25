@@ -12,5 +12,6 @@ return [
     'no_routines' => 'No routines yet.',
     'new_folder' => 'New folder',
     'browse_exercises' => 'Browse Exercises',
+    'select_exercise' => 'Select an exercise from the library.',
     
 ];

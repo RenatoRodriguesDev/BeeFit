@@ -13,4 +13,9 @@ class Equipment extends Model
     {
         return EquipmentTranslation::class;
     }
+
+    public function exercises()
+    {
+        return $this->hasMany(Exercise::class);
+    }
 }

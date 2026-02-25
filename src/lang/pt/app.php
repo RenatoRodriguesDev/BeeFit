@@ -12,4 +12,5 @@ return [
     'no_routines' => 'Ainda não tens rotinas.',
     'new_folder' => 'Nova pasta',
     'browse_exercises' => 'Pesquisar exercicios',
+    'select_exercise' => 'Escolher um exercicio da biblioteca.',
 ];

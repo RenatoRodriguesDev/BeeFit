@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Livewire\Routine;
+
+use Livewire\Component;
+use App\Models\Routine;
+
+class RoutineManager extends Component
+{
+    public $name;
+    public $showModal = false;
+    
+    public function createRoutine()
+    {
+        $this->validate([
+            'name' => 'required|min:3'
+        ]);
+
+        $routine = auth()->user()->routines()->create([
+            'name' => $this->name,
+            'is_active' => true,
+        ]);
+
+        // Desativar outras
+        auth()->user()->routines()
+            ->where('id', '!=', $routine->id)
+            ->update(['is_active' => false]);
+
+        $this->reset(['name', 'showModal']);
+
+        return redirect()->route('routines.show', $routine);
+    }
+
+    public function render()
+    {
+        return view('livewire.routine-manager');
+    }
+}

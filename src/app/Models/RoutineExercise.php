@@ -13,6 +13,6 @@ class RoutineExercise extends Model
 
     public function sets()
     {
-        return $this->hasMany(RoutineSet::class)->orderBy('set_number');
+        return $this->hasMany(RoutineSet::class);
     }
 }

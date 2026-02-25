@@ -13,4 +13,9 @@ class Muscle extends Model
     {
         return MuscleTranslation::class;
     }
+
+    public function exercises()
+    {
+        return $this->hasMany(Exercise::class, 'primary_muscle_id');
+    }
 }
