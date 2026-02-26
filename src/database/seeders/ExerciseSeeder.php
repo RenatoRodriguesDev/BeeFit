@@ -23,41 +23,58 @@ class ExerciseSeeder extends Seeder
         $machine = EquipmentTranslation::where('name', 'Machine')->where('locale', 'en')->first()->equipment;
         $cable = EquipmentTranslation::where('name', 'Cable')->where('locale', 'en')->first()->equipment;
         $bodyweight = EquipmentTranslation::where('name', 'Bodyweight')->where('locale', 'en')->first()->equipment;
-
+        // Array de exercícios
         $exercises = [
-            ['Bench Press (Barbell)', 'Press de banca con barra', 'Supino com barra', $barbell, $chest],
-            ['Bench Press (Dumbbell)', 'Press de banca con mancuernas', 'Supino com halteres', $dumbbell, $chest],
-            ['Incline Bench Press', 'Press inclinado', 'Supino inclinado', $barbell, $chest],
-            ['Cable Fly', 'Aperturas en polea', 'Crossover na polia', $cable, $chest],
-            ['Push Up', 'Flexiones', 'Flexões', $bodyweight, $chest],
-            ['Deadlift (Barbell)', 'Peso muerto con barra', 'Peso morto com barra', $barbell, $back],
-            ['Bent Over Row', 'Remo inclinado', 'Remada curvada', $barbell, $back],
-            ['Lat Pulldown', 'Jalón al pecho', 'Puxada na frente', $cable, $back],
-            ['Seated Row', 'Remo sentado', 'Remada sentada', $cable, $back],
-            ['Squat (Barbell)', 'Sentadilla con barra', 'Agachamento com barra', $barbell, $legs],
-            ['Leg Press', 'Prensa de piernas', 'Leg press', $machine, $legs],
-            ['Romanian Deadlift', 'Peso muerto rumano', 'Peso morto romeno', $barbell, $legs],
-            ['Leg Extension', 'Extensión de piernas', 'Extensão de pernas', $machine, $legs],
-            ['Leg Curl', 'Curl femoral', 'Flexão de pernas', $machine, $legs],
-            ['Overhead Press', 'Press militar', 'Press militar', $barbell, $shoulders],
-            ['Lateral Raise', 'Elevaciones laterales', 'Elevação lateral', $dumbbell, $shoulders],
-            ['Face Pull', 'Face pull', 'Face pull', $cable, $shoulders],
-            ['Bicep Curl', 'Curl de bíceps', 'Curl de bíceps', $dumbbell, $arms],
-            ['Tricep Pushdown', 'Extensión de tríceps en polea', 'Extensão de tríceps na polia', $cable, $arms],
-            ['Hammer Curl', 'Curl martillo', 'Curl martelo', $dumbbell, $arms],
+            [
+                'en' => 'Sit-up',
+                'es' => 'Abdominal',
+                'pt' => 'Abdominal',
+                'equipment' => $bodyweight,
+                'muscle' => $legs,
+                'image' => 'images/exercises/00011201-3-4-Sit-up_Waist_thumbnail@3x.jpg',
+                'video' => 'videos/exercises/00011201-3-4-Sit-up_Waist.mp4',
+            ],
+            [
+                'en' => 'Side Bend',
+                'es' => 'Flexión lateral',
+                'pt' => 'Flexão lateral',
+                'equipment' => $dumbbell,
+                'muscle' => $legs,
+                'image' => 'images/exercises/00021201-45-Side-Bend_Waist_thumbnail@3x.jpg',
+                'video' => 'videos/exercises/00021201-45-Side-Bend_Waist.mp4',
+            ],
+            [
+                'en' => 'Air Bike',
+                'es' => 'Bicicleta de aire',
+                'pt' => 'Bicicleta no ar',
+                'equipment' => $bodyweight,
+                'muscle' => $legs,
+                'image' => 'images/exercises/00031201-air-bike-m_waist_thumbnail@3x.jpg',
+                'video' => 'videos/exercises/00031201-air-bike-m_waist.mp4',
+            ],
+            [
+                'en' => 'Alternate Heel Touchers',
+                'es' => 'Toques alternos de talón',
+                'pt' => 'Toques alternados de calcanhar',
+                'equipment' => $bodyweight,
+                'muscle' => $legs,
+                'image' => 'images/exercises/00061101-Alternate-Heel-Touchers_waist-FIX_small_thumbnail@3x.jpg',
+                'video' => 'videos/exercises/00061101-Alternate-Heel-Touchers_waist-FIX_small.mp4',
+            ],
         ];
 
-        foreach ($exercises as [$en, $es, $pt, $equipment, $muscle]) {
-
+        foreach ($exercises as $ex) {
             $exercise = Exercise::create([
-                'equipment_id' => $equipment->id,
-                'primary_muscle_id' => $muscle->id,
+                'equipment_id' => $ex['equipment']->id,
+                'primary_muscle_id' => $ex['muscle']->id,
+                'thumbnail_path' => $ex['image'],
+                'video_path' => $ex['video'],
             ]);
 
             ExerciseTranslation::insert([
-                ['exercise_id' => $exercise->id, 'locale' => 'en', 'name' => $en],
-                ['exercise_id' => $exercise->id, 'locale' => 'es', 'name' => $es],
-                ['exercise_id' => $exercise->id, 'locale' => 'pt', 'name' => $pt],
+                ['exercise_id' => $exercise->id, 'locale' => 'en', 'name' => $ex['en']],
+                ['exercise_id' => $exercise->id, 'locale' => 'es', 'name' => $ex['es']],
+                ['exercise_id' => $exercise->id, 'locale' => 'pt', 'name' => $ex['pt']],
             ]);
         }
     }

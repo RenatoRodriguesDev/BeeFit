@@ -11,6 +11,8 @@ class RoutineEditor extends Component
 {
     public Routine $routine;
 
+    public ?int $expandedExerciseId = null;
+
     protected $rules = [
         'routine.exercises.*.sets.*.weight' => 'nullable|numeric',
         'routine.exercises.*.sets.*.reps' => 'nullable|integer',
@@ -24,6 +26,14 @@ class RoutineEditor extends Component
             'exercises.exercise.translations',
             'exercises.sets'
         ]);
+    }
+
+    public function toggleExercise($exerciseId)
+    {
+        $this->expandedExerciseId =
+            $this->expandedExerciseId === $exerciseId
+            ? null
+            : $exerciseId;
     }
 
     public function addSet($routineExerciseId)
@@ -58,6 +68,8 @@ class RoutineEditor extends Component
 
     public function updateReps($setId, $value)
     {
+        $value = $value === '' ? null : (int) $value;
+
         RoutineSet::findOrFail($setId)->update([
             'reps' => $value
         ]);

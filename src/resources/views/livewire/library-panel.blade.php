@@ -37,12 +37,13 @@
         @foreach($exercises as $exercise)
 
             <div wire:click="$dispatch('exerciseSelected', { exerciseId: {{ $exercise->id }} })" class="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition
-            {{ $activeExerciseId == $exercise->id
+                {{ $activeExerciseId == $exercise->id
             ? 'bg-zinc-800 ring-1 ring-white'
             : 'hover:bg-zinc-900' }}">
 
-                <div class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center text-xs">
-                    IMG
+                <div class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center text-xs object-contain">
+                    <img src="{{ asset($exercise->thumbnail_path) }}" alt="{{ $exercise->translate()->name }}"
+                        class="w-full h-full object-cover rounded-full">
                 </div>
 
                 <div>
