@@ -36,29 +36,68 @@
 
         @foreach($exercises as $exercise)
 
-            <div wire:click="$dispatch('exerciseSelected', { exerciseId: {{ $exercise->id }} })" class="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition
+            <div class="flex items-center justify-between gap-3 p-3 rounded-xl cursor-pointer transition
                 {{ $activeExerciseId == $exercise->id
             ? 'bg-zinc-800 ring-1 ring-white'
             : 'hover:bg-zinc-900' }}">
 
-                <div class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center text-xs object-contain">
-                    <img src="{{ asset($exercise->thumbnail_path) }}" alt="{{ $exercise->translate()->name }}"
-                        class="w-full h-full object-cover rounded-full">
+                <div wire:click="$dispatch('exerciseSelected', { exerciseId: {{ $exercise->id }} })"
+                    class="flex items-center gap-3 flex-1">
+
+                    <div class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center text-xs object-contain">
+                        <img src="{{ asset($exercise->thumbnail_path) }}" alt="{{ $exercise->translate()->name }}"
+                            class="w-full h-full object-cover rounded-full">
+                    </div>
+
+                    <div>
+                        <div class="font-medium">
+                            {{ $exercise->translate()->name }}
+                        </div>
+                        <div class="text-sm text-zinc-400">
+                            {{ $exercise->primaryMuscle->translate()->name ?? '' }}
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <div class="font-medium">
-                        {{ $exercise->translate()->name }}
-                    </div>
-                    <div class="text-sm text-zinc-400">
-                        {{ $exercise->primaryMuscle->translate()->name ?? '' }}
-                    </div>
-                </div>
+                {{-- ⭐ Botão (+) --}}
+                <button wire:click="openRoutineModal({{ $exercise->id }})"
+                    class="text-blue-500 hover:text-blue-400 text-xl px-2">
+                    +
+                </button>
 
             </div>
 
         @endforeach
 
     </div>
+    @if($showRoutineModal)
+        <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+            <div class="bg-zinc-900 p-6 rounded-2xl w-96">
 
+                <h2 class="text-lg font-semibold mb-4">
+                    {{__('app.select_routine')}}
+                </h2>
+
+                <select wire:model="selectedRoutineId" class="w-full bg-zinc-800 p-3 rounded-xl mb-4">
+                    <option value="">{{__('app.choose_routine')}}</option>
+                    @foreach(auth()->user()->routines as $routine)
+                        <option value="{{ $routine->id }}">
+                            {{ $routine->name }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <div class="flex justify-end gap-3">
+                    <button wire:click="$set('showRoutineModal', false)" class="text-zinc-400">
+                        {{__('app.cancel')}}
+                    </button>
+
+                    <button wire:click="addToSelectedRoutine" class="bg-blue-600 px-4 py-2 rounded-xl">
+                        {{__('app.add')}}
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    @endif
 </div>

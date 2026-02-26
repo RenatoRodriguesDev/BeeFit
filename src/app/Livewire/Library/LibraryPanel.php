@@ -16,11 +16,63 @@ class LibraryPanel extends Component
     public $muscle = '';
     public $activeExerciseId = null;
 
+    public $showRoutineModal = false;
+    public $selectedRoutineId = null;
+    public $exerciseToAddId = null;
+
     protected $listeners = ['exerciseSelected'];
 
     public function exerciseSelected($exerciseId)
     {
         $this->activeExerciseId = $exerciseId;
+    }
+
+    public function addToSelectedRoutine()
+    {
+        $user = auth()->user();
+
+        if (!$user || !$this->selectedRoutineId || !$this->exerciseToAddId) {
+            return;
+        }
+
+        $routine = $user->routines()->find($this->selectedRoutineId);
+
+        if (!$routine) {
+            return;
+        }
+
+        $exists = $routine->exercises()
+            ->where('exercise_id', $this->exerciseToAddId)
+            ->exists();
+
+        if ($exists) {
+            $this->dispatch(
+                'toast',
+                message: __('app.exercise_duplicated'),
+                type: 'error'
+            );
+        } else {
+
+            $routine->exercises()->create([
+                'exercise_id' => $this->exerciseToAddId
+            ]);
+
+            $this->dispatch(
+                'toast',
+                message: __('app.exercise_added_toast'),
+                type: 'success'
+            );
+        }
+
+        $this->showRoutineModal = false;
+        $this->selectedRoutineId = null;
+        $this->exerciseToAddId = null;
+    }
+
+    public function openRoutineModal($exerciseId)
+    {
+        $this->exerciseToAddId = $exerciseId;
+        $this->showRoutineModal = true;
     }
 
     public function render()

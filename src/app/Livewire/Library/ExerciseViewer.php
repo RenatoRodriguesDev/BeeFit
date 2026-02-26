@@ -9,58 +9,8 @@ class ExerciseViewer extends Component
 {
     public $exercise;
     public $tab = 'howto';
-    public $showRoutineModal = false;
-    public $selectedRoutineId = null;
 
     protected $listeners = ['exerciseSelected'];
-
-    public function openRoutineModal()
-    {
-        $this->showRoutineModal = true;
-    }
-
-    public function addToSelectedRoutine()
-    {
-        $user = auth()->user();
-
-        if (!$user || !$this->selectedRoutineId) {
-            return;
-        }
-
-        $routine = $user->routines()->find($this->selectedRoutineId);
-
-        if (!$routine) {
-            return;
-        }
-
-        $exists = $routine->exercises()
-            ->where('exercise_id', $this->exercise->id)
-            ->exists();
-
-        if ($exists) {
-
-            $this->dispatch(
-                'toast',
-                message: __('app.exercise_duplicated'),
-                type: 'error'
-            );
-
-        } else {
-
-            $routine->exercises()->create([
-                'exercise_id' => $this->exercise->id
-            ]);
-
-            $this->dispatch(
-                'toast',
-                message: __('app.exercise_added_toast'),
-                type: 'success'
-            );
-        }
-
-        $this->showRoutineModal = false;
-        $this->selectedRoutineId = null;
-    }
 
     public function addToWorkout()
     {
