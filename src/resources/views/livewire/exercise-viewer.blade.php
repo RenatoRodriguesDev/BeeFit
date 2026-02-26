@@ -2,7 +2,7 @@
 
     @if(!$exercise)
         <div class="bg-zinc-900 rounded-3xl p-8 text-zinc-400">
-            Select an exercise from the library.
+            {{ __('app.select_exercise_from_library') }}
         </div>
     @else
         <div class="p-6">
@@ -13,7 +13,7 @@
             @endif
             <button wire:click="openRoutineModal"
                 class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-2xl font-medium transition mt-6">
-                Add to Workout
+                {{ __('app.add_to_workout') }}
             </button>
         </div>
 
@@ -45,17 +45,17 @@
 
                 <button wire:click="setTab('howto')"
                     class="{{ $tab === 'howto' ? 'text-white border-b-2 border-white pb-2' : 'text-zinc-400' }}">
-                    How To
+                    {{ __('app.how_to') }}
                 </button>
 
                 <button wire:click="setTab('history')"
                     class="{{ $tab === 'history' ? 'text-white border-b-2 border-white pb-2' : 'text-zinc-400' }}">
-                    History
+                    {{ __('app.history') }}
                 </button>
 
                 <button wire:click="setTab('stats')"
                     class="{{ $tab === 'stats' ? 'text-white border-b-2 border-white pb-2' : 'text-zinc-400' }}">
-                    Statistics
+                    {{ __('app.statistics') }}
                 </button>
 
             </div>
@@ -64,19 +64,19 @@
             <div class="text-zinc-300">
                 @if($tab === 'howto')
                     <div class="text-zinc-300 mt-4">
-                        Exercise instructions here.
+                        {{ __('app.exercise_instructions_here') }}
                     </div>
                 @endif
 
                 @if($tab === 'history')
                     <div class="text-zinc-300 mt-4">
-                        User workout history will appear here.
+                        {{ __('app.user_workout_history_here') }}
                     </div>
                 @endif
 
                 @if($tab === 'stats')
                     <div class="text-zinc-300 mt-4">
-                        Graphs and progress stats here.
+                        {{ __('app.graphs_progress_stats_here') }}
                     </div>
                 @endif
             </div>

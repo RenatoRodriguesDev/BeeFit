@@ -14,7 +14,7 @@
             <div class="bg-zinc-900 p-6 rounded-2xl w-96 space-y-4">
 
                 <h2 class="text-lg font-semibold">
-                    New Routine
+                    {{ __('app.new_routine') }}
                 </h2>
 
                 <input
@@ -25,13 +25,13 @@
 
                 <div class="flex justify-end gap-3">
                     <button wire:click="$set('showModal', false)">
-                        Cancel
+                        {{ __('app.cancel') }}
                     </button>
 
                     <button
                         wire:click="createRoutine"
                         class="bg-white text-black px-4 py-2 rounded-xl">
-                        Create
+                        {{ __('app.create') }}
                     </button>
                 </div>
 

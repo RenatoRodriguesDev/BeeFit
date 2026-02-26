@@ -41,7 +41,7 @@
         @empty
 
             <div class="text-zinc-400">
-                No exercises yet.
+                {{ __('app.no_exercises_yet') }}
             </div>
 
         @endforelse
