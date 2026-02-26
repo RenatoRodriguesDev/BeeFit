@@ -8,8 +8,8 @@ use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\RoutinesController;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return redirect()->route('login');
+})->middleware('guest');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
