@@ -12,6 +12,8 @@ class RoutineEditor extends Component
     public Routine $routine;
 
     public ?int $expandedExerciseId = null;
+    public ?int $exerciseToDelete = null;
+    public bool $showDeleteExerciseModal = false;
 
     protected $rules = [
         'routine.exercises.*.sets.*.weight' => 'nullable|numeric',
@@ -81,6 +83,43 @@ class RoutineEditor extends Component
             'exercises.exercise',
             'exercises.sets'
         ])->findOrFail($this->routine->id);
+    }
+
+    public function confirmDeleteExercise($exerciseId)
+    {
+        $this->exerciseToDelete = $exerciseId;
+        $this->showDeleteExerciseModal = true;
+    }
+
+    public function closeDeleteExerciseModal()
+    {
+        $this->reset(['showDeleteExerciseModal', 'exerciseToDelete']);
+    }
+
+    public function deleteExercise()
+    {
+        if (!$this->exerciseToDelete) {
+            return;
+        }
+
+        $routineExercise = RoutineExercise::with('sets')
+            ->findOrFail($this->exerciseToDelete);
+
+        foreach ($routineExercise->sets as $set) {
+            $set->delete();
+        }
+
+        $routineExercise->delete();
+
+        $this->refreshRoutine();
+
+        $this->dispatch(
+            'toast',
+            message: __('app.exercise_deleted_success'),
+            type: 'success'
+        );
+
+        $this->closeDeleteExerciseModal();
     }
 
     public function render()

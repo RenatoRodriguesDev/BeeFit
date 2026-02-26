@@ -1,11 +1,19 @@
 <div class="space-y-4">
-    <h1 class="text-3xl font-bold mb-8">
-        {{ $routine->name }}
-    </h1>
+    <div class="flex  mb-8">
+        <a href="{{ url('routines') }}"
+            class="text-3xl text-zinc-400 hover:text-white transition flex items-center gap-2">
+            ←
+        </a>
+
+        <h1 class="text-3xl font-bold pl-4">
+            {{ $routine->name }}
+        </h1>
+
+        <div></div>
+    </div>
     @foreach($routine->exercises as $routineExercise)
 
         <div class="bg-zinc-950 border border-zinc-800 rounded-2xl shadow-lg overflow-hidden">
-
             {{-- HEADER DO EXERCÍCIO (CLICK PARA EXPANDIR) --}}
             <button wire:click="toggleExercise({{ $routineExercise->id }})"
                 class="w-full flex justify-between items-center p-6 hover:bg-zinc-900 transition">
@@ -25,11 +33,14 @@
                         {{ $routineExercise->sets->count() }} sets ·
                         {{ $routineExercise->sets->min('reps') }}-{{ $routineExercise->sets->max('reps') }} reps
                     </p>
+
                 </div>
 
                 <span class="text-zinc-400">
                     {{ $expandedExerciseId === $routineExercise->id ? '▾' : '▸' }}
+
                 </span>
+
             </button>
 
             {{-- CONTEÚDO EXPANDIDO --}}
@@ -95,9 +106,42 @@
                 </div>
 
             @endif
-
+            <button wire:click="confirmDeleteExercise({{ $routineExercise->id }})"
+                class="text-red-500 hover:text-red-400 transition p-2">
+                {{ __('app.delete') }}
+            </button>
         </div>
 
     @endforeach
+    @if($showDeleteExerciseModal)
 
+        <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+            <div class="bg-zinc-900 p-6 rounded-2xl w-96 space-y-6">
+
+                <div>
+                    <h2 class="text-xl font-semibold">
+                        {{ __('app.confirm_delete') }}
+                    </h2>
+
+                    <p class="text-zinc-400 mt-2">
+                        {{ __('app.confirm_delete_message') }}
+                    </p>
+                </div>
+
+                <div class="flex justify-end gap-3">
+
+                    <button wire:click="closeDeleteExerciseModal"
+                        class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition">
+                        {{ __('app.cancel') }}
+                    </button>
+
+                    <button wire:click="deleteExercise" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 transition">
+                        {{ __('app.delete') }}
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+    @endif
 </div>
