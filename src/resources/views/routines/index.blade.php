@@ -14,6 +14,11 @@
 
     <div class="bg-zinc-900 p-6 rounded-2xl h-fit">
         @livewire('routine-manager')
+
+        <a href="{{ route('library.index', app()->getLocale()) }}"
+           class="block w-full bg-zinc-800 text-center py-3 rounded-xl hover:bg-zinc-700 mt-4">
+            {{ __('app.browse_exercises') }}
+        </a>
     </div>
 
 </div>

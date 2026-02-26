@@ -50,5 +50,6 @@ return [
     'no_active_routine' => 'No active routine found.',
     'added_to_routine' => 'added to routine',
     'set' => 'Set',
+    'under_construction' => 'Under construction.',
     
 ];

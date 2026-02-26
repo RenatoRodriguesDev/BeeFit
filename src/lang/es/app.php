@@ -50,5 +50,6 @@ return [
     'no_active_routine' => 'No se encontró ninguna rutina activa.',
     'added_to_routine' => 'agregado a la rutina',
     'set' => 'Establecer',
+    'under_construction' => 'En construcción.',
 
 ];
