@@ -41,4 +41,13 @@ return [
     'no_account' => 'Ainda não tens conta?',
     'create_account' => 'Criar conta',
     'register' => 'Registar',
+    'routine_deleted_success' => 'Rotina eliminada com sucesso',
+    'delete' => 'Eliminar',
+    'confirm_delete' => 'Confirmar eliminação',
+    'confirm_delete_message' => 'Tens a certeza que pretendes eliminar esta rotina? Esta ação não pode ser desfeita.',
+    'exercise_duplicated' => 'Exercício duplicado',
+    'exercise_added_toast' => 'Exercício adicionado',
+    'no_active_routine' => 'Nenhuma rotina ativa encontrada.',
+    'added_to_routine' => 'adicionado à rotina',
+    'set' => 'Definir',
 ];

@@ -41,4 +41,14 @@ return [
     'no_account' => "Don't have an account?",
     'create_account' => 'Create account',
     'register' => 'Register',
+    'routine_deleted_success' => 'Rotine deleted with success',
+    'delete' => 'Delete',
+    'confirm_delete' => 'Confirm Delete',
+    'confirm_delete_message' => 'Are you sure you want to delete this routine? This action cannot be undone.',
+    'exercise_duplicated' => 'Exercise duplicated',
+    'exercise_added_toast' => 'Exercise added',
+    'no_active_routine' => 'No active routine found.',
+    'added_to_routine' => 'added to routine',
+    'set' => 'Set',
+    
 ];

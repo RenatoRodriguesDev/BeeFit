@@ -91,14 +91,14 @@
             <div class="bg-zinc-900 p-6 rounded-2xl w-96">
     
                 <h2 class="text-lg font-semibold mb-4">
-                    Select Routine
+                    {{__('app.select_routine')}}
                 </h2>
     
                 <select
                     wire:model="selectedRoutineId"
                     class="w-full bg-zinc-800 p-3 rounded-xl mb-4">
     
-                    <option value="">Choose routine</option>
+                    <option value="">{{__('app.choose_routine')}}</option>
     
                     @foreach(auth()->user()->routines as $routine)
                         <option value="{{ $routine->id }}">
@@ -111,13 +111,13 @@
                     <button
                         wire:click="$set('showRoutineModal', false)"
                         class="text-zinc-400">
-                        Cancel
+                        {{__('app.cancel')}}
                     </button>
     
                     <button
                         wire:click="addToSelectedRoutine"
                         class="bg-blue-600 px-4 py-2 rounded-xl">
-                        Add
+                        {{__('app.add')}}
                     </button>
                 </div>
     

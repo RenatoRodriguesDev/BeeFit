@@ -20,7 +20,7 @@
 
                 <button wire:click="addSet({{ $routineExercise->id }})"
                     class="bg-zinc-800 hover:bg-zinc-700 text-sm px-4 py-2 rounded-lg transition">
-                    + Add Set
+                    + {{__('app.add')}} Set
                 </button>
             </div>
 
