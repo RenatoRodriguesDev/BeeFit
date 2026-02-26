@@ -80,14 +80,14 @@
 
                     <a href="{{ route('profile.edit') }}"
                         class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-zinc-800 transition">
-                        ✏️ <span>{{ __('Editar perfil') }}</span>
+                        ✏️ <span>{{ __('app.change_profile') }}</span>
                     </a>
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
 
                         <button class="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-red-600 transition">
-                            🚪 <span>{{ __('Logout') }}</span>
+                            🚪 <span>{{ __('app.logout') }}</span>
                         </button>
                     </form>
 
