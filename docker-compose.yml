@@ -11,6 +11,21 @@ services:
     depends_on:
       - mysql
       - redis
+      - mailpit
+    environment:
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_USERNAME: null
+      MAIL_PASSWORD: null
+      MAIL_ENCRYPTION: null
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Interface Web
 
   nginx:
     image: nginx:alpine
