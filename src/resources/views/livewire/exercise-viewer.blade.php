@@ -23,10 +23,21 @@
             </div>
 
             {{-- Video Placeholder --}}
-            <div class="bg-black rounded-3xl overflow-hidden w-full lg:w-2/3 mx-auto py-4" wire:key="video-{{ $exercise->id }}">
-                <video controls autoplay loop class="w-full h-64 object-cover">
-                    <source src="{{ asset($exercise->video_path) }}" type="video/mp4">
-                </video>
+            <div class="bg-black rounded-3xl overflow-hidden w-full lg:w-2/3 mx-auto py-4"
+                wire:key="media-{{ $exercise->id }}">
+
+                @if($exercise->has_video)
+                    <video controls autoplay loop class="w-full h-64 object-cover">
+                        <source src="{{ asset($exercise->video_path) }}" type="video/mp4">
+                    </video>
+                @else
+                    <img
+                        src="{{ asset($exercise->thumbnail_path) }}"
+                        class="w-full h-64 object-cover"
+                        alt="{{ $exercise->translate()->name }}"
+                    >
+                @endif
+
             </div>
 
             {{-- Tabs estilo Hevy --}}

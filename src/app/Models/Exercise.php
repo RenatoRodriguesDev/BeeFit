@@ -23,4 +23,9 @@ class Exercise extends Model
     {
         return $this->belongsTo(Muscle::class, 'primary_muscle_id');
     }
+
+    public function getHasVideoAttribute(): bool
+    {
+        return $this->video_path && file_exists(public_path($this->video_path));
+    }
 }
