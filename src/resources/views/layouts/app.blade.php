@@ -45,8 +45,53 @@
                 </nav>
             </div>
 
-            <div class="text-sm text-zinc-400">
-                {{ auth()->user()->name }}
+            <div x-data="{ open: false }" class="relative">
+
+                <!-- User Button -->
+                <button @click="open = !open" class="w-full flex items-center gap-3 p-3 rounded-xl
+               bg-zinc-800/40 backdrop-blur-lg
+               hover:bg-zinc-800 transition">
+
+                    <!-- Avatar -->
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500
+                    flex items-center justify-center text-white font-semibold">
+
+                        {{ substr(auth()->user()->name, 0, 1) }}
+                    </div>
+
+                    <div class="flex-1 text-left">
+                        <div class="text-white text-sm font-medium">
+                            {{ auth()->user()->name }}
+                        </div>
+
+                        <div class="text-xs text-zinc-400">
+                            {{ auth()->user()->email ?? '' }}
+                        </div>
+                    </div>
+
+                    <span class="text-zinc-400">⚙️</span>
+                </button>
+
+                <!-- Dropdown -->
+                <div x-show="open" @click.away="open = false" x-transition class="absolute bottom-16 left-0 w-full
+               bg-zinc-900/95 backdrop-blur-xl
+               border border-zinc-800
+               rounded-xl shadow-2xl overflow-hidden z-50">
+
+                    <a href="{{ route('profile.edit') }}"
+                        class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-zinc-800 transition">
+                        ✏️ <span>{{ __('Editar perfil') }}</span>
+                    </a>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+
+                        <button class="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-red-600 transition">
+                            🚪 <span>{{ __('Logout') }}</span>
+                        </button>
+                    </form>
+
+                </div>
             </div>
 
         </aside>
@@ -71,26 +116,78 @@
 
 
     {{-- 📱 Bottom Navigation Mobile --}}
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 flex justify-around py-3">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0
+            bg-zinc-900/95 backdrop-blur-xl
+            border-t border-zinc-800
+            flex justify-around py-3 z-40">
 
-        <a href="{{ route('dashboard') }}"
-            class="flex flex-col items-center text-xs {{ request()->routeIs('dashboard') ? 'text-white' : 'text-zinc-500' }}">
-            <span>🏠</span>
+        <a href="{{ route('dashboard') }}" class="flex flex-col items-center text-xs gap-1
+              {{ request()->routeIs('dashboard') ? 'text-white' : 'text-zinc-500' }}">
+            <span class="text-lg">🏠</span>
             {{ __('app.dashboard') }}
         </a>
 
-        <a href="{{ route('routines.index') }}"
-            class="flex flex-col items-center text-xs {{ request()->routeIs('routines.*') ? 'text-white' : 'text-zinc-500' }}">
-            <span>💪</span>
+        <a href="{{ route('routines.index') }}" class="flex flex-col items-center text-xs gap-1
+              {{ request()->routeIs('routines.*') ? 'text-white' : 'text-zinc-500' }}">
+            <span class="text-lg">💪</span>
             {{ __('app.routines') }}
         </a>
 
-        <a href="{{ route('library.index', app()->getLocale()) }}"
-            class="flex flex-col items-center text-xs text-zinc-500">
-            <span>📚</span>
+        <a href="{{ route('library.index', app()->getLocale()) }}" class="flex flex-col items-center text-xs gap-1
+              {{ request()->routeIs('routines.*') ? 'text-white' : 'text-zinc-500' }}">
+            <span class="text-lg">📚</span>
             {{ __('app.exercises') }}
         </a>
 
+        {{-- Profile Modal Trigger --}}
+        <div x-data="{ open: false }">
+
+            <button @click="open = true" class="flex flex-col items-center text-xs gap-1 text-zinc-500">
+                <span class="text-lg">⚙️</span>
+                {{ __('Perfil') }}
+            </button>
+
+            <!-- Overlay -->
+            <div x-show="open" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50" x-transition.opacity
+                @click="open = false"></div>
+
+            <!-- Modal Sheet (Slide Up) -->
+            <div x-show="open" x-transition:enter="transition transform duration-300"
+                x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
+                x-transition:leave="transition transform duration-300" x-transition:leave-start="translate-y-0"
+                x-transition:leave-end="translate-y-full" class="fixed bottom-0 left-0 right-0
+                   bg-zinc-900/95 backdrop-blur-xl
+                   border-t border-zinc-800
+                   rounded-t-3xl p-6 z-50">
+
+                <div class="flex flex-col gap-4">
+
+                    <div class="text-center text-white font-medium border-b border-zinc-800 pb-3">
+                        ⚙️ {{ __('Perfil') }}
+                    </div>
+
+                    <a href="{{ route('profile.edit') }}"
+                        class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-800 transition">
+                        ✏️ {{ __('Editar perfil') }}
+                    </a>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+
+                        <button class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-600 transition">
+                            🚪 {{ __('Logout') }}
+                        </button>
+                    </form>
+
+                    <button @click="open = false"
+                        class="w-full p-3 text-center text-zinc-400 hover:text-white transition">
+                        ✕ {{ __('Fechar') }}
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
     </nav>
     @livewireScripts
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -98,11 +195,11 @@
 
 </html>
 <script>
-document.addEventListener('livewire:init', () => {
+    document.addEventListener('livewire:init', () => {
 
-    Livewire.on('toast', (event) => {
-        window.toast(event.message, event.type ?? 'success');
+        Livewire.on('toast', (event) => {
+            window.toast(event.message, event.type ?? 'success');
+        });
+
     });
-
-});
 </script>
