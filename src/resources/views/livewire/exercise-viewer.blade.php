@@ -1,5 +1,7 @@
-<div class="p-6 lg:p-10">
-
+<div class="space-y-4">
+    <h1 class="text-3xl font-bold mb-8">
+        {{ __('app.exercises') }}
+    </h1>
     @if(!$exercise)
         <div class="bg-zinc-900 rounded-3xl p-8 text-zinc-400">
             {{ __('app.select_exercise_from_library') }}
@@ -31,11 +33,8 @@
                         <source src="{{ asset($exercise->video_path) }}" type="video/mp4">
                     </video>
                 @else
-                    <img
-                        src="{{ asset($exercise->thumbnail_path) }}"
-                        class="w-full h-64 object-cover"
-                        alt="{{ $exercise->translate()->name }}"
-                    >
+                    <img src="{{ asset($exercise->thumbnail_path) }}" class="w-full h-64 object-cover"
+                        alt="{{ $exercise->translate()->name }}">
                 @endif
 
             </div>

@@ -1,5 +1,7 @@
 <div class="space-y-4">
-
+    <h1 class="text-3xl font-bold mb-8">
+        {{ $routine->name }}
+    </h1>
     @foreach($routine->exercises as $routineExercise)
 
         <div class="bg-zinc-950 border border-zinc-800 rounded-2xl shadow-lg overflow-hidden">
