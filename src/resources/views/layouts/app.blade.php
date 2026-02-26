@@ -97,3 +97,12 @@
 </body>
 
 </html>
+<script>
+document.addEventListener('livewire:init', () => {
+
+    Livewire.on('toast', (event) => {
+        window.toast(event.message, event.type ?? 'success');
+    });
+
+});
+</script>
