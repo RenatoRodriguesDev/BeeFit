@@ -1,33 +1,38 @@
 <div class="space-y-6">
+    @if($routines->isEmpty())
+        <div class="bg-zinc-900 rounded-3xl p-8 text-zinc-400">
+            {{ __('app.get_started_start_by_creating_a_routine') }}
+        </div>
+    @else
+        @foreach($routines as $routine)
 
-    @foreach($routines as $routine)
+            <a href="{{ route('routines.show', $routine) }}"
+                class="block bg-zinc-900 p-5 md:p-6 rounded-2xl hover:bg-zinc-800 transition">
 
-        <a href="{{ route('routines.show', $routine) }}"
-            class="block bg-zinc-900 p-5 md:p-6 rounded-2xl hover:bg-zinc-800 transition">
+                <div class="flex justify-between items-center">
 
-            <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-semibold">
+                        {{ $routine->name }}
+                    </h2>
 
-                <h2 class="text-xl font-semibold">
-                    {{ $routine->name }}
-                </h2>
+                    <div class="flex items-center gap-4">
 
-                <div class="flex items-center gap-4">
+                        <span class="text-zinc-500 text-sm">
+                            {{ $routine->exercises_count }} {{ __('app.exercises') }}
+                        </span>
 
-                    <span class="text-zinc-500 text-sm">
-                        {{ $routine->exercises_count }} {{ __('app.exercises') }}
-                    </span>
+                        <button wire:click.prevent="confirmDelete({{ $routine->id }})"
+                            class="text-red-500 hover:text-red-400 transition">
+                            {{ __('app.delete') }}
+                        </button>
 
-                    <button wire:click.prevent="confirmDelete({{ $routine->id }})"
-                        class="text-red-500 hover:text-red-400 transition">
-                        {{ __('app.delete') }}
-                    </button>
-
+                    </div>
                 </div>
-            </div>
 
-        </a>
+            </a>
 
-    @endforeach
+        @endforeach
+    @endif
 
     @if($showDeleteModal)
 

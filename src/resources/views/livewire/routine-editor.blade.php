@@ -11,6 +11,7 @@
 
         <div></div>
     </div>
+    
     @foreach($routine->exercises as $routineExercise)
 
         <div class="bg-zinc-950 border border-zinc-800 rounded-2xl shadow-lg overflow-hidden">
@@ -113,6 +114,7 @@
         </div>
 
     @endforeach
+    
     @if($showDeleteExerciseModal)
 
         <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">

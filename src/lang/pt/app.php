@@ -51,4 +51,12 @@ return [
     'added_to_routine' => 'adicionado à rotina',
     'set' => 'Definir',
     'under_construction' => 'Em construção',
+    'get_started_start_by_creating_a_routine' => 'Comece! Comece por criar uma rotina!',
+    'exercise_deleted_success' => 'Exercício eliminado com sucesso',
+    'profile' => 'Perfil',
+    'change_profile' => 'Alterar Perfil',
+    'logout' => 'Terminar Sessão',
+    'close' => 'Fechar',
+    
+
 ];

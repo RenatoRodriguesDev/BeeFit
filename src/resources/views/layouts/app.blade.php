@@ -144,7 +144,7 @@
 
             <button @click="open = true" class="flex flex-col items-center text-xs gap-1 text-zinc-500">
                 <span class="text-lg">⚙️</span>
-                {{ __('Perfil') }}
+                {{ __('app.profile') }}
             </button>
 
             <!-- Overlay -->
@@ -163,25 +163,25 @@
                 <div class="flex flex-col gap-4">
 
                     <div class="text-center text-white font-medium border-b border-zinc-800 pb-3">
-                        ⚙️ {{ __('Perfil') }}
+                        ⚙️ {{ __('app.profile') }}
                     </div>
 
                     <a href="{{ route('profile.edit') }}"
                         class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-800 transition">
-                        ✏️ {{ __('Editar perfil') }}
+                        ✏️ {{ __('app.change_profile') }}
                     </a>
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
 
                         <button class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-600 transition">
-                            🚪 {{ __('Logout') }}
+                            🚪 {{ __('app.logout') }}
                         </button>
                     </form>
 
                     <button @click="open = false"
                         class="w-full p-3 text-center text-zinc-400 hover:text-white transition">
-                        ✕ {{ __('Fechar') }}
+                        ✕ {{ __('app.close') }}
                     </button>
 
                 </div>

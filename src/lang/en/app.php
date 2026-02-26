@@ -51,5 +51,11 @@ return [
     'added_to_routine' => 'added to routine',
     'set' => 'Set',
     'under_construction' => 'Under construction.',
+    'get_started_start_by_creating_a_routine' => 'Get started! Start by creating a routine!',
+    'exercise_deleted_success' => 'Exercise deleted with success',
+    'profile' => 'Profile',
+    'change_profile' => 'Change Profile',
+    'logout' => 'Logout',
+    'close' => 'Close',
     
 ];
