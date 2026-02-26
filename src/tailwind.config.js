@@ -8,11 +8,18 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
+    safelist: [
+        // Backgrounds
+        "bg-beeyellow",
+    ],
 
     theme: {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                "beeyellow": "#FFD91A",
             },
         },
     },
