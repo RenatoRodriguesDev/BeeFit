@@ -9,11 +9,20 @@ class SetLocale
 {
     public function handle($request, Closure $next)
     {
-        $locale = auth()->user()?->locale
-            ?? session('locale')
-            ?? config('app.locale');
+        $availableLocales = ['es', 'pt', 'en'];
+
+        if (auth()->check()) {
+            $locale = auth()->user()->locale;
+        } elseif (session()->has('locale')) {
+            $locale = session('locale');
+        } else {
+            $locale = $request->getPreferredLanguage($availableLocales)
+                ?? config('app.locale');
+        }
 
         App::setLocale($locale);
+
+        session(['locale' => $locale]);
 
         return $next($request);
     }
