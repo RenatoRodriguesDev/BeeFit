@@ -33,20 +33,33 @@ class ExerciseViewer extends Component
             return;
         }
 
-        // evitar duplicados
-        if (
-            !$routine->exercises()
-                ->where('exercise_id', $this->exercise->id)
-                ->exists()
-        ) {
+        $exists = $routine->exercises()
+            ->where('exercise_id', $this->exercise->id)
+            ->exists();
 
-            $routine->exercises()->attach($this->exercise->id);
+        if ($exists) {
+
+            $this->dispatch(
+                'toast',
+                message: __('app.exercise_duplicated'),
+                type: 'error'
+            );
+
+        } else {
+
+            $routine->exercises()->create([
+                'exercise_id' => $this->exercise->id
+            ]);
+
+            $this->dispatch(
+                'toast',
+                message: __('app.exercise_added_toast'),
+                type: 'success'
+            );
         }
 
         $this->showRoutineModal = false;
         $this->selectedRoutineId = null;
-
-        session()->flash('added', 'Exercise added to routine!');
     }
 
     public function addToWorkout()
@@ -66,7 +79,7 @@ class ExerciseViewer extends Component
             ->first();
 
         if (!$activeRoutine) {
-            session()->flash('added', 'No active routine found.');
+            session()->flash('added', __('app.no_active_routine'));
             return;
         }
 
@@ -75,7 +88,7 @@ class ExerciseViewer extends Component
             $activeRoutine->exercises()->attach($this->exercise->id);
         }
 
-        session()->flash('added', $this->exercise->translate()->name . ' added to routine');
+        session()->flash('added', $this->exercise->translate()->name . __('app.added_to_routine'));
     }
 
     public function setTab($tab)

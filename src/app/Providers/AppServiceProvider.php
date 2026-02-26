@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 use App\Livewire\Routine\RoutineEditor;
+use App\Livewire\Routine\RoutineList;
 use App\Livewire\Routine\RoutineManager;
 use Livewire\Livewire;
 use App\Livewire\Library\LibraryPanel;
@@ -28,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('exercise-viewer', ExerciseViewer::class);
         Livewire::component('routine-manager', RoutineManager::class);
         Livewire::component('routine-editor', RoutineEditor::class);
+        Livewire::component('routine-list', RoutineList::class);
 
     }
 }

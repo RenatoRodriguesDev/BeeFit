@@ -12,8 +12,8 @@ class RoutineEditor extends Component
     public Routine $routine;
 
     protected $rules = [
-        'routine.routineExercises.*.sets.*.weight' => 'nullable|numeric',
-        'routine.routineExercises.*.sets.*.reps' => 'nullable|integer',
+        'routine.exercises.*.sets.*.weight' => 'nullable|numeric',
+        'routine.exercises.*.sets.*.reps' => 'nullable|integer',
     ];
 
     public function mount(Routine $routine)
@@ -21,8 +21,8 @@ class RoutineEditor extends Component
         abort_unless($routine->user_id === auth()->id(), 403);
 
         $this->routine = $routine->load([
-            'routineExercises.exercise.translations',
-            'routineExercises.sets'
+            'exercises.exercise.translations',
+            'exercises.sets'
         ]);
     }
 

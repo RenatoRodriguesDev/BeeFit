@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class RoutineExercise extends Model
 {
+    protected $fillable = [
+        'routine_id',
+        'exercise_id',
+        'order',
+    ];
+
     public function exercise()
     {
         return $this->belongsTo(Exercise::class);

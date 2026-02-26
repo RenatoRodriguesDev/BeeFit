@@ -8,7 +8,7 @@
 
     <div class="space-y-6">
 
-        @forelse($routine->routineExercises as $routineExercise)
+        @forelse($routine->exercises as $routineExercise)
 
             <div class="bg-zinc-900 p-6 rounded-2xl space-y-4">
 

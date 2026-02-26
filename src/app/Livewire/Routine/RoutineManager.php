@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Routine;
 
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use App\Models\Routine;
 
@@ -9,7 +10,10 @@ class RoutineManager extends Component
 {
     public $name;
     public $showModal = false;
-    
+
+    public $showDeleteModal = false;
+    public $routineToDelete = null;
+
     public function createRoutine()
     {
         $this->validate([
@@ -28,7 +32,8 @@ class RoutineManager extends Component
 
         $this->reset(['name', 'showModal']);
 
-        return redirect()->route('routines.show', $routine);
+
+        return redirect()->route('routines.index', $routine);
     }
 
     public function render()

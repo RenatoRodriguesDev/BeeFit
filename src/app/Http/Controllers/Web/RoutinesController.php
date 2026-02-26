@@ -21,8 +21,8 @@ class RoutinesController extends Controller
         abort_unless($routine->user_id === auth()->id(), 403);
 
         $routine->load([
-            'routineExercises.exercise.translations',
-            'routineExercises.sets'
+            'exercises.exercise.translations',
+            'exercises.sets'
         ]);
 
         return view('routines.show', compact('routine'));

@@ -2,37 +2,20 @@
 
 @section('content')
 
-    <h1 class="text-3xl font-bold mb-8">{{ __('app.routines') }}</h1>
+<h1 class="text-3xl font-bold mb-8">
+    {{ __('app.routines') }}
+</h1>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {{-- Lista --}}
-        <div class="lg:col-span-2 space-y-6">
-            @forelse($routines as $routine)
-                <div onclick="window.location='{{ route('routines.show', $routine) }}'"
-                    class="bg-zinc-900 p-5 md:p-6 rounded-2xl hover:bg-zinc-800 transition cursor-pointer">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-xl font-semibold">
-                            {{ $routine->name }}
-                        </h2>
-
-                        <div class="text-zinc-500 text-sm">
-                            {{ $routine->exercises_count }} exercises
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <div class="bg-zinc-900 p-6 rounded-2xl text-zinc-400">
-                    {{ __('app.no_routines') }}
-                </div>
-            @endforelse
-        </div>
-
-        {{-- Action Card --}}
-        <div class="bg-zinc-900 p-6 rounded-2xl space-y-4 h-fit">
-            @livewire('routine-manager')
-        </div>
-
+    <div class="lg:col-span-2">
+        @livewire('routine-list')
     </div>
+
+    <div class="bg-zinc-900 p-6 rounded-2xl h-fit">
+        @livewire('routine-manager')
+    </div>
+
+</div>
 
 @endsection

@@ -12,11 +12,7 @@ class Routine extends Model
         'is_active',
     ];
 
-    public function routineExercises()
-    {
-        return $this->hasMany(RoutineExercise::class)
-            ->orderBy('order');
-    }
+    
 
     // relação ao pivot
     public function exercises()
