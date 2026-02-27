@@ -85,5 +85,6 @@ return [
     'remove' => 'Remover',
     'add_set' => 'Adicionar série',
     'start_workout' => 'Iniciar Treino',
+    'resume' => 'Retomar',
 
 ];

@@ -85,5 +85,6 @@ return [
     'remove' => 'Remove',
     'add_set' => 'Add set',
     'start_workout' => 'Start Workout',
+    'resume' => 'Resume',
     
 ];
