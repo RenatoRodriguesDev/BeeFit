@@ -7,7 +7,7 @@
         @foreach($routines as $routine)
 
             <a href="{{ route('routines.show', $routine) }}"
-                class="block bg-zinc-600 p-5 md:p-6 rounded-2xl hover:bg-zinc-800 transition">
+                class="block bg-zinc-600 p-5 md:p-6 rounded-2xl hover:bg-zinc-700 transition">
 
                 <div class="flex justify-between items-center">
                     <button wire:click.prevent="startWorkout({{ $routine->id }})" class="bg-white text-black 

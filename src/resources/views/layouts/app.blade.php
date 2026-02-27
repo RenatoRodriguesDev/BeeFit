@@ -26,7 +26,9 @@
         <aside class="hidden md:flex w-64 bg-zinc-600 p-6 flex-col justify-between">
 
             <div>
-                <img src="{{ asset('images/logo_nobg.png') }}" alt="BeeFit Logo" class="mb-8">
+                <a href="{{ route('dashboard') }}">
+                    <img  src="{{ asset('images/logo_nobg.png') }}" alt="BeeFit Logo" class="mb-8">
+                </a>
 
                 <nav class="space-y-3">
                     <a href="{{ route('dashboard') }}"
