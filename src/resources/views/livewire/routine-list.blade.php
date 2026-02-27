@@ -10,7 +10,10 @@
                 class="block bg-zinc-900 p-5 md:p-6 rounded-2xl hover:bg-zinc-800 transition">
 
                 <div class="flex justify-between items-center">
-
+                    <button wire:click.prevent="startWorkout({{ $routine->id }})" class="bg-white text-black 
+                   px-6 py-3 rounded-2xl transition">
+                        Iniciar treino
+                    </button>
                     <h2 class="text-xl font-semibold">
                         {{ $routine->name }}
                     </h2>

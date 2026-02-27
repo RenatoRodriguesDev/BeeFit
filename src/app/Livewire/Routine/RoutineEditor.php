@@ -57,14 +57,26 @@ class RoutineEditor extends Component
 
     public function deleteSet($setId)
     {
-        RoutineSet::findOrFail($setId)->delete();
+        $set = RoutineSet::findOrFail($setId);
+
+        $totalSets = RoutineSet::where(
+            'routine_exercise_id',
+            $set->routine_exercise_id
+        )->count();
+
+        if ($totalSets <= 1) {
+            return; // impede apagar o último set
+        }
+
+        $set->delete();
+
         $this->refreshRoutine();
     }
 
     public function updateWeight($setId, $value)
     {
         $value = $value === '' ? null : (int) $value;
-        
+
         RoutineSet::findOrFail($setId)->update([
             'weight' => $value
         ]);

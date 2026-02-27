@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\LibraryController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\RoutinesController;
+use App\Livewire\Workout\WorkoutSession;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -22,6 +23,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/routines/{routine}', RoutineEditor::class)
         ->name('routines.show');
+
+    Route::get('/workouts/{workout}', WorkoutSession::class)
+        ->name('workouts.session');
 });
 
 
