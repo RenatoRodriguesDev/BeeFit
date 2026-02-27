@@ -72,5 +72,18 @@ return [
     'current_password' => 'Contraseña actual',
     'new_password' => 'Nueva contraseña',
     'save' => 'Guardar',
+    'sunday' => 'D',
+    'monday' => 'L',
+    'tuesday' => 'M',
+    'wednesday' => 'M',
+    'thursday' => 'J',
+    'friday' => 'V',
+    'saturday' => 'S',
+    'pause' => 'Pausar',
+    'finish' => 'Terminar',
+    'remove_exercise' => 'Eliminar ejercicio',
+    'remove' => 'Eliminar',
+    'add_set' => 'Agregar serie',
+    'start_workout' => 'Comenzar entrenamiento',
 
 ];

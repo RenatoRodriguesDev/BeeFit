@@ -12,7 +12,7 @@
                 <div class="flex justify-between items-center">
                     <button wire:click.prevent="startWorkout({{ $routine->id }})" class="bg-white text-black 
                    px-6 py-3 rounded-2xl transition">
-                        Iniciar treino
+                        {{ __('app.start_workout') }}
                     </button>
                     <h2 class="text-xl font-semibold">
                         {{ $routine->name }}

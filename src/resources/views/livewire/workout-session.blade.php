@@ -10,22 +10,22 @@
 
             @if($workout->status === 'active')
                 <button wire:click="pauseWorkout" class="bg-yellow-500 px-4 py-2 rounded-xl">
-                    Pausar
+                    {{__('app.pause')}}
                 </button>
             @endif
 
             @if($workout->status === 'paused')
                 <button wire:click="resumeWorkout" class="bg-blue-500 px-4 py-2 rounded-xl">
-                    Retomar
+                    {{__('app.resume')}}
                 </button>
             @endif
 
             <button wire:click="cancelWorkout" class="bg-red-600 px-4 py-2 rounded-xl">
-                Cancelar
+                {{__('app.cancel')}}
             </button>
 
             <button wire:click="finishWorkout" class="bg-green-600 px-4 py-2 rounded-xl">
-                Finalizar
+                {{__('app.finish')}}
             </button>
 
         </div>
@@ -40,7 +40,7 @@
                     </h2>
 
                     <button wire:click="removeExercise({{ $workoutExercise->id }})" class="text-red-500 text-sm">
-                        Remover exercício
+                        {{__('app.remove_exercise')}}
                     </button>
                 </div>
 
@@ -62,11 +62,11 @@
 
                     </div>
                     <button wire:click="removeSet({{ $set->id }})" class="text-red-500 text-sm">
-                        Remover
+                        {{ __('app.remove') }}
                     </button>
                 @endforeach
                 <button wire:click="addSet({{ $workoutExercise->id }})" class="bg-zinc-700 px-4 py-2 rounded-xl text-sm">
-                    + Adicionar Set
+                    + {{ __('app.add_set') }}
                 </button>
 
             </div>

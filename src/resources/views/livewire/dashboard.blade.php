@@ -9,7 +9,7 @@
         </button>
 
         <h2 class="text-sm font-semibold tracking-wide">
-            {{ $currentMonth->format('F Y') }}
+            {{ $currentMonth->translatedFormat('F Y') }}
         </h2>
 
         <button wire:click="nextMonth" class="w-8 h-8 flex items-center justify-center 
@@ -21,13 +21,13 @@
 
     {{-- Week Days --}}
     <div class="grid grid-cols-7 text-xs text-zinc-500 mb-2 text-center">
-        <div>S</div>
-        <div>M</div>
-        <div>T</div>
-        <div>W</div>
-        <div>T</div>
-        <div>F</div>
-        <div>S</div>
+        <div>{{ __('app.sunday') }}</div>
+        <div>{{ __('app.monday') }}</div>
+        <div>{{ __('app.tuesday') }}</div>
+        <div>{{ __('app.wednesday') }}</div>
+        <div>{{ __('app.thursday') }}</div>
+        <div>{{ __('app.friday') }}</div>
+        <div>{{ __('app.saturday') }}</div>
     </div>
 
     {{-- Days --}}
@@ -65,8 +65,7 @@
 
                 {{-- Small workout dot --}}
                 @if($hasWorkout)
-                    <span class="absolute bottom-1 w-1.5 h-1.5 
-                                         bg-blue-500 rounded-full"></span>
+                    <span class="absolute bottom-1 w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
                 @endif
 
             </div>
