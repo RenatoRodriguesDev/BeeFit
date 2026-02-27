@@ -96,12 +96,14 @@
             </div>
 
         </aside>
+        
+        <livewire:active-workout-banner />
 
 
         {{-- Main --}}
         <div class="flex-1 flex flex-col">
 
-            <main class="flex-1 p-6 md:p-10 overflow-y-auto pb-24 md:pb-10">
+            <main id="app-content" class="flex-1 p-6 md:p-10 overflow-y-auto pb-24 md:pb-10">
 
                 @isset($slot)
                     {{ $slot }}
