@@ -63,6 +63,8 @@ class RoutineEditor extends Component
 
     public function updateWeight($setId, $value)
     {
+        $value = $value === '' ? null : (int) $value;
+        
         RoutineSet::findOrFail($setId)->update([
             'weight' => $value
         ]);
