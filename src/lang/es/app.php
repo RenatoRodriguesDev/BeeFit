@@ -86,5 +86,6 @@ return [
     'add_set' => 'Agregar serie',
     'start_workout' => 'Comenzar entrenamiento',
     'resume' => 'Reanudar',
+    'add_exercise' => 'Agregar ejercicio',
 
 ];

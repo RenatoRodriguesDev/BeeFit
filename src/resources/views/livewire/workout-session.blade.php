@@ -29,7 +29,11 @@
             </button>
 
         </div>
-
+        <div class="flex justify-end">
+            <button wire:click="openAddExerciseModal" class="bg-blue-600 px-4 py-2 rounded-xl text-sm">
+                + {{ __('app.add_exercise') }}
+            </button>
+        </div>
         @foreach($workout->exercises as $workoutExercise)
 
             <div class="bg-zinc-600 p-6 rounded-3xl space-y-4">
@@ -74,4 +78,24 @@
         @endforeach
 
     </div>
+    @if($showAddExerciseModal)
+<div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+    <div class="bg-zinc-800 p-6 rounded-2xl w-96 max-h-[500px] overflow-y-auto">
+
+        <div class="flex justify-between mb-4">
+            <h3 class="font-semibold">{{ __('app.add_exercise') }}</h3>
+            <button wire:click="closeAddExerciseModal">✕</button>
+        </div>
+
+        @foreach($this->availableExercises as $exercise)
+            <button
+                wire:click="addExerciseToWorkout({{ $exercise->id }})"
+                class="block w-full text-left px-4 py-2 rounded-lg hover:bg-zinc-700">
+                {{ $exercise->translate()->name }}
+            </button>
+        @endforeach
+
+    </div>
+</div>
+@endif
 </div>

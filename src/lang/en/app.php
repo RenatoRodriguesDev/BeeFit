@@ -86,5 +86,6 @@ return [
     'add_set' => 'Add set',
     'start_workout' => 'Start Workout',
     'resume' => 'Resume',
+    'add_exercise' => 'Add exercise',
     
 ];

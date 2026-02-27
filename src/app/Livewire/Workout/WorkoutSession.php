@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Workout;
 use App\Models\WorkoutExercise;
 use App\Models\WorkoutSet;
+use App\Models\Exercise;
 
 
 class WorkoutSession extends Component
@@ -117,6 +118,42 @@ class WorkoutSession extends Component
         $exercise->delete(); // se tiver cascade deletes melhor ainda
 
         $this->workout->refresh();
+    }
+
+    public $showAddExerciseModal = false;
+
+    public function openAddExerciseModal()
+    {
+        $this->showAddExerciseModal = true;
+    }
+
+    public function closeAddExerciseModal()
+    {
+        $this->showAddExerciseModal = false;
+    }
+
+    public function getAvailableExercisesProperty()
+{
+    return Exercise::query()
+        ->join('exercise_translations', function ($join) {
+            $join->on('exercises.id', '=', 'exercise_translations.exercise_id')
+                 ->where('exercise_translations.locale', app()->getLocale());
+        })
+        ->orderBy('exercise_translations.name')
+        ->select('exercises.*')
+        ->get();
+}
+
+    public function addExerciseToWorkout($exerciseId)
+    {
+        $workoutExercise = WorkoutExercise::create([
+            'workout_id' => $this->workout->id,
+            'exercise_id' => $exerciseId,
+            'order' => $this->workout->exercises()->count() + 1,
+        ]);
+
+        $this->workout->refresh();
+        $this->showAddExerciseModal = false;
     }
 
     public function render()

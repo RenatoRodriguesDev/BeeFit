@@ -19,7 +19,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/routines', [RoutinesController::class, 'index'])
         ->name('routines.index');
     Route::get('/library', [LibraryController::class, 'index'])
-        ->where('locale', 'en|es|pt')
         ->name('library.index');
 
     Route::get('/routines/{routine}', RoutineEditor::class)
