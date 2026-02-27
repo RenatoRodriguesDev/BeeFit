@@ -10,7 +10,7 @@
 
     @foreach($workout->exercises as $exercise)
 
-        <div class="bg-zinc-900 p-6 rounded-3xl space-y-4">
+        <div class="bg-zinc-600 p-6 rounded-3xl space-y-4">
 
             <h2 class="text-xl font-semibold">
                 {{ $exercise->exercise->translate()->name }}

@@ -3,13 +3,13 @@
         {{ __('app.exercises') }}
     </h1>
     @if(!$exercise)
-        <div class="bg-zinc-900 rounded-3xl p-8 text-zinc-400">
+        <div class="bg-zinc-600 rounded-3xl p-8 text-zinc-400">
             {{ __('app.select_exercise_from_library') }}
         </div>
     @else
 
         <div x-data="{ show: false, videoUrl: '{{ $exercise->video_path }}' }" x-init="setTimeout(() => show = true, 50)"
-            x-show="show" x-transition.opacity.duration.300ms class="p-6 lg:p-10">
+            x-show="show" x-transition.opacity.duration.300ms class="p-6 lg:p-10 bg-zinc-900">
 
             {{-- Header --}}
             <div>

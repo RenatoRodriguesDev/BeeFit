@@ -32,7 +32,7 @@
 
         @foreach($workout->exercises as $workoutExercise)
 
-            <div class="bg-zinc-900 p-6 rounded-3xl space-y-4">
+            <div class="bg-zinc-600 p-6 rounded-3xl space-y-4">
 
                 <div class="flex justify-between items-center">
                     <h2 class="text-xl font-semibold">

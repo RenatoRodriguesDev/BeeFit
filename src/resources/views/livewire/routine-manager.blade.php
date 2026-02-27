@@ -8,7 +8,7 @@
     @if($showModal)
         <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]" style="position: fixed;">
 
-            <div class="bg-zinc-900 p-6 rounded-2xl w-96 space-y-4">
+            <div class="bg-zinc-600 p-6 rounded-2xl w-96 space-y-4">
 
                 <h2 class="text-lg font-semibold">
                     {{ __('app.new_routine') }}

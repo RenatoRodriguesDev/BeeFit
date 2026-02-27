@@ -23,10 +23,10 @@
     <div class="flex h-screen">
 
         {{-- Sidebar Desktop --}}
-        <aside class="hidden md:flex w-64 bg-zinc-900 p-6 flex-col justify-between">
+        <aside class="hidden md:flex w-64 bg-zinc-600 p-6 flex-col justify-between">
 
             <div>
-                <h1 class="text-2xl font-bold mb-8">🐝 BeeFit</h1>
+                <img src="{{ asset('images/logo_nobg.png') }}" alt="BeeFit Logo" class="mb-8">
 
                 <nav class="space-y-3">
                     <a href="{{ route('dashboard') }}"
@@ -75,7 +75,7 @@
 
                 <!-- Dropdown -->
                 <div x-show="open" @click.away="open = false" x-transition class="absolute bottom-16 left-0 w-full
-               bg-zinc-900/95 backdrop-blur-xl
+               bg-zinc-600/95 backdrop-blur-xl
                border border-zinc-800
                rounded-xl shadow-2xl overflow-hidden z-50">
 
@@ -118,7 +118,7 @@
 
     {{-- 📱 Bottom Navigation Mobile --}}
     <nav class="md:hidden fixed bottom-0 left-0 right-0
-            bg-zinc-900/95 backdrop-blur-xl
+            bg-zinc-600/95 backdrop-blur-xl
             border-t border-zinc-800
             flex justify-around py-3 z-40">
 
@@ -157,7 +157,7 @@
                 x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
                 x-transition:leave="transition transform duration-300" x-transition:leave-start="translate-y-0"
                 x-transition:leave-end="translate-y-full" class="fixed bottom-0 left-0 right-0
-                   bg-zinc-900/95 backdrop-blur-xl
+                   bg-zinc-600/95 backdrop-blur-xl
                    border-t border-zinc-800
                    rounded-t-3xl p-6 z-50">
 

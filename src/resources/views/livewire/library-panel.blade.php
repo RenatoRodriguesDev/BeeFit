@@ -9,7 +9,7 @@
     {{-- Filters --}}
     <div class="p-4 space-y-3 border-b border-zinc-800">
 
-        <select wire:model.live="equipment" class="w-full bg-zinc-900 rounded-xl p-3 border border-zinc-800">
+        <select wire:model.live="equipment" class="w-full bg-zinc-600 rounded-xl p-3 border border-zinc-800">
             <option value="">{{ __('app.all_equipment') }}</option>
             @foreach($equipmentList as $item)
                 <option value="{{ $item->id }}">
@@ -18,7 +18,7 @@
             @endforeach
         </select>
 
-        <select wire:model.live="muscle" class="w-full bg-zinc-900 rounded-xl p-3 border border-zinc-800">
+        <select wire:model.live="muscle" class="w-full bg-zinc-600 rounded-xl p-3 border border-zinc-800">
             <option value="">{{ __('app.all_muscles') }}</option>
             @foreach($musclesList as $muscle)
                 <option value="{{ $muscle->id }}">
@@ -28,7 +28,7 @@
         </select>
 
         <input type="text" wire:model.live.debounce.300ms="search" placeholder="{{ __('app.browse_exercises') }}"
-            class="w-full bg-zinc-900 rounded-xl p-3 border border-zinc-800">
+            class="w-full bg-zinc-600 rounded-xl p-3 border border-zinc-800">
     </div>
 
     {{-- List --}}
@@ -39,7 +39,7 @@
             <div class="flex items-center justify-between gap-3 p-3 rounded-xl cursor-pointer transition
                 {{ $activeExerciseId == $exercise->id
             ? 'bg-zinc-800 ring-1 ring-white'
-            : 'hover:bg-zinc-900' }}">
+            : 'hover:bg-zinc-600' }}">
 
                 <div wire:click="$dispatch('exerciseSelected', { exerciseId: {{ $exercise->id }} })"
                     class="flex items-center gap-3 flex-1">
@@ -72,7 +72,7 @@
     </div>
     @if($showRoutineModal)
         <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-            <div class="bg-zinc-900 p-6 rounded-2xl w-96">
+            <div class="bg-zinc-600 p-6 rounded-2xl w-96">
 
                 <h2 class="text-lg font-semibold mb-4">
                     {{__('app.select_routine')}}

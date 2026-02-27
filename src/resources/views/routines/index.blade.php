@@ -12,7 +12,7 @@
         @livewire('routine-list')
     </div>
 
-    <div class="bg-zinc-900 p-6 rounded-2xl h-fit">
+    <div class="bg-zinc-600 p-6 rounded-2xl h-fit">
         @livewire('routine-manager')
 
         <a href="{{ route('library.index', app()->getLocale()) }}"

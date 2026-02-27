@@ -1,4 +1,4 @@
-<div class="bg-zinc-900 p-6 rounded-3xl w-[360px]">
+<div class="bg-zinc-600 p-6 rounded-3xl w-[360px]">
 
     {{-- Header --}}
     <div class="flex justify-between items-center mb-4">
@@ -80,7 +80,7 @@
         
         @foreach($selectedWorkouts as $workout)
         
-        <a href="{{ route('workouts.show', $workout) }}" class="block bg-zinc-900 p-4 rounded-xl hover:bg-zinc-800">
+        <a href="{{ route('workouts.show', $workout) }}" class="block bg-zinc-600 p-4 rounded-xl hover:bg-zinc-800">
             
             <div class="font-semibold">
                 {{ $workout->routine->name }}

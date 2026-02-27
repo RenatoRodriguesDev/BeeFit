@@ -17,7 +17,7 @@
         <div class="bg-zinc-950 border border-zinc-800 rounded-2xl shadow-lg overflow-hidden">
             {{-- HEADER DO EXERCÍCIO (CLICK PARA EXPANDIR) --}}
             <button wire:click="toggleExercise({{ $routineExercise->id }})"
-                class="w-full flex justify-between items-center p-6 hover:bg-zinc-900 transition">
+                class="w-full flex justify-between items-center p-6 hover:bg-zinc-600 transition">
 
                 {{-- Thumbnail do Exercício --}}
                 <img src="{{ asset($routineExercise->exercise->thumbnail_path) }}"
@@ -67,7 +67,7 @@
 
                         @foreach($routineExercise->sets->sortBy('set_number') as $set)
 
-                            <div class="grid grid-cols-4 items-center bg-zinc-900 rounded-xl px-4 py-3">
+                            <div class="grid grid-cols-4 items-center bg-zinc-600 rounded-xl px-4 py-3">
 
                                 {{-- Set number --}}
                                 <div>
@@ -118,7 +118,7 @@
     @if($showDeleteExerciseModal)
 
         <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-            <div class="bg-zinc-900 p-6 rounded-2xl w-96 space-y-6">
+            <div class="bg-zinc-600 p-6 rounded-2xl w-96 space-y-6">
 
                 <div>
                     <h2 class="text-xl font-semibold">

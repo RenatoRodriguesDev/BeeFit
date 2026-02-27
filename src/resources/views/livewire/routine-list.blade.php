@@ -1,13 +1,13 @@
 <div class="space-y-6">
     @if($routines->isEmpty())
-        <div class="bg-zinc-900 rounded-3xl p-8 text-zinc-400">
+        <div class="bg-zinc-600 rounded-3xl p-8 text-zinc-400">
             {{ __('app.get_started_start_by_creating_a_routine') }}
         </div>
     @else
         @foreach($routines as $routine)
 
             <a href="{{ route('routines.show', $routine) }}"
-                class="block bg-zinc-900 p-5 md:p-6 rounded-2xl hover:bg-zinc-800 transition">
+                class="block bg-zinc-600 p-5 md:p-6 rounded-2xl hover:bg-zinc-800 transition">
 
                 <div class="flex justify-between items-center">
                     <button wire:click.prevent="startWorkout({{ $routine->id }})" class="bg-white text-black 
@@ -40,7 +40,7 @@
     @if($showDeleteModal)
 
         <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-            <div class="bg-zinc-900 p-6 rounded-2xl w-96 space-y-6">
+            <div class="bg-zinc-600 p-6 rounded-2xl w-96 space-y-6">
 
                 <div>
                     <h2 class="text-xl font-semibold">

@@ -43,7 +43,7 @@
             x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
             x-transition:leave="transition transform duration-300" x-transition:leave-start="translate-y-0"
             x-transition:leave-end="translate-y-full"
-            class="fixed bottom-0 left-0 right-0 z-50 bg-zinc-900 rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto">
+            class="fixed bottom-0 left-0 right-0 z-50 bg-zinc-600 rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto">
 
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-semibold text-white">
