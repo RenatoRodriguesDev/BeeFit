@@ -57,6 +57,20 @@ return [
     'change_profile' => 'Alterar Perfil',
     'logout' => 'Terminar Sessão',
     'close' => 'Fechar',
-    
+    'profile_information' => 'Informações do perfil',
+    'update_your_account_profile_information_and_email_address' => 'Atualiza as informações do perfil da tua conta e o teu endereço de email.',
+    'your_email_address_is_unverified' => 'O teu endereço de email não está verificado.',
+    'click_here_to_re_send_the_verification_email' => 'Clica aqui para reenviar o email de verificação.',
+    'a_new_verification_link_has_been_sent_to_your_email_address' => 'Foi enviado um novo link de verificação para o teu endereço de email.',
+    'saved' => 'Guardado.',
+    'delete_account' => 'Eliminar conta',
+    'once_your_account_is_deleted_all_of_its_resources_and_data_will_be_permanently_deleted_before_deleting_your_account_please_download_any_data_or_information_that_you_wish_to_retain' => 'Assim que a tua conta for eliminada, todos os seus recursos e dados serão permanentemente apagados. Antes de eliminares a tua conta, por favor descarrega quaisquer dados ou informações que queiras manter.',
+    'once_your_account_is_deleted_all_of_its_resources_and_data_will_be_permanently_deleted_please_enter_your_password_to_confirm_you_would_like_to_permanently_delete_your_account' => 'Assim que a tua conta for eliminada, todos os seus recursos e dados serão permanentemente apagados. Por favor, introduz a tua palavra-passe para confirmar que desejas eliminar a tua conta de forma permanente.',
+    'are_you_sure_you_want_to_delete_your_account' => 'Tens a certeza de que queres eliminar a tua conta?',
+    'update_password' => 'Atualizar palavra-passe',
+    'ensure_your_account_is_using_a_long_random_password_to_stay_secure' => 'Garante que a tua conta está a usar uma palavra-passe longa e aleatória para se manter segura.',
+    'current_password' => 'Palavra-passe atual',
+    'new_password' => 'Nova palavra-passe',
+    'save' => 'Guardar',
 
 ];
