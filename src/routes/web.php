@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Livewire\Dashboard;
 use App\Livewire\Routine\RoutineEditor;
+use App\Livewire\Workout\WorkoutShow;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\LibraryController;
-use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\RoutinesController;
 use App\Livewire\Workout\WorkoutSession;
 
@@ -13,8 +14,8 @@ Route::get('/', function () {
 })->middleware('guest');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+    Route::get('/dashboard', Dashboard::class)
+    ->name('dashboard');
     Route::get('/routines', [RoutinesController::class, 'index'])
         ->name('routines.index');
     Route::get('/library', [LibraryController::class, 'index'])
@@ -24,8 +25,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/routines/{routine}', RoutineEditor::class)
         ->name('routines.show');
 
-    Route::get('/workouts/{workout}', WorkoutSession::class)
-        ->name('workouts.session');
+    Route::get('/workouts/{workout}/session', WorkoutSession::class)
+    ->name('workouts.session');
+
+    Route::get('/workouts/{workout}', WorkoutShow::class
+    )->name('workouts.show');
 });
 
 
