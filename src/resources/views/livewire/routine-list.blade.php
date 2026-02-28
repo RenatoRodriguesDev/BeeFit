@@ -9,7 +9,7 @@
             <a href="{{ route('routines.show', $routine) }}"
                 class="block bg-zinc-600 p-5 md:p-6 rounded-2xl hover:bg-zinc-700 transition">
 
-                <div class="flex justify-between items-center">
+                <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
                     <button wire:click.prevent="startWorkout({{ $routine->id }})" class="bg-white text-black 
                    px-6 py-3 rounded-2xl transition">
                         {{ __('app.start_workout') }}
