@@ -54,12 +54,13 @@
                 $isSelected = $selectedDate === $dateKey;
             @endphp
 
-            <div wire:click="selectDate('{{ $dateKey }}')" class="relative flex items-center justify-center 
-                            w-9 h-9 mx-auto cursor-pointer 
-                            rounded-full transition
-                            {{ $isSelected ? 'bg-blue-600 text-white' : '' }}
-                            {{ !$isSelected && $isToday ? 'border border-blue-500' : '' }}
-                            hover:bg-zinc-800">
+            <div wire:key="day-{{ $currentMonth->format('Y-m') }}-{{ $dateKey }}" wire:click="selectDate('{{ $dateKey }}')"
+                class="relative flex items-center justify-center 
+                                w-9 h-9 mx-auto cursor-pointer 
+                                rounded-full transition
+                                {{ $isSelected ? 'bg-blue-600 text-white' : '' }}
+                                {{ !$isSelected && $isToday ? 'border border-blue-500' : '' }}
+                                hover:bg-zinc-800">
 
                 {{ $day }}
 
@@ -75,26 +76,26 @@
     </div>
 
     @if(!empty($selectedWorkouts))
-    
-    <div class="mt-6 space-y-3 w-auto">
-        
-        @foreach($selectedWorkouts as $workout)
-        
-        <a href="{{ route('workouts.show', $workout) }}" class="block bg-zinc-600 p-4 rounded-xl hover:bg-zinc-800">
-            
-            <div class="font-semibold">
-                {{ $workout->routine->name }}
-            </div>
-            
-            <div class="text-sm text-zinc-400">
-                {{ $workout->started_at->format('H:i') }}
-            </div>
-            
-        </a>
-        
-        @endforeach
-        
-    </div>
-    
+
+        <div class="mt-6 space-y-3 w-auto">
+
+            @foreach($selectedWorkouts as $workout)
+
+                <a href="{{ route('workouts.show', $workout) }}" class="block bg-zinc-600 p-4 rounded-xl hover:bg-zinc-800">
+
+                    <div class="font-semibold">
+                        {{ $workout->routine->name }}
+                    </div>
+
+                    <div class="text-sm text-zinc-400">
+                        {{ $workout->started_at->format('H:i') }}
+                    </div>
+
+                </a>
+
+            @endforeach
+
+        </div>
+
     @endif
 </div>

@@ -36,11 +36,13 @@ class Dashboard extends Component
     public function previousMonth()
     {
         $this->currentMonth = $this->currentMonth->copy()->subMonth();
+        $this->selectedWorkouts = null;
     }
 
     public function nextMonth()
     {
         $this->currentMonth = $this->currentMonth->copy()->addMonth();
+        $this->selectedWorkouts = null;
     }
 
     public function selectDate($date)
