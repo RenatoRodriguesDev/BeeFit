@@ -25,6 +25,8 @@ class LibraryPanel extends Component
     public function exerciseSelected($exerciseId)
     {
         $this->activeExerciseId = $exerciseId;
+
+        $this->dispatch('scrollToTop');
     }
 
     public function addToSelectedRoutine()
