@@ -1,0 +1,112 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class PersonalRecord extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'exercise_id',
+        'workout_id',
+        'max_weight',
+        'reps_at_max_weight',
+        'max_volume_set',
+        'max_reps',
+        'weight_at_max_reps',
+        'estimated_1rm',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function exercise()
+    {
+        return $this->belongsTo(Exercise::class);
+    }
+
+    public function workout()
+    {
+        return $this->belongsTo(Workout::class);
+    }
+
+    /**
+     * Calcula o 1RM estimado pela fórmula de Epley.
+     */
+    public static function epley(float $weight, int $reps): float
+    {
+        if ($reps === 1) return $weight;
+        return round($weight * (1 + $reps / 30), 2);
+    }
+
+    /**
+     * Actualiza (ou cria) o recorde pessoal de um utilizador para um exercício
+     * com base nos sets de um treino acabado de completar.
+     */
+    public static function updateFromWorkout(int $userId, int $exerciseId, int $workoutId, \Illuminate\Support\Collection $sets): void
+    {
+        // Ignora sets sem dados
+        $sets = $sets->filter(fn($s) => $s->weight > 0 && $s->reps > 0);
+
+        if ($sets->isEmpty()) return;
+
+        // Calcula os melhores valores deste treino
+        $maxWeight      = $sets->max('weight');
+        $repsAtMaxWeight= $sets->where('weight', $maxWeight)->max('reps');
+        $maxVolSet      = $sets->map(fn($s) => $s->weight * $s->reps)->max();
+        $maxReps        = $sets->max('reps');
+        $weightAtMaxReps= $sets->where('reps', $maxReps)->max('weight');
+        $best1rm        = $sets->map(fn($s) => self::epley($s->weight, $s->reps))->max();
+
+        $existing = self::where('user_id', $userId)
+            ->where('exercise_id', $exerciseId)
+            ->first();
+
+        if (!$existing) {
+            self::create([
+                'user_id'            => $userId,
+                'exercise_id'        => $exerciseId,
+                'workout_id'         => $workoutId,
+                'max_weight'         => $maxWeight,
+                'reps_at_max_weight' => $repsAtMaxWeight,
+                'max_volume_set'     => $maxVolSet,
+                'max_reps'           => $maxReps,
+                'weight_at_max_reps' => $weightAtMaxReps,
+                'estimated_1rm'      => $best1rm,
+            ]);
+            return;
+        }
+
+        $updates = ['workout_id' => $workoutId];
+        $updated = false;
+
+        if ($maxWeight > ($existing->max_weight ?? 0)) {
+            $updates['max_weight']          = $maxWeight;
+            $updates['reps_at_max_weight']  = $repsAtMaxWeight;
+            $updated = true;
+        }
+
+        if ($maxVolSet > ($existing->max_volume_set ?? 0)) {
+            $updates['max_volume_set'] = $maxVolSet;
+            $updated = true;
+        }
+
+        if ($maxReps > ($existing->max_reps ?? 0)) {
+            $updates['max_reps']           = $maxReps;
+            $updates['weight_at_max_reps'] = $weightAtMaxReps;
+            $updated = true;
+        }
+
+        if ($best1rm > ($existing->estimated_1rm ?? 0)) {
+            $updates['estimated_1rm'] = $best1rm;
+            $updated = true;
+        }
+
+        if ($updated) {
+            $existing->update($updates);
+        }
+    }
+}

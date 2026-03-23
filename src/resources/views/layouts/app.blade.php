@@ -45,6 +45,10 @@
                         class="block px-4 py-2 rounded-lg hover:bg-zinc-800">
                         {{ __('app.exercises') }}
                     </a>
+                    <a href="{{ route('statistics', app()->getLocale()) }}"
+                        class="block px-4 py-2 rounded-lg hover:bg-zinc-800">
+                        {{ __('app.statistics') }}
+                    </a>
                 </nav>
             </div>
 
@@ -142,6 +146,11 @@
               {{ request()->routeIs('routines.*') ? 'text-white' : 'text-zinc-500' }}">
             <span class="text-lg">📚</span>
             {{ __('app.exercises') }}
+        </a>
+        <a href="{{ route('statistics', app()->getLocale()) }}" class="flex flex-col items-center text-xs gap-1
+              {{ request()->routeIs('routines.*') ? 'text-white' : 'text-zinc-500' }}">
+            <span class="text-lg">📊</span>
+            {{ __('app.statistics') }}
         </a>
 
         {{-- Profile Modal Trigger --}}

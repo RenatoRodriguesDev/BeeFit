@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Providers;
+use App\Livewire\Library\ExerciseHistory;
 use App\Livewire\Routine\RoutineEditor;
 use App\Livewire\Routine\RoutineList;
 use App\Livewire\Routine\RoutineManager;
+use App\Livewire\Statistics;
 use App\Livewire\Workout\ActiveWorkoutBanner;
 use App\Livewire\Workout\WorkoutSession;
 use App\Livewire\Workout\WorkoutShow;
@@ -36,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('workout-session', WorkoutSession::class);
         Livewire::component('workout-show', WorkoutShow::class);
         Livewire::component('active-workout-banner', ActiveWorkoutBanner::class);
+        Livewire::component('statistics', Statistics::class);
+        Livewire::component('exercise-history', ExerciseHistory::class);
 
     }
 }

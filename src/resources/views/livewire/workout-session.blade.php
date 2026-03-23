@@ -50,19 +50,37 @@
 
                 @foreach($workoutExercise->sets as $set)
 
-                    <div class="flex items-center gap-6">
+                    <div class="flex items-end gap-6">
 
-                        <div class="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center">
-                            {{ $set->set_number }}
+                        {{-- SET NUMBER --}}
+                        <div class="flex flex-col items-center">
+                            <span class="text-xs text-zinc-400 mb-1">
+                                {{ __('app.set') }}
+                            </span>
+                            <div class="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center">
+                                {{ $set->set_number }}
+                            </div>
                         </div>
 
-                        <input type="number" value="{{ $set->weight }}"
-                            wire:blur="updateWeight({{ $set->id }}, $event.target.value)"
-                            class="bg-zinc-800 rounded-xl px-4 py-2 w-24">
+                        {{-- WEIGHT --}}
+                        <div class="flex flex-col">
+                            <span class="text-xs text-zinc-400 mb-1">
+                                {{ __('app.weight') }}
+                            </span>
+                            <input type="number" value="{{ $set->weight }}"
+                                wire:blur="updateWeight({{ $set->id }}, $event.target.value)"
+                                class="bg-zinc-800 rounded-xl px-4 py-2 w-24">
+                        </div>
 
-                        <input type="number" value="{{ $set->reps }}"
-                            wire:blur="updateReps({{ $set->id }}, $event.target.value)"
-                            class="bg-zinc-800 rounded-xl px-4 py-2 w-24">
+                        {{-- REPS --}}
+                        <div class="flex flex-col">
+                            <span class="text-xs text-zinc-400 mb-1">
+                                {{ __('app.reps') }}
+                            </span>
+                            <input type="number" value="{{ $set->reps }}"
+                                wire:blur="updateReps({{ $set->id }}, $event.target.value)"
+                                class="bg-zinc-800 rounded-xl px-4 py-2 w-24">
+                        </div>
 
                     </div>
                     <button wire:click="removeSet({{ $set->id }})" class="text-red-500 text-sm">
@@ -79,23 +97,22 @@
 
     </div>
     @if($showAddExerciseModal)
-<div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-    <div class="bg-zinc-800 p-6 rounded-2xl w-96 max-h-[500px] overflow-y-auto">
+        <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+            <div class="bg-zinc-800 p-6 rounded-2xl w-96 max-h-[500px] overflow-y-auto">
 
-        <div class="flex justify-between mb-4">
-            <h3 class="font-semibold">{{ __('app.add_exercise') }}</h3>
-            <button wire:click="closeAddExerciseModal">✕</button>
+                <div class="flex justify-between mb-4">
+                    <h3 class="font-semibold">{{ __('app.add_exercise') }}</h3>
+                    <button wire:click="closeAddExerciseModal">✕</button>
+                </div>
+
+                @foreach($this->availableExercises as $exercise)
+                    <button wire:click="addExerciseToWorkout({{ $exercise->id }})"
+                        class="block w-full text-left px-4 py-2 rounded-lg hover:bg-zinc-700">
+                        {{ $exercise->translate()->name }}
+                    </button>
+                @endforeach
+
+            </div>
         </div>
-
-        @foreach($this->availableExercises as $exercise)
-            <button
-                wire:click="addExerciseToWorkout({{ $exercise->id }})"
-                class="block w-full text-left px-4 py-2 rounded-lg hover:bg-zinc-700">
-                {{ $exercise->translate()->name }}
-            </button>
-        @endforeach
-
-    </div>
-</div>
-@endif
+    @endif
 </div>

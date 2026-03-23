@@ -68,14 +68,55 @@
                 @endif
 
                 @if($tab === 'history')
-                    <div class="text-zinc-300 mt-4">
-                        {{ __('app.user_workout_history_here') }}
-                    </div>
+                    @if($exercise)
+                        @livewire('exercise-history', ['exerciseId' => $exercise->id], key($exercise->id))
+                    @endif
                 @endif
 
                 @if($tab === 'stats')
-                    <div class="text-zinc-300 mt-4">
-                        {{ __('app.graphs_progress_stats_here') }}
+                    <div class="space-y-4 mt-4">
+                        @php
+                            $pr = \App\Models\PersonalRecord::where('user_id', auth()->id())
+                                ->where('exercise_id', $exercise->id)
+                                ->with('workout')
+                                ->first();
+                        @endphp
+
+                        @if(!$pr)
+                            <p class="text-zinc-400 text-sm">{{ __('app.no_records_yet') }}</p>
+                        @else
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-zinc-800 rounded-2xl p-4 space-y-1">
+                                    <div class="text-xs text-zinc-400 uppercase tracking-wide">{{ __('app.pr_max_weight') }}</div>
+                                    <div class="text-2xl font-bold text-white">{{ $pr->max_weight }} <span
+                                            class="text-sm font-normal text-zinc-400">kg</span></div>
+                                    <div class="text-xs text-zinc-500">{{ $pr->reps_at_max_weight }} reps</div>
+                                </div>
+                                <div class="bg-zinc-800 rounded-2xl p-4 space-y-1">
+                                    <div class="text-xs text-zinc-400 uppercase tracking-wide">{{ __('app.pr_1rm') }}</div>
+                                    <div class="text-2xl font-bold text-yellow-400">{{ $pr->estimated_1rm }} <span
+                                            class="text-sm font-normal text-zinc-400">kg</span></div>
+                                    <div class="text-xs text-zinc-500">Epley formula</div>
+                                </div>
+                                <div class="bg-zinc-800 rounded-2xl p-4 space-y-1">
+                                    <div class="text-xs text-zinc-400 uppercase tracking-wide">{{ __('app.pr_max_volume') }}</div>
+                                    <div class="text-2xl font-bold text-white">{{ number_format($pr->max_volume_set, 0) }} <span
+                                            class="text-sm font-normal text-zinc-400">kg</span></div>
+                                    <div class="text-xs text-zinc-500">{{ __('app.pr_single_set') }}</div>
+                                </div>
+                                <div class="bg-zinc-800 rounded-2xl p-4 space-y-1">
+                                    <div class="text-xs text-zinc-400 uppercase tracking-wide">{{ __('app.pr_max_reps') }}</div>
+                                    <div class="text-2xl font-bold text-white">{{ $pr->max_reps }} <span
+                                            class="text-sm font-normal text-zinc-400">reps</span></div>
+                                    <div class="text-xs text-zinc-500">{{ $pr->weight_at_max_reps }} kg</div>
+                                </div>
+                            </div>
+                            @if($pr->workout)
+                                <p class="text-xs text-zinc-500 text-right">
+                                    {{ __('app.pr_achieved_on') }} {{ $pr->workout->started_at->format('d M Y') }}
+                                </p>
+                            @endif
+                        @endif
                     </div>
                 @endif
             </div>

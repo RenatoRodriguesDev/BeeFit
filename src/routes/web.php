@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/workouts/{workout}', WorkoutShow::class
     )->name('workouts.show');
+    Route::get('/statistics', \App\Livewire\Statistics::class)->name('statistics');
 });
 
 

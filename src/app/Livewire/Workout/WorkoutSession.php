@@ -72,6 +72,18 @@ class WorkoutSession extends Component
             'finished_at' => now(),
         ]);
 
+        // Calcular recordes pessoais para cada exercício do treino
+        $this->workout->load('exercises.sets');
+
+        foreach ($this->workout->exercises as $workoutExercise) {
+            \App\Models\PersonalRecord::updateFromWorkout(
+                userId: auth()->id(),
+                exerciseId: $workoutExercise->exercise_id,
+                workoutId: $this->workout->id,
+                sets: $workoutExercise->sets
+            );
+        }
+
         return redirect()->route('dashboard');
     }
 
@@ -133,16 +145,16 @@ class WorkoutSession extends Component
     }
 
     public function getAvailableExercisesProperty()
-{
-    return Exercise::query()
-        ->join('exercise_translations', function ($join) {
-            $join->on('exercises.id', '=', 'exercise_translations.exercise_id')
-                 ->where('exercise_translations.locale', app()->getLocale());
-        })
-        ->orderBy('exercise_translations.name')
-        ->select('exercises.*')
-        ->get();
-}
+    {
+        return Exercise::query()
+            ->join('exercise_translations', function ($join) {
+                $join->on('exercises.id', '=', 'exercise_translations.exercise_id')
+                    ->where('exercise_translations.locale', app()->getLocale());
+            })
+            ->orderBy('exercise_translations.name')
+            ->select('exercises.*')
+            ->get();
+    }
 
     public function addExerciseToWorkout($exerciseId)
     {
