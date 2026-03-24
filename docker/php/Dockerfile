@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev
 
 # Extensões PHP
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip
 
 # Apache
 RUN a2enmod rewrite
@@ -47,12 +47,6 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Build frontend (Vite)
 RUN npm ci && npm run build && ls -la public/build
-
-# 🔥 CRIAR SQLITE + PERMISSÕES (FIX PRINCIPAL)
-RUN mkdir -p /var/www/html/database \
-    && touch /var/www/html/database/database.sqlite \
-    && chown -R www-data:www-data /var/www/html/database \
-    && chmod -R 775 /var/www/html/database
 
 # Permissões Laravel
 RUN chown -R www-data:www-data /var/www/html \
