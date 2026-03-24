@@ -64,6 +64,9 @@ RUN php artisan storage:link || true
 # Cache config (evita bugs)
 RUN php artisan config:clear
 
+# Evitar aviso ServerName
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 EXPOSE 80
 
 # 🚀 Arranque (migrate automático)
