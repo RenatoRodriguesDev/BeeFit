@@ -20,7 +20,7 @@
 
         <div class="mt-4">
             <x-input-label for="locale" :value="__('app.language')" />
-            <select class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" name="locale" id="locale" required>
+            <select class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full" name="locale" id="locale" required>
                 <option value="pt" {{ old('locale') === 'pt' ? 'selected' : '' }}>{{ __('app.portuguese') }}</option>
                 <option value="en" {{ old('locale') === 'en' ? 'selected' : '' }}>{{ __('app.english') }}</option>
                 <option value="es" {{ old('locale') === 'es' ? 'selected' : '' }}>{{ __('app.spanish') }}</option>
