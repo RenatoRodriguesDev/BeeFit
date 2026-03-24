@@ -4,7 +4,7 @@
             {{ __('app.profile_information') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-white">
             {{ __('app.update_your_account_profile_information_and_email_address') }}
         </p>
     </header>
@@ -19,13 +19,13 @@
 
         <div>
             <x-input-label for="name" :value="__('app.name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full text-gray-900" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
             <x-input-label for="email" :value="__('app.email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full text-gray-900" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -45,6 +45,16 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="locale" :value="__('app.language')" />
+            <select id="locale" name="locale" class="mt-1 block w-full rounded border-gray-300 bg-white text-gray-900 shadow-sm">
+                <option value="pt" {{ old('locale', $user->locale) === 'pt' ? 'selected' : '' }}>{{ __('app.portuguese') }}</option>
+                <option value="en" {{ old('locale', $user->locale) === 'en' ? 'selected' : '' }}>{{ __('app.english') }}</option>
+                <option value="es" {{ old('locale', $user->locale) === 'es' ? 'selected' : '' }}>{{ __('app.spanish') }}</option>
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('locale')" />
         </div>
 
         <div class="flex items-center gap-4">
