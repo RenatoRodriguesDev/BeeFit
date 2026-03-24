@@ -12,6 +12,7 @@ use App\Livewire\Workout\WorkoutShow;
 use Livewire\Livewire;
 use App\Livewire\Library\LibraryPanel;
 use App\Livewire\Library\ExerciseViewer;
+use Illuminate\Support\Facades\URL;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -30,6 +31,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         Livewire::component('library-panel', LibraryPanel::class);
         Livewire::component('exercise-viewer', ExerciseViewer::class);
         Livewire::component('routine-manager', RoutineManager::class);
