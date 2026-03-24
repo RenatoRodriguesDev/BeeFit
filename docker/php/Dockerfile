@@ -53,11 +53,9 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN php artisan storage:link || true
 
 # Cache config (evita bugs)
-RUN php artisan config:clear \
-    && php artisan cache:clear \
-    && php artisan config:cache
+RUN php artisan config:clear
 
 EXPOSE 80
 
 # 🚀 Arranque (migrate automático)
-CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
+CMD ["sh", "-c", "php artisan migrate --force && php artisan config:cache && apache2-foreground"]
