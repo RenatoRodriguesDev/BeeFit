@@ -17,9 +17,14 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 # Apache
 RUN a2enmod rewrite
 
-# ✅ FIX MPM
-RUN a2dismod mpm_event mpm_worker || true \
-    && a2enmod mpm_prefork
+# 🔥 FIX DEFINITIVO MPM (reset total)
+RUN a2dismod mpm_event || true \
+ && a2dismod mpm_worker || true \
+ && a2dismod mpm_prefork || true \
+ && a2enmod mpm_prefork
+
+# Debug
+RUN apachectl -M | grep mpm
 
 # Node (para Vite)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
@@ -62,4 +67,4 @@ RUN php artisan config:clear
 EXPOSE 80
 
 # 🚀 Arranque (migrate automático)
-CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --force && apache2-foreground"]
+CMD ["sh", "-c", "apache2ctl configtest && php artisan migrate --force && php artisan db:seed --force && apache2-foreground"]
