@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
         User::factory()->create([
             'name' => 'Renato Rodrigues',
             'email' => 'rrodrigues@ciberconceito.pt',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('password123'),
         ]);
     }
 }

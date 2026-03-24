@@ -14,12 +14,6 @@ class BaseDataSeeder extends Seeder
      */
     public function run(): void
     {
-        $barbell = Equipment::create();
-
-        EquipmentTranslation::insert([
-            ['equipment_id' => $barbell->id, 'locale' => 'en', 'name' => 'Barbell'],
-            ['equipment_id' => $barbell->id, 'locale' => 'es', 'name' => 'Barra'],
-            ['equipment_id' => $barbell->id, 'locale' => 'pt', 'name' => 'Barra'],
-        ]);
+        
     }
 }
