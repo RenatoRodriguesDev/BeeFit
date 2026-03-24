@@ -37,7 +37,7 @@ RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available
 RUN composer install --no-dev --optimize-autoloader
 
 # Build frontend (Vite)
-RUN npm install && npm run build
+RUN npm ci && npm run build && ls -la public/build
 
 # 🔥 CRIAR SQLITE + PERMISSÕES (FIX PRINCIPAL)
 RUN mkdir -p /var/www/html/database \
