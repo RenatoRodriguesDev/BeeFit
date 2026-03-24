@@ -58,4 +58,4 @@ RUN php artisan config:clear
 EXPOSE 80
 
 # 🚀 Arranque (migrate automático)
-CMD ["sh", "-c", "php artisan migrate --force && php artisan config:cache && apache2-foreground"]
+CMD ["sh", "-c", "php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan migrate --force && apache2-foreground"]
