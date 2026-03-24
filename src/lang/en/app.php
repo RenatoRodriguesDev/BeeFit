@@ -105,5 +105,9 @@ return [
     'set' => 'Set',
     'weight' => 'Weight',
     'reps' => 'Reps',
+    'language' => 'Language',
+    'portuguese' => 'Portuguese',
+    'english' => 'English',
+    'spanish' => 'Spanish',
 
 ];

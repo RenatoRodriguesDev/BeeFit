@@ -105,5 +105,9 @@ return [
     'set' => 'Serie',
     'weight' => 'Peso',
     'reps' => 'Repeticiones',
+    'language' => 'Idioma',
+    'portuguese' => 'Portugués',
+    'english' => 'Inglés',
+    'spanish' => 'Español',
 
 ];
