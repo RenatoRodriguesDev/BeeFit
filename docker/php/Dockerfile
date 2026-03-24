@@ -71,10 +71,6 @@ EXPOSE 80
 
 # 🚀 Arranque (migrate automático)
 CMD ["sh", "-c", "\
-rm -f /etc/apache2/mods-enabled/mpm_* && \
-a2enmod mpm_prefork && \
-apache2ctl -M | grep mpm && \
 apache2ctl configtest && \
 php artisan migrate --force && \
-php artisan db:seed --force && \
 apache2-foreground"]
