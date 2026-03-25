@@ -7,6 +7,7 @@ use App\Models\Exercise;
 use App\Models\ExerciseTranslation;
 use App\Models\MuscleTranslation;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 
 class ImportExercisesFromFiles extends Command
 {
@@ -56,6 +57,19 @@ class ImportExercisesFromFiles extends Command
         }
 
         $this->info('Importação concluída 🚀');
+    }
+
+    private function translate($text, $target)
+    {
+        $response = Http::get('https://translate.googleapis.com/translate_a/single', [
+            'client' => 'gtx',
+            'sl' => 'en',
+            'tl' => $target,
+            'dt' => 't',
+            'q' => $text,
+        ]);
+
+        return $response[0][0][0] ?? $text;
     }
 
     private function processImage($image)
@@ -249,8 +263,8 @@ class ImportExercisesFromFiles extends Command
 
         ExerciseTranslation::insert([
             ['exercise_id' => $exercise->id, 'locale' => 'en', 'name' => $name],
-            ['exercise_id' => $exercise->id, 'locale' => 'pt', 'name' => $name],
-            ['exercise_id' => $exercise->id, 'locale' => 'es', 'name' => $name],
+            ['exercise_id' => $exercise->id, 'locale' => 'pt', 'name' => $this->translate($name, 'pt')],
+            ['exercise_id' => $exercise->id, 'locale' => 'es', 'name' => $this->translate($name, 'es')],
         ]);
 
         $this->info("✅ Criado: $name");
