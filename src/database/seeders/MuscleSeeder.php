@@ -102,11 +102,6 @@ class MuscleSeeder extends Seeder
                 'pt' => 'Pescoço',
             ],
             [
-                'en' => 'Forearms',
-                'es' => 'Antebrazos',
-                'pt' => 'Antebraços',
-            ],
-            [
                 'en' => 'Full Body',
                 'es' => 'Cuerpo completo',
                 'pt' => 'Corpo inteiro',
@@ -115,11 +110,6 @@ class MuscleSeeder extends Seeder
                 'en' => 'Other',
                 'es' => 'Otro',
                 'pt' => 'Outro',
-            ],
-            [
-                'en' => 'Shoulders',
-                'es' => 'Hombros',
-                'pt' => 'Ombros',
             ],
         ];
 

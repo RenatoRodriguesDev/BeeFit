@@ -35,9 +35,15 @@
     <div class="flex-1 overflow-y-auto p-3 space-y-2">
 
         @foreach($exercises as $exercise)
+            @php
+                $image = public_path($exercise->thumbnail_path);
+                $imageUrl = file_exists($image)
+                    ? asset($exercise->thumbnail_path)
+                    : asset('images/logo.png');
+            @endphp
 
             <div class="flex items-center justify-between gap-3 p-3 rounded-xl cursor-pointer transition
-                {{ $activeExerciseId == $exercise->id
+                            {{ $activeExerciseId == $exercise->id
             ? 'bg-zinc-800 ring-1 ring-white'
             : 'hover:bg-zinc-600' }}">
 
@@ -45,8 +51,8 @@
                     class="flex items-center gap-3 flex-1">
 
                     <div class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center text-xs object-contain">
-                        <img src="{{ asset($exercise->thumbnail_path) }}" alt="{{ $exercise->translate()->name }}"
-                            class="w-full h-full object-cover rounded-full">
+                        <img src="{{ $imageUrl }}" alt="{{ $exercise->translate()->name }}"
+                            class="w-full h-full object-cover rounded-full" />
                     </div>
 
                     <div>

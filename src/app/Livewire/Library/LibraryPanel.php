@@ -102,7 +102,7 @@ class LibraryPanel extends Component
         }
 
         return view('livewire.library-panel', [
-            'exercises' => $query->limit(20)->get(),
+            'exercises' => $query->get(),
             'equipmentList' => Equipment::with('translations')->get(),
             'musclesList' => Muscle::with('translations')->get(),
         ]);

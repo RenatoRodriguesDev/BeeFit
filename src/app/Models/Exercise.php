@@ -9,6 +9,13 @@ class Exercise extends Model
 {
     use HasTranslations;
 
+    protected $fillable = [
+        'equipment_id',
+        'primary_muscle_id',
+        'thumbnail_path',
+        'video_path',
+    ];
+
     protected function translationModel(): string
     {
         return ExerciseTranslation::class;
