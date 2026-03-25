@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\LibraryController;
 use App\Http\Controllers\Web\RoutinesController;
 use App\Livewire\Workout\WorkoutSession;
+use App\Http\Controllers\Web\SubscriptionController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -30,7 +31,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/workouts/{workout}', WorkoutShow::class
     )->name('workouts.show');
     Route::get('/statistics', \App\Livewire\Statistics::class)->name('statistics');
+ 
+    // Subscrições
+    Route::get('/plans', [SubscriptionController::class, 'plans'])->name('subscription.plans');
+    Route::post('/subscription/checkout', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');
+    Route::get('/subscription/success', [SubscriptionController::class, 'success'])->name('subscription.success');
+    Route::get('/subscription/portal', [SubscriptionController::class, 'portal'])->name('subscription.portal');
 });
+
+Route::post('/stripe/webhook', [SubscriptionController::class, 'webhook'])
+    ->name('stripe.webhook')
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 
 Route::middleware('auth')->group(function () {
