@@ -95,6 +95,7 @@ class RoutineList extends Component
         return view('livewire.routine-list', [
             'routines' => Routine::where('user_id', Auth::id())
                 ->withCount('exercises')
+                ->orderBy('created_at', 'asc')
                 ->get()
         ]);
     }
