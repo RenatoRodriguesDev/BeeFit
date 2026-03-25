@@ -7,10 +7,8 @@ use App\Models\Exercise;
 use App\Models\Equipment;
 use App\Models\Muscle;
 
-
 class LibraryPanel extends Component
 {
-
     public $search = '';
     public $equipment = '';
     public $muscle = '';
@@ -25,8 +23,18 @@ class LibraryPanel extends Component
     public function exerciseSelected($exerciseId)
     {
         $this->activeExerciseId = $exerciseId;
+    }
 
-        $this->dispatch('scrollToTop');
+    public function selectExercise(int $exerciseId): void
+    {
+        $this->activeExerciseId = $exerciseId;
+        $this->dispatch('exerciseSelected', exerciseId: $exerciseId);
+    }
+
+    public function openRoutineModal($exerciseId)
+    {
+        $this->exerciseToAddId = $exerciseId;
+        $this->showRoutineModal = true;
     }
 
     public function addToSelectedRoutine()
@@ -39,42 +47,25 @@ class LibraryPanel extends Component
 
         $routine = $user->routines()->find($this->selectedRoutineId);
 
-        if (!$routine) {
-            return;
-        }
+        if (!$routine) return;
 
         $exists = $routine->exercises()
             ->where('exercise_id', $this->exerciseToAddId)
             ->exists();
 
         if ($exists) {
-            $this->dispatch(
-                'toast',
-                message: __('app.exercise_duplicated'),
-                type: 'error'
-            );
+            $this->dispatch('toast', message: __('app.exercise_duplicated'), type: 'error');
         } else {
-
             $routine->exercises()->create([
-                'exercise_id' => $this->exerciseToAddId
+                'exercise_id' => $this->exerciseToAddId,
+                'order'       => $routine->exercises()->count() + 1,
             ]);
-
-            $this->dispatch(
-                'toast',
-                message: __('app.exercise_added_toast'),
-                type: 'success'
-            );
+            $this->dispatch('toast', message: __('app.exercise_added_toast'), type: 'success');
         }
 
         $this->showRoutineModal = false;
         $this->selectedRoutineId = null;
         $this->exerciseToAddId = null;
-    }
-
-    public function openRoutineModal($exerciseId)
-    {
-        $this->exerciseToAddId = $exerciseId;
-        $this->showRoutineModal = true;
     }
 
     public function render()
@@ -83,7 +74,7 @@ class LibraryPanel extends Component
             ->with([
                 'translations',
                 'equipment.translations',
-                'primaryMuscle.translations'
+                'primaryMuscle.translations',
             ]);
 
         if ($this->equipment) {
@@ -97,14 +88,14 @@ class LibraryPanel extends Component
         if ($this->search) {
             $query->whereHas('translations', function ($q) {
                 $q->where('locale', app()->getLocale())
-                    ->where('name', 'like', '%' . $this->search . '%');
+                  ->where('name', 'like', '%' . $this->search . '%');
             });
         }
 
         return view('livewire.library-panel', [
-            'exercises' => $query->get(),
+            'exercises'     => $query->limit(20)->get(),
             'equipmentList' => Equipment::with('translations')->get(),
-            'musclesList' => Muscle::with('translations')->get(),
+            'musclesList'   => Muscle::with('translations')->get(),
         ]);
     }
 }
