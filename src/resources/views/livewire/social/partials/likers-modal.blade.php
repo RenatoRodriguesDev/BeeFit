@@ -8,7 +8,7 @@
             </div>
             <div class="overflow-y-auto p-4 space-y-3">
                 @forelse($likers as $liker)
-                    <a href="{{ route('social.profile', $liker['id']) }}"
+                    <a href="{{ route('social.profile', $liker['username']) }}"
                         class="flex items-center gap-3 hover:bg-zinc-800 rounded-xl p-2 transition">
                         <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
                             @if($liker['avatar_path'])

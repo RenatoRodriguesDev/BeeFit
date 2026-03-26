@@ -102,6 +102,7 @@ class SocialFeed extends Component
             ->get()
             ->map(fn($l) => [
                 'id'          => $l->user->id,
+                'username'    => $l->user->username,
                 'name'        => $l->user->name,
                 'avatar_path' => $l->user->avatar_path,
                 'initials'    => $l->user->initials(),
@@ -175,6 +176,7 @@ class SocialFeed extends Component
             ->get()
             ->map(fn($l) => [
                 'id'          => $l->user->id,
+                'username'    => $l->user->username,
                 'name'        => $l->user->name,
                 'avatar_path' => $l->user->avatar_path,
                 'initials'    => $l->user->initials(),
@@ -237,6 +239,7 @@ class SocialFeed extends Component
                 'created_at' => $c->created_at->diffForHumans(),
                 'user' => [
                     'id'          => $c->user->id,
+                    'username'    => $c->user->username,
                     'name'        => $c->user->name,
                     'avatar_path' => $c->user->avatar_path,
                     'initials'    => $c->user->initials(),

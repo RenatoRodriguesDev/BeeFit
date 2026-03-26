@@ -106,6 +106,7 @@ return [
     'set' => 'Set',
     'weight' => 'Weight',
     'reps' => 'Reps',
+    'username' => 'Username',
     'language' => 'Language',
     'portuguese' => 'Portuguese',
     'english' => 'English',

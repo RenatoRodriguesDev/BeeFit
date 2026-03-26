@@ -20,6 +20,7 @@ class FollowAccepted extends Notification
             'type'         => 'follow_accepted',
             'user_id'      => $this->acceptedBy->id,
             'user_name'    => $this->acceptedBy->name,
+            'user_username'=> $this->acceptedBy->username,
             'user_avatar'  => $this->acceptedBy->avatar_path,
             'user_initials'=> $this->acceptedBy->initials(),
         ];

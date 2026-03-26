@@ -66,7 +66,7 @@
             <h2 class="text-xs font-semibold text-zinc-400 uppercase tracking-widest">{{ __('app.follow_requests') }} ({{ count($followRequests) }})</h2>
             @foreach($followRequests as $req)
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('social.profile', $req['user_id']) }}"
+                    <a href="{{ route('social.profile', $req['user_username']) }}"
                         class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
                         @if($req['user_avatar'])
                             <img src="{{ asset('storage/' . $req['user_avatar']) }}" class="w-full h-full object-cover">
@@ -74,7 +74,7 @@
                             {{ $req['user_initials'] }}
                         @endif
                     </a>
-                    <a href="{{ route('social.profile', $req['user_id']) }}"
+                    <a href="{{ route('social.profile', $req['user_username']) }}"
                         class="flex-1 text-sm text-white hover:underline truncate">{{ $req['user_name'] }}</a>
                     <button wire:click="acceptFollow({{ $req['id'] }})"
                         class="text-xs bg-white text-black font-medium px-3 py-1 rounded-lg transition hover:bg-zinc-200 shrink-0">
@@ -145,7 +145,7 @@
                 </div>
                 <div class="overflow-y-auto p-4 space-y-3">
                     @forelse($list as $u)
-                        <a href="{{ route('social.profile', $u['id']) }}"
+                        <a href="{{ route('social.profile', $u['username']) }}"
                             class="flex items-center gap-3 hover:bg-zinc-800 rounded-xl p-2 transition">
                             <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
                                 @if($u['avatar_path'])
@@ -217,7 +217,7 @@
                         <div class="space-y-3">
                             @foreach($modalComments as $comment)
                                 <div class="flex gap-2" wire:key="mc-{{ $comment['id'] }}">
-                                    <a href="{{ route('social.profile', $comment['user']['id']) }}"
+                                    <a href="{{ route('social.profile', $comment['user']['username']) }}"
                                         class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold overflow-hidden shrink-0 mt-0.5">
                                         @if($comment['user']['avatar_path'])
                                             <img src="{{ asset('storage/' . $comment['user']['avatar_path']) }}" class="w-full h-full object-cover">
@@ -227,7 +227,7 @@
                                     </a>
                                     <div class="flex-1 min-w-0">
                                         <div class="bg-zinc-800 rounded-xl px-2.5 py-1.5">
-                                            <a href="{{ route('social.profile', $comment['user']['id']) }}"
+                                            <a href="{{ route('social.profile', $comment['user']['username']) }}"
                                                 class="text-[11px] font-semibold text-white hover:underline">{{ $comment['user']['name'] }}</a>
                                             <p class="text-xs text-zinc-300 mt-0.5 break-words">{{ $comment['body'] }}</p>
                                         </div>

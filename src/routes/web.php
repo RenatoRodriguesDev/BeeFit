@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Social
     Route::get('/social', SocialFeed::class)->name('social.feed');
-    Route::get('/social/profile/{userId?}', UserProfile::class)->name('social.profile');
+    Route::get('/social/profile/{username?}', UserProfile::class)->name('social.profile');
     Route::get('/social/post/create', CreatePost::class)->name('social.create-post');
     Route::get('/social/post/create/{workoutId}', CreatePost::class)->name('social.create-post-workout');
 

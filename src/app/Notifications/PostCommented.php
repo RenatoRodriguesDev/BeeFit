@@ -24,6 +24,7 @@ class PostCommented extends Notification
             'comment_id'   => $this->comment->id,
             'user_id'      => $this->commenter->id,
             'user_name'    => $this->commenter->name,
+            'user_username'=> $this->commenter->username,
             'user_avatar'  => $this->commenter->avatar_path,
             'user_initials'=> $this->commenter->initials(),
             'preview'      => mb_substr($this->comment->body, 0, 60),

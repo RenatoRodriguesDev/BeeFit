@@ -106,6 +106,7 @@ return [
     'set' => 'Serie',
     'weight' => 'Peso',
     'reps' => 'Repeticiones',
+    'username' => 'Nombre de usuario',
     'language' => 'Idioma',
     'portuguese' => 'Portugués',
     'english' => 'Inglés',

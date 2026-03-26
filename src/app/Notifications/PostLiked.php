@@ -22,6 +22,7 @@ class PostLiked extends Notification
             'post_id'      => $this->post->id,
             'user_id'      => $this->liker->id,
             'user_name'    => $this->liker->name,
+            'user_username'=> $this->liker->username,
             'user_avatar'  => $this->liker->avatar_path,
             'user_initials'=> $this->liker->initials(),
         ];

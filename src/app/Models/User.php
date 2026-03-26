@@ -30,6 +30,7 @@ class User extends Authenticatable
         'gender',
         'theme_color',
         'theme_mode',
+        'username',
         'is_private',
     ];
 

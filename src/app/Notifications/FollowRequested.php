@@ -22,6 +22,7 @@ class FollowRequested extends Notification
             'follow_id'    => $this->follow->id,
             'user_id'      => $this->requester->id,
             'user_name'    => $this->requester->name,
+            'user_username'=> $this->requester->username,
             'user_avatar'  => $this->requester->avatar_path,
             'user_initials'=> $this->requester->initials(),
         ];

@@ -41,10 +41,10 @@ class UserProfile extends Component
     public ?array $followersList = null;
     public ?array $followingList = null;
 
-    public function mount(?int $userId = null): void
+    public function mount(?string $username = null): void
     {
-        $this->profileUser = $userId
-            ? User::findOrFail($userId)
+        $this->profileUser = $username
+            ? User::where('username', $username)->firstOrFail()
             : auth()->user();
     }
 
@@ -109,6 +109,7 @@ class UserProfile extends Component
             ->get()
             ->map(fn($f) => [
                 'id'          => $f->follower->id,
+                'username'    => $f->follower->username,
                 'name'        => $f->follower->name,
                 'avatar_path' => $f->follower->avatar_path,
                 'initials'    => $f->follower->initials(),
@@ -124,6 +125,7 @@ class UserProfile extends Component
             ->get()
             ->map(fn($f) => [
                 'id'          => $f->following->id,
+                'username'    => $f->following->username,
                 'name'        => $f->following->name,
                 'avatar_path' => $f->following->avatar_path,
                 'initials'    => $f->following->initials(),
@@ -205,6 +207,7 @@ class UserProfile extends Component
             ->get()
             ->map(fn($l) => [
                 'id'          => $l->user->id,
+                'username'    => $l->user->username,
                 'name'        => $l->user->name,
                 'avatar_path' => $l->user->avatar_path,
                 'initials'    => $l->user->initials(),
@@ -258,6 +261,7 @@ class UserProfile extends Component
             ->get()
             ->map(fn($l) => [
                 'id'          => $l->user->id,
+                'username'    => $l->user->username,
                 'name'        => $l->user->name,
                 'avatar_path' => $l->user->avatar_path,
                 'initials'    => $l->user->initials(),
@@ -348,6 +352,7 @@ class UserProfile extends Component
                 'created_at' => $c->created_at->diffForHumans(),
                 'user' => [
                     'id'          => $c->user->id,
+                    'username'    => $c->user->username,
                     'name'        => $c->user->name,
                     'avatar_path' => $c->user->avatar_path,
                     'initials'    => $c->user->initials(),
@@ -379,6 +384,7 @@ class UserProfile extends Component
                 ->map(fn($f) => [
                     'id'           => $f->id,
                     'user_id'      => $f->follower->id,
+                    'user_username'=> $f->follower->username,
                     'user_name'    => $f->follower->name,
                     'user_avatar'  => $f->follower->avatar_path,
                     'user_initials'=> $f->follower->initials(),

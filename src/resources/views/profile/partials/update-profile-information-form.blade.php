@@ -71,6 +71,16 @@
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
+        {{-- Username --}}
+        <div>
+            <x-input-label for="username" :value="__('app.username')" />
+            <x-text-input id="username" name="username" type="text"
+                class="mt-1 block w-full text-gray-900"
+                :value="old('username', $user->username)"
+                required autocomplete="username" />
+            <x-input-error class="mt-2" :messages="$errors->get('username')" />
+        </div>
+
         {{-- Email --}}
         <div>
             <x-input-label for="email" :value="__('app.email')" />

@@ -137,7 +137,7 @@
                 <div class="px-3 py-3 space-y-3 bg-zinc-950/40">
                     @foreach($comments as $comment)
                         <div class="flex gap-2" wire:key="c-{{ $comment['id'] }}">
-                            <a href="{{ route('social.profile', $comment['user']['id']) }}"
+                            <a href="{{ route('social.profile', $comment['user']['username']) }}"
                                 class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold overflow-hidden shrink-0 mt-0.5">
                                 @if($comment['user']['avatar_path'])
                                     <img src="{{ asset('storage/' . $comment['user']['avatar_path']) }}" class="w-full h-full object-cover">
@@ -147,7 +147,7 @@
                             </a>
                             <div class="flex-1 min-w-0">
                                 <div class="bg-zinc-800 rounded-xl px-2.5 py-1.5">
-                                    <a href="{{ route('social.profile', $comment['user']['id']) }}"
+                                    <a href="{{ route('social.profile', $comment['user']['username']) }}"
                                         class="text-[11px] font-semibold text-white hover:underline">{{ $comment['user']['name'] }}</a>
                                     <p class="text-xs text-zinc-300 mt-0.5 break-words">{{ $comment['body'] }}</p>
                                 </div>

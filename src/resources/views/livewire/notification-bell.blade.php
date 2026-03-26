@@ -34,7 +34,7 @@
 
                 @if($data["type"] === "follow_requested")
                     <div class="flex items-start gap-3 px-4 py-3 {{ $isUnread ? "bg-zinc-800/50" : "" }}">
-                        <a href="{{ route("social.profile", $data["user_id"]) }}"
+                        <a href="{{ route("social.profile", $data["user_username"]) }}"
                             class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0 mt-0.5">
                             @if($data["user_avatar"])
                                 <img src="{{ asset("storage/" . $data["user_avatar"]) }}" class="w-full h-full object-cover">
@@ -44,7 +44,7 @@
                         </a>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs text-zinc-200 leading-snug">
-                                <a href="{{ route("social.profile", $data["user_id"]) }}" class="font-semibold hover:underline">{{ $data["user_name"] }}</a>
+                                <a href="{{ route("social.profile", $data["user_username"]) }}" class="font-semibold hover:underline">{{ $data["user_name"] }}</a>
                                 {{ __("app.notif_follow_requested") }}
                             </p>
                             <p class="text-[10px] text-zinc-600 mt-0.5 mb-2">{{ $notif->created_at->diffForHumans() }}</p>
@@ -64,7 +64,7 @@
                         @endif
                     </div>
                 @else
-                    <a href="{{ route("social.profile", $data["user_id"]) }}"
+                    <a href="{{ route("social.profile", $data["user_username"]) }}"
                         wire:click="markRead({{ chr(39) }}{{ $notif->id }}{{ chr(39) }})"
                         class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-800 transition {{ $isUnread ? "bg-zinc-800/50" : "" }}">
                         <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0 mt-0.5">
