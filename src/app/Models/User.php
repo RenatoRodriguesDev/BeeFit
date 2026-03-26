@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPasswordNotification;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -29,6 +30,7 @@ class User extends Authenticatable
         'gender',
         'theme_color',
         'theme_mode',
+        'is_private',
     ];
 
     protected $hidden = [
@@ -43,6 +45,7 @@ class User extends Authenticatable
             'subscription_ends_at' => 'datetime',
             'birthdate'            => 'date',
             'password'             => 'hashed',
+            'is_private'           => 'boolean',
         ];
     }
 
@@ -137,6 +140,54 @@ class User extends Authenticatable
     public function routines()
     {
         return $this->hasMany(Routine::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    // ─── Follow relations ──────────────────────────────────────────
+
+    public function following()
+    {
+        return $this->hasMany(Follow::class, 'follower_id');
+    }
+
+    public function followers()
+    {
+        return $this->hasMany(Follow::class, 'following_id');
+    }
+
+    public function isFollowing(User $user): bool
+    {
+        return $this->following()
+            ->where('following_id', $user->id)
+            ->where('status', 'accepted')
+            ->exists();
+    }
+
+    public function isPendingFollow(User $user): bool
+    {
+        return $this->following()
+            ->where('following_id', $user->id)
+            ->where('status', 'pending')
+            ->exists();
+    }
+
+    public function followRequests()
+    {
+        return $this->followers()->where('status', 'pending')->with('follower');
+    }
+
+    // ─── Social helpers ────────────────────────────────────────────
+
+    public function followingIds(): array
+    {
+        return $this->following()
+            ->where('status', 'accepted')
+            ->pluck('following_id')
+            ->toArray();
     }
 
     public function sendPasswordResetNotification($token)

@@ -42,14 +42,34 @@
                     </a>
 
                     <a href="{{ route('library.index', app()->getLocale()) }}"
-                        class="block px-4 py-2 rounded-lg hover:bg-zinc-800">
+                        class="block px-4 py-2 rounded-lg hover:bg-zinc-800 {{ request()->routeIs('library.*') ? 'bg-zinc-800' : '' }}">
                         {{ __('app.exercises') }}
                     </a>
+
                     <a href="{{ route('statistics', app()->getLocale()) }}"
-                        class="block px-4 py-2 rounded-lg hover:bg-zinc-800">
+                        class="block px-4 py-2 rounded-lg hover:bg-zinc-800 {{ request()->routeIs('statistics') ? 'bg-zinc-800' : '' }}">
                         {{ __('app.statistics') }}
                     </a>
+
+                    {{-- Social section --}}
+                    <div class="pt-2 border-t border-zinc-700">
+                        <p class="text-xs text-zinc-500 uppercase tracking-widest px-4 mb-2">{{ __('app.social') }}</p>
+                        <a href="{{ route('social.feed') }}"
+                            class="block px-4 py-2 rounded-lg hover:bg-zinc-800 {{ request()->routeIs('social.feed') ? 'bg-zinc-800' : '' }}">
+                            📰 {{ __('app.feed') }}
+                        </a>
+                        <a href="{{ route('social.profile') }}"
+                            class="block px-4 py-2 rounded-lg hover:bg-zinc-800 {{ request()->routeIs('social.profile') && !request()->route('userId') ? 'bg-zinc-800' : '' }}">
+                            👤 {{ __('app.my_profile') }}
+                        </a>
+                    </div>
                 </nav>
+            </div>
+
+            {{-- Notification Bell (Desktop) --}}
+            <div class="py-3 border-t border-zinc-700 flex items-center gap-2">
+                <livewire:notification-bell />
+                <span class="text-xs text-zinc-400">{{ __('app.notifications') }}</span>
             </div>
 
             <div x-data="{ open: false }" class="relative">
@@ -135,36 +155,92 @@
     <nav class="md:hidden fixed bottom-0 left-0 right-0
             bg-zinc-600/95 backdrop-blur-xl
             border-t border-zinc-800
-            flex justify-around py-3 z-40">
+            flex justify-around py-2 z-40">
 
-        <a href="{{ route('dashboard') }}" class="flex flex-col items-center text-xs gap-1
+        <a href="{{ route('dashboard') }}" class="flex flex-col items-center text-[10px] gap-0.5 px-1
               {{ request()->routeIs('dashboard') ? 'text-white' : 'text-zinc-500' }}">
-            <span class="text-lg">🏠</span>
+            <span class="text-xl leading-none">🏠</span>
             {{ __('app.dashboard') }}
         </a>
 
-        <a href="{{ route('routines.index') }}" class="flex flex-col items-center text-xs gap-1
+        <a href="{{ route('routines.index') }}" class="flex flex-col items-center text-[10px] gap-0.5 px-1
               {{ request()->routeIs('routines.*') ? 'text-white' : 'text-zinc-500' }}">
-            <span class="text-lg">💪</span>
+            <span class="text-xl leading-none">💪</span>
             {{ __('app.routines') }}
         </a>
 
-        <a href="{{ route('library.index', app()->getLocale()) }}" class="flex flex-col items-center text-xs gap-1
-              {{ request()->routeIs('routines.*') ? 'text-white' : 'text-zinc-500' }}">
-            <span class="text-lg">📚</span>
+        <a href="{{ route('library.index', app()->getLocale()) }}" class="flex flex-col items-center text-[10px] gap-0.5 px-1
+              {{ request()->routeIs('library.*') ? 'text-white' : 'text-zinc-500' }}">
+            <span class="text-xl leading-none">📚</span>
             {{ __('app.exercises') }}
         </a>
-        <a href="{{ route('statistics', app()->getLocale()) }}" class="flex flex-col items-center text-xs gap-1
-              {{ request()->routeIs('routines.*') ? 'text-white' : 'text-zinc-500' }}">
-            <span class="text-lg">📊</span>
+
+        <a href="{{ route('statistics', app()->getLocale()) }}" class="flex flex-col items-center text-[10px] gap-0.5 px-1
+              {{ request()->routeIs('statistics') ? 'text-white' : 'text-zinc-500' }}">
+            <span class="text-xl leading-none">📊</span>
             {{ __('app.statistics') }}
         </a>
+
+        {{-- Notification Bell Mobile --}}
+        <livewire:notification-bell />
+
+        {{-- Social Dropdown --}}
+        <div x-data="{ socialOpen: false }">
+
+            <button @click="socialOpen = !socialOpen"
+                class="flex flex-col items-center text-[10px] gap-0.5 px-1
+                    {{ request()->routeIs('social.*') ? 'text-white' : 'text-zinc-500' }}">
+                <span class="text-xl leading-none">👥</span>
+                {{ __('app.social') }}
+            </button>
+
+            <!-- Overlay -->
+            <div x-show="socialOpen" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50"
+                x-transition.opacity @click="socialOpen = false"></div>
+
+            <!-- Social Sheet (Slide Up) -->
+            <div x-show="socialOpen"
+                x-transition:enter="transition transform duration-300"
+                x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
+                x-transition:leave="transition transform duration-300" x-transition:leave-start="translate-y-0"
+                x-transition:leave-end="translate-y-full"
+                class="fixed bottom-0 left-0 right-0
+                       bg-zinc-600/95 backdrop-blur-xl
+                       border-t border-zinc-800
+                       rounded-t-3xl p-6 z-50">
+
+                <div class="flex flex-col gap-4">
+
+                    <div class="text-center text-white font-medium border-b border-zinc-800 pb-3">
+                        👥 {{ __('app.social') }}
+                    </div>
+
+                    <a href="{{ route('social.feed') }}" @click="socialOpen = false"
+                        class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-800 transition">
+                        📰 {{ __('app.feed') }}
+                    </a>
+
+                    <a href="{{ route('social.profile') }}" @click="socialOpen = false"
+                        class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-800 transition">
+                        👤 {{ __('app.my_profile') }}
+                    </a>
+
+                    <button @click="socialOpen = false"
+                        class="w-full p-3 text-center text-zinc-400 hover:text-white transition">
+                        ✕ {{ __('app.close') }}
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
 
         {{-- Profile Modal Trigger --}}
         <div x-data="{ open: false }">
 
-            <button @click="open = true" class="flex flex-col items-center text-xs gap-1 text-zinc-500">
-                <span class="text-lg">⚙️</span>
+            <button @click="open = true" class="flex flex-col items-center text-[10px] gap-0.5 px-1
+                {{ request()->routeIs('profile.*') ? 'text-white' : 'text-zinc-500' }}">
+                <span class="text-xl leading-none">⚙️</span>
                 {{ __('app.profile') }}
             </button>
 

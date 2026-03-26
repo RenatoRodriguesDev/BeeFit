@@ -25,7 +25,8 @@ class ProfileUpdateRequest extends FormRequest
             'height_cm'  => ['nullable', 'integer', 'min:50', 'max:300'],
             'weight_kg'  => ['nullable', 'numeric', 'min:20', 'max:500'],
             'gender'     => ['nullable', Rule::in(['male', 'female', 'other'])],
-            'locale' => ['required', Rule::in(['pt', 'en', 'es'])],
+            'locale'     => ['required', Rule::in(['pt', 'en', 'es'])],
+            'is_private' => ['boolean'],
         ];
     }
 }

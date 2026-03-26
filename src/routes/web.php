@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Dashboard;
 use App\Livewire\Routine\RoutineEditor;
+use App\Livewire\Social\CreatePost;
+use App\Livewire\Social\SocialFeed;
+use App\Livewire\Social\UserProfile;
 use App\Livewire\Workout\WorkoutShow;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\LibraryController;
@@ -31,7 +34,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/workouts/{workout}', WorkoutShow::class
     )->name('workouts.show');
     Route::get('/statistics', \App\Livewire\Statistics::class)->name('statistics');
- 
+
+    // Social
+    Route::get('/social', SocialFeed::class)->name('social.feed');
+    Route::get('/social/profile/{userId?}', UserProfile::class)->name('social.profile');
+    Route::get('/social/post/create', CreatePost::class)->name('social.create-post');
+    Route::get('/social/post/create/{workoutId}', CreatePost::class)->name('social.create-post-workout');
+
     // Subscrições
     Route::get('/plans', [SubscriptionController::class, 'plans'])->name('subscription.plans');
     Route::post('/subscription/checkout', [SubscriptionController::class, 'checkout'])->name('subscription.checkout');

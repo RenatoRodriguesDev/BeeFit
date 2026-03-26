@@ -24,7 +24,7 @@
                 {{__('app.cancel')}}
             </button>
 
-            <button wire:click="finishWorkout" class="bg-green-600 px-4 py-2 rounded-xl">
+            <button wire:click="promptFinish" class="bg-green-600 px-4 py-2 rounded-xl">
                 {{__('app.finish')}}
             </button>
 
@@ -96,6 +96,32 @@
         @endforeach
 
     </div>
+    {{-- Share prompt modal --}}
+    @if($showSharePrompt)
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+            <div class="bg-zinc-900 rounded-2xl p-6 w-full max-w-sm space-y-5">
+
+                <div class="text-center">
+                    <div class="text-5xl mb-3">🏆</div>
+                    <h2 class="text-xl font-bold text-white">{{ __('app.workout_done') }}</h2>
+                    <p class="text-sm text-zinc-400 mt-1">{{ __('app.share_workout_prompt') }}</p>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <button wire:click="finishWorkout(true)"
+                        class="w-full py-3 rounded-xl bg-white text-black font-semibold text-sm hover:bg-zinc-200 transition">
+                        📸 {{ __('app.yes_share') }}
+                    </button>
+                    <button wire:click="finishWorkout(false)"
+                        class="w-full py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm transition">
+                        {{ __('app.skip') }}
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    @endif
+
     @if($showAddExerciseModal)
         <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
             <div class="bg-zinc-800 p-6 rounded-2xl w-96 max-h-[500px] overflow-y-auto">

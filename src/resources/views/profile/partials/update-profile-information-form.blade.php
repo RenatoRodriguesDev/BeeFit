@@ -163,6 +163,20 @@
             </div>
         </div>
 
+        {{-- Privacy --}}
+        <div class="pt-4 border-t border-zinc-700">
+            <label class="flex items-center gap-3 cursor-pointer select-none">
+                <input type="hidden" name="is_private" value="0">
+                <input type="checkbox" name="is_private" value="1"
+                    {{ old('is_private', $user->is_private ?? false) ? 'checked' : '' }}
+                    class="w-4 h-4 rounded accent-purple-500">
+                <div>
+                    <span class="text-sm font-medium text-white">🔒 {{ __('app.private_account') }}</span>
+                    <p class="text-xs text-zinc-500 mt-0.5">{{ __('app.private_account_hint') }}</p>
+                </div>
+            </label>
+        </div>
+
         {{-- Save --}}
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('app.save') }}</x-primary-button>

@@ -1,4 +1,4 @@
-<div class="bg-zinc-950 w-full lg:w-96 h-screen border-l border-zinc-800 flex flex-col">
+<div class="bg-zinc-950 w-full lg:h-full border-l border-zinc-800 flex flex-col">
 
     <div class="p-5 border-b border-zinc-800 flex justify-between items-center">
         <h2 class="font-semibold text-lg">{{ __('app.library') }}</h2>

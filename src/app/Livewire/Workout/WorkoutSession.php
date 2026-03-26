@@ -65,7 +65,7 @@ class WorkoutSession extends Component
         return redirect()->route('routines.index');
     }
 
-    public function finishWorkout()
+    public function finishWorkout(bool $share = false)
     {
         $this->workout->update([
             'status' => 'completed',
@@ -82,6 +82,10 @@ class WorkoutSession extends Component
                 workoutId: $this->workout->id,
                 sets: $workoutExercise->sets
             );
+        }
+
+        if ($share) {
+            return redirect()->route('social.create-post-workout', $this->workout);
         }
 
         return redirect()->route('dashboard');
@@ -130,6 +134,13 @@ class WorkoutSession extends Component
         $exercise->delete(); // se tiver cascade deletes melhor ainda
 
         $this->workout->refresh();
+    }
+
+    public bool $showSharePrompt = false;
+
+    public function promptFinish(): void
+    {
+        $this->showSharePrompt = true;
     }
 
     public $showAddExerciseModal = false;

@@ -2,20 +2,15 @@
 
 @section('content')
 
-    <div class="flex flex-col lg:flex-row h-full">
+    <div class="flex flex-col lg:flex-row lg:h-full">
 
-        {{-- ========================= --}}
         {{-- Painel Central --}}
-        {{-- ========================= --}}
         <div class="flex-1">
             @livewire('exercise-viewer')
         </div>
 
-        {{-- Painel Direita --}}
-        {{-- ========================= --}}
-        {{-- Desktop Sidebar (>= lg) --}}
-        {{-- ========================= --}}
-        <div class="block w-96">
+        {{-- Painel Lateral --}}
+        <div class="lg:w-96 lg:h-full lg:shrink-0">
             @livewire('library-panel')
         </div>
 

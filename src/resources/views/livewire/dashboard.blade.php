@@ -1,4 +1,4 @@
-<div class="bg-zinc-600 p-6 rounded-3xl w-[360px]">
+<div class="bg-zinc-600 p-4 md:p-6 rounded-3xl w-full max-w-[400px]">
 
     {{-- Header --}}
     <div class="flex justify-between items-center mb-4">

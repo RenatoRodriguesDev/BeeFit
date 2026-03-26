@@ -30,4 +30,12 @@
 
     @endforeach
 
+    {{-- Share workout --}}
+    <div class="pt-4">
+        <a href="{{ route('social.create-post-workout', $workout->id) }}"
+            class="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white px-5 py-3 rounded-xl transition text-sm font-medium">
+            📸 {{ __('app.share_workout') }}
+        </a>
+    </div>
+
 </div>
