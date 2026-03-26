@@ -20,6 +20,15 @@ class RoutineManager extends Component
             'name' => 'required|min:3'
         ]);
 
+        if (!auth()->user()->canCreateRoutine()) {
+            $this->dispatch(
+                'toast',
+                message: __('app.routine_limit_reached'),
+                type: 'error'
+            );
+            return redirect()->route('subscription.plans');
+        }
+
         $routine = auth()->user()->routines()->create([
             'name' => $this->name,
             'is_active' => true,
