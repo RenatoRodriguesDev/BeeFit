@@ -7,20 +7,33 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 RUN a2enmod rewrite
 
+# 🔥 FIX MPM
+RUN a2dismod mpm_event || true \
+ && a2dismod mpm_worker || true \
+ && a2enmod mpm_prefork
+
+# Node
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-RUN mkdir -p storage bootstrap/cache
+# 🔥 copia código (IMPORTANTE para Railway)
+COPY ./src .
 
+# 🔥 Laravel setup
+RUN mkdir -p storage bootstrap/cache \
+ && composer install --no-dev --optimize-autoloader \
+ && npm ci && npm run build || true \
+ && chown -R www-data:www-data /var/www/html \
+ && chmod -R 775 storage bootstrap/cache
+
+# Apache → public
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
 EXPOSE 80
 
-CMD ["sh", "-c", "\
-chown -R www-data:www-data /var/www/html && \
-chmod -R 775 storage bootstrap/cache || true && \
-apache2-foreground"]
+CMD ["apache2-foreground"]
