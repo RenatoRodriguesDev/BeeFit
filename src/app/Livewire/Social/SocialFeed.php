@@ -13,6 +13,7 @@ use App\Notifications\FollowRequested;
 use App\Notifications\PostCommented;
 use App\Notifications\PostLiked;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -293,6 +294,25 @@ class SocialFeed extends Component
                 ->get();
         }
 
-        return view('livewire.social.feed', compact('posts', 'searchResults'));
+        // Suggestions: users followed by people the current user follows
+        $suggestions = collect();
+        if (!empty($followingIds)) {
+            $suggestedIds = DB::table('follows')
+                ->where('status', 'accepted')
+                ->whereIn('follower_id', $followingIds)
+                ->whereNotIn('following_id', array_merge($followingIds, [$user->id]))
+                ->select('following_id', DB::raw('count(*) as score'))
+                ->groupBy('following_id')
+                ->orderByDesc('score')
+                ->limit(5)
+                ->pluck('following_id');
+
+            $suggestions = User::whereIn('id', $suggestedIds)
+                ->get()
+                ->sortBy(fn($u) => array_search($u->id, $suggestedIds->toArray()))
+                ->values();
+        }
+
+        return view('livewire.social.feed', compact('posts', 'searchResults', 'suggestions'));
     }
 }

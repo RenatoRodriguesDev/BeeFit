@@ -193,4 +193,6 @@ return [
     'confirm_remove_follower' => 'Remover seguidor',
     'confirm_remove_follower_message' => 'Tens a certeza que queres remover este seguidor?',
 
+    'suggested_for_you' => 'Sugestões para ti',
+
 ];

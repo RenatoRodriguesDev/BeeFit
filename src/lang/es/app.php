@@ -192,4 +192,6 @@ return [
     'send' => 'Enviar',
     'comments' => 'Comentarios',
 
+    'suggested_for_you' => 'Sugerencias para ti',
+
 ];

@@ -1,4 +1,7 @@
-<div class="max-w-[520px] mx-auto space-y-4">
+<div class="max-w-5xl mx-auto lg:grid lg:grid-cols-[1fr_280px] lg:gap-6 lg:items-start">
+
+{{-- Feed column --}}
+<div class="space-y-4">
 
     {{-- Header --}}
     <div class="flex items-center justify-between pt-2">
@@ -65,7 +68,7 @@
 
             {{-- Header --}}
             <div class="flex items-center gap-3 p-3">
-                <a href="{{ route('social.profile', $post->user->id) }}"
+                <a href="{{ route('social.profile', $post->user->username) }}"
                     class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold overflow-hidden shrink-0">
                     @if($post->user->avatar_path)
                         <img src="{{ asset('storage/' . $post->user->avatar_path) }}" class="w-full h-full object-cover">
@@ -74,7 +77,7 @@
                     @endif
                 </a>
                 <div class="flex-1 min-w-0">
-                    <a href="{{ route('social.profile', $post->user->id) }}"
+                    <a href="{{ route('social.profile', $post->user->username) }}"
                         class="font-semibold text-white text-sm hover:underline leading-none">{{ $post->user->name }}</a>
                     <p class="text-[11px] text-zinc-500 mt-0.5">{{ $post->created_at->diffForHumans() }}</p>
                 </div>
@@ -279,4 +282,54 @@
             </div>
         </div>
     @endif
+
+</div>{{-- end feed column --}}
+
+{{-- Suggestions sidebar (desktop only) --}}
+@if($suggestions->isNotEmpty())
+<div class="hidden lg:block space-y-3 sticky top-6">
+    <h2 class="text-xs font-semibold text-zinc-500 uppercase tracking-wider px-1">{{ __('app.suggested_for_you') }}</h2>
+    <div class="bg-zinc-900 rounded-2xl p-3 space-y-3">
+        @foreach($suggestions as $suggested)
+            @php
+                $me = auth()->user();
+                $isFollowing = $me->isFollowing($suggested);
+                $isPending   = !$isFollowing && $me->isPendingFollow($suggested);
+            @endphp
+            <div class="flex items-center gap-2">
+                <a href="{{ route('social.profile', $suggested->username) }}" class="flex items-center gap-2 flex-1 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0">
+                        @if($suggested->avatar_path)
+                            <img src="{{ asset('storage/' . $suggested->avatar_path) }}" class="w-full h-full object-cover">
+                        @else
+                            {{ $suggested->initials() }}
+                        @endif
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold text-white truncate">{{ $suggested->name }}</p>
+                        <p class="text-[10px] text-zinc-500 truncate">{{ '@' . $suggested->username }}</p>
+                    </div>
+                </a>
+                @if($isFollowing)
+                    <button wire:click="unfollow({{ $suggested->id }})"
+                        class="text-[10px] bg-zinc-700 hover:bg-red-600/50 text-zinc-300 px-2 py-1 rounded-lg transition shrink-0">
+                        {{ __('app.following') }}
+                    </button>
+                @elseif($isPending)
+                    <button wire:click="unfollow({{ $suggested->id }})"
+                        class="text-[10px] bg-zinc-700 text-zinc-400 px-2 py-1 rounded-lg transition shrink-0">
+                        ⏳
+                    </button>
+                @else
+                    <button wire:click="follow({{ $suggested->id }})"
+                        class="text-[10px] bg-white text-black hover:bg-zinc-200 px-2 py-1 rounded-lg transition shrink-0 font-semibold">
+                        {{ __('app.follow') }}
+                    </button>
+                @endif
+            </div>
+        @endforeach
+    </div>
 </div>
+@endif
+
+</div>{{-- end outer grid --}}
