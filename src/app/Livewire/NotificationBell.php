@@ -5,10 +5,24 @@ namespace App\Livewire;
 use App\Models\Follow;
 use App\Notifications\FollowAccepted;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class NotificationBell extends Component
 {
+    public int $userId;
+
+    public function mount(): void
+    {
+        $this->userId = Auth::id();
+    }
+
+    #[On('echo-private:App.Models.User.{userId},Illuminate\Notifications\Events\BroadcastNotificationCreated')]
+    public function notificationReceived(): void
+    {
+        // triggers re-render to refresh count and list
+    }
+
     public function acceptFollow(int $followId, string $notifId): void
     {
         $follow = Follow::find($followId);
@@ -17,6 +31,7 @@ class NotificationBell extends Component
             $follow->follower->notify(new FollowAccepted(Auth::user()));
         }
         Auth::user()->notifications()->where('id', $notifId)->delete();
+        $this->dispatch('toast', message: __('app.friend_request_accepted'), type: 'success');
     }
 
     public function rejectFollow(int $followId, string $notifId): void
