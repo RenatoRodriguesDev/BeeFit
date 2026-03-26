@@ -27,7 +27,7 @@
 
             <div>
                 <a href="{{ route('dashboard') }}">
-                    <img  src="{{ asset('images/logo_nobg.png') }}" alt="BeeFit Logo" class="mb-8">
+                    <img src="{{ asset('images/logo_nobg.png') }}" alt="BeeFit Logo" class="mb-8">
                 </a>
 
                 <nav class="space-y-3">
@@ -60,19 +60,26 @@
                hover:bg-zinc-800 transition">
 
                     <!-- Avatar -->
-                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500
+                    <div class="w-9 h-9 overflow-hidden rounded-full bg-gradient-to-br from-purple-500 to-pink-500
                     flex items-center justify-center text-white font-semibold">
 
-                        {{ substr(auth()->user()->name, 0, 1) }}
+                        @if(auth()->user()->avatar_path)
+                            <img src="{{ asset('storage/' . auth()->user()->avatar_path) }}" alt="{{ auth()->user()->name }}"
+                                class="w-full h-full object-cover">
+                        @else
+                            <span class="text-2xl font-semibold text-zinc-400">
+                                {{ auth()->user()->initials() }}
+                            </span>
+                        @endif
                     </div>
 
                     <div class="flex-1 text-left">
                         <div class="text-white text-sm font-medium">
-                            {{ auth()->user()->name }}
+                            {{ strtok(auth()->user()->name, ' ') }}
                         </div>
 
                         <div class="text-xs text-zinc-400">
-                            {{ auth()->user()->email ?? '' }}
+                            {{ auth()->user()->plan ?? '' }}
                         </div>
                     </div>
 
@@ -102,7 +109,7 @@
             </div>
 
         </aside>
-        
+
         <livewire:active-workout-banner />
 
 
