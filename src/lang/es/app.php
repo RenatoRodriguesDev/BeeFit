@@ -164,6 +164,8 @@ return [
     'friend_request_sent' => '¡Solicitud de amistad enviada!',
     'friend_request_accepted' => '¡Solicitud de amistad aceptada!',
     'friend_request_received' => 'Te envió una solicitud',
+    'confirm_remove_follower' => 'Eliminar seguidor',
+    'confirm_remove_follower_message' => '¿Estás seguro de que quieres eliminar este seguidor?',
     'unfriended' => 'Eliminado de amigos.',
     'no_posts_yet' => 'Todavía sin publicaciones.',
     'add_friends_to_see_feed' => 'Añade amigos para ver sus entrenamientos aquí.',

@@ -281,7 +281,7 @@ class SocialFeed extends Component
         $followingIds = $user->followingIds();
 
         $posts = Post::with(['user', 'workout', 'likes.user', 'comments'])
-            ->whereIn('user_id', array_merge($followingIds, [$user->id]))
+            ->whereIn('user_id', $followingIds)
             ->latest()
             ->paginate(10);
 

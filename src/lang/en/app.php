@@ -190,4 +190,7 @@ return [
     'send' => 'Send',
     'comments' => 'Comments',
 
+    'confirm_remove_follower' => 'Remove follower',
+    'confirm_remove_follower_message' => 'Are you sure you want to remove this follower?',
+
 ];

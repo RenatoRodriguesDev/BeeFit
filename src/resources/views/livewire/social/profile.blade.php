@@ -145,17 +145,24 @@
                 </div>
                 <div class="overflow-y-auto p-4 space-y-3">
                     @forelse($list as $u)
-                        <a href="{{ route('social.profile', $u['username']) }}"
-                            class="flex items-center gap-3 hover:bg-zinc-800 rounded-xl p-2 transition">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
-                                @if($u['avatar_path'])
-                                    <img src="{{ asset('storage/' . $u['avatar_path']) }}" class="w-full h-full object-cover">
-                                @else
-                                    {{ $u['initials'] }}
-                                @endif
-                            </div>
-                            <span class="text-sm text-white">{{ $u['name'] }}</span>
-                        </a>
+                        <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-zinc-800 transition">
+                            <a href="{{ route('social.profile', $u['username']) }}" class="flex items-center gap-3 flex-1 min-w-0">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
+                                    @if($u['avatar_path'])
+                                        <img src="{{ asset('storage/' . $u['avatar_path']) }}" class="w-full h-full object-cover">
+                                    @else
+                                        {{ $u['initials'] }}
+                                    @endif
+                                </div>
+                                <span class="text-sm text-white truncate">{{ $u['name'] }}</span>
+                            </a>
+                            @if($isOwn && !is_null($followersList) && isset($u['follow_id']))
+                                <button wire:click="confirmRemoveFollower({{ $u['follow_id'] }})"
+                                    class="text-xs text-zinc-500 hover:text-red-400 transition px-2 py-1 rounded-lg hover:bg-zinc-700 shrink-0">
+                                    {{ __('app.remove') }}
+                                </button>
+                            @endif
+                        </div>
                     @empty
                         <p class="text-xs text-zinc-500 text-center py-4">-</p>
                     @endforelse
@@ -352,6 +359,29 @@
                     <button wire:click="deletePost"
                         class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-sm transition">
                         {{ __('app.delete') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+
+    {{-- Remove follower confirmation --}}
+    @if($followerToRemove)
+        <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-[70]">
+            <div class="bg-zinc-900 p-6 rounded-2xl w-80 space-y-5">
+                <div>
+                    <h2 class="text-base font-semibold text-white">{{ __("app.confirm_remove_follower") }}</h2>
+                    <p class="text-zinc-400 text-sm mt-1">{{ __("app.confirm_remove_follower_message") }}</p>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button wire:click="cancelRemoveFollower"
+                        class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm transition">
+                        {{ __("app.cancel") }}
+                    </button>
+                    <button wire:click="removeFollower"
+                        class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-sm transition">
+                        {{ __("app.remove") }}
                     </button>
                 </div>
             </div>

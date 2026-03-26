@@ -24,7 +24,7 @@
                         $isPending   = ! $isFollowing && $me->isPendingFollow($found);
                     @endphp
                     <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-zinc-800 transition">
-                        <a href="{{ route('social.profile', $found->id) }}" class="flex items-center gap-2 flex-1 min-w-0">
+                        <a href="{{ route('social.profile', $found->username) }}" class="flex items-center gap-2 flex-1 min-w-0">
                             <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
                                 @if($found->avatar_path)
                                     <img src="{{ asset('storage/' . $found->avatar_path) }}" class="w-full h-full object-cover">

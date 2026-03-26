@@ -40,6 +40,7 @@ class UserProfile extends Component
     // Followers modal
     public ?array $followersList = null;
     public ?array $followingList = null;
+    public ?int $followerToRemove = null;
 
     public function mount(?string $username = null): void
     {
@@ -106,8 +107,10 @@ class UserProfile extends Component
     {
         $this->followersList = Follow::with('follower')
             ->where('following_id', $this->profileUser->id)
+            ->where('status', 'accepted')
             ->get()
             ->map(fn($f) => [
+                'follow_id'   => $f->id,
                 'id'          => $f->follower->id,
                 'username'    => $f->follower->username,
                 'name'        => $f->follower->name,
@@ -118,7 +121,33 @@ class UserProfile extends Component
         $this->followingList = null;
     }
 
-    public function loadFollowing(): void
+    public function confirmRemoveFollower(int $followId): void
+    {
+        $this->followerToRemove = $followId;
+    }
+
+    public function cancelRemoveFollower(): void
+    {
+        $this->followerToRemove = null;
+    }
+
+    public function removeFollower(): void
+    {
+        if (! $this->followerToRemove) return;
+
+        $follow = Follow::where('id', $this->followerToRemove)
+            ->where('following_id', Auth::id())
+            ->first();
+
+        if ($follow) {
+            $follow->delete();
+        }
+
+        $this->followerToRemove = null;
+        $this->loadFollowers();
+    }
+
+        public function loadFollowing(): void
     {
         $this->followingList = Follow::with('following')
             ->where('follower_id', $this->profileUser->id)
