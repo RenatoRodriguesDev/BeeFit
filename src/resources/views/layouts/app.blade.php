@@ -292,6 +292,14 @@
 </html>
 <script>
     document.addEventListener('livewire:init', () => {
+        // Real-time notifications via Reverb
+        const userId = {{ auth()->id() ?? 0 }};
+        if (userId && window.Echo) {
+            window.Echo.private(`App.Models.User.${userId}`)
+                .notification(() => {
+                    Livewire.dispatch('notificationReceived');
+                });
+        }
 
         Livewire.on('toast', (event) => {
             window.toast(event.message, event.type ?? 'success');

@@ -10,14 +10,7 @@ use Livewire\Component;
 
 class NotificationBell extends Component
 {
-    public int $userId;
-
-    public function mount(): void
-    {
-        $this->userId = Auth::id();
-    }
-
-    #[On('echo-private:App.Models.User.{userId},Illuminate\Notifications\Events\BroadcastNotificationCreated')]
+    #[On('notificationReceived')]
     public function notificationReceived(): void
     {
         // triggers re-render to refresh count and list
