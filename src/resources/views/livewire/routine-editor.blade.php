@@ -1,149 +1,171 @@
-<div class="space-y-4">
-    <div class="flex  mb-8">
-        <a href="{{ url('routines') }}"
-            class="text-3xl text-zinc-400 hover:text-white transition flex items-center gap-2">
-            ←
+<div class="max-w-xl mx-auto space-y-6">
+
+    {{-- Header --}}
+    <div class="flex items-center gap-4 pb-4 border-b border-zinc-800">
+        <a href="{{ route('routines.index') }}"
+            class="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-white transition shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
         </a>
-
-        <h1 class="text-3xl font-bold pl-4">
-            {{ $routine->name }}
-        </h1>
-
-        <div></div>
+        <div class="min-w-0 flex-1">
+            <h1 class="text-2xl font-bold text-white truncate">{{ $routine->name }}</h1>
+            <p class="text-sm text-zinc-500 mt-0.5">
+                {{ $routine->exercises->count() }} {{ __('app.exercises') }}
+                &middot; {{ $routine->exercises->sum(fn($e) => $e->sets->count()) }} {{ __('app.sets') }}
+            </p>
+        </div>
     </div>
-    
-    @foreach($routine->exercises as $routineExercise)
 
-        <div class="bg-zinc-950 border border-zinc-800 rounded-2xl shadow-lg overflow-hidden">
-            {{-- HEADER DO EXERCÍCIO (CLICK PARA EXPANDIR) --}}
-            <button wire:click="toggleExercise({{ $routineExercise->id }})"
-                class="w-full flex justify-between items-center p-6 hover:bg-zinc-600 transition">
+    {{-- Exercícios --}}
+    @forelse($routine->exercises as $routineExercise)
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
 
-                {{-- Thumbnail do Exercício --}}
-                <img src="{{ asset($routineExercise->exercise->thumbnail_path) }}"
-                    alt="{{ $routineExercise->exercise->translate()->name }}"
-                    class="w-16 h-16 rounded-full object-cover mr-4">
+            {{-- Cabeçalho — flex row com botões separados (sem nesting) --}}
+            <div class="flex items-center">
 
-                <div class="flex-1">
-                    <h2 class="text-lg font-semibold">
-                        {{ $routineExercise->exercise->translate()->name }}
-                    </h2>
+                {{-- Área clicável principal (expand) --}}
+                <button wire:click="toggleExercise({{ $routineExercise->id }})"
+                    class="flex-1 flex items-center gap-4 px-5 py-5 hover:bg-zinc-800/40 transition text-left min-w-0">
 
-                    {{-- Sets e Reps --}}
-                    <p class="text-sm text-zinc-400">
-                        {{ $routineExercise->sets->count() }} sets ·
-                        {{ $routineExercise->sets->min('reps') }}-{{ $routineExercise->sets->max('reps') }} reps
-                    </p>
+                    <div class="w-14 h-14 rounded-xl overflow-hidden bg-zinc-800 shrink-0">
+                        @if($routineExercise->exercise->thumbnail_path)
+                            <img src="{{ asset($routineExercise->exercise->thumbnail_path) }}"
+                                alt="{{ $routineExercise->exercise->translate()->name }}"
+                                class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-2xl">💪</div>
+                        @endif
+                    </div>
 
-                </div>
-
-                <span class="text-zinc-400">
-                    {{ $expandedExerciseId === $routineExercise->id ? '▾' : '▸' }}
-
-                </span>
-
-            </button>
-
-            {{-- CONTEÚDO EXPANDIDO --}}
-            @if($expandedExerciseId === $routineExercise->id)
-
-                <div class="border-t border-zinc-800 p-6 space-y-4">
-
-                    {{-- Header --}}
-                    <div class="grid grid-cols-4 text-xs text-zinc-400 uppercase tracking-wide px-4">
-                        <div>Set</div>
-                        <div>Kg</div>
-                        <div>Reps</div>
-                        <div class="text-right">
-                            <button wire:click="addSet({{ $routineExercise->id }})"
-                                class="bg-zinc-800 hover:bg-zinc-700 text-sm px-4 py-2 rounded-lg transition">
-                                + {{__('app.add')}} Set
-                            </button>
+                    <div class="min-w-0 flex-1">
+                        <div class="font-semibold text-base text-white truncate">
+                            {{ $routineExercise->exercise->translate()->name }}
+                        </div>
+                        <div class="text-sm text-zinc-500 mt-1">
+                            {{ $routineExercise->sets->count() }} {{ __('app.sets') }}
+                            @if($routineExercise->sets->isNotEmpty())
+                                &middot;
+                                @php
+                                    $minReps = $routineExercise->sets->min('reps');
+                                    $maxReps = $routineExercise->sets->max('reps');
+                                @endphp
+                                {{ $minReps == $maxReps ? $minReps : "$minReps–$maxReps" }} reps
+                            @endif
                         </div>
                     </div>
 
-                    {{-- Sets --}}
-                    <div class="space-y-2">
+                </button>
 
-                        @foreach($routineExercise->sets->sortBy('set_number') as $set)
+                {{-- Botão apagar (separado, fora do button anterior) --}}
+                <button wire:click="confirmDeleteExercise({{ $routineExercise->id }})"
+                    class="p-3 text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition shrink-0"
+                    title="{{ __('app.delete') }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                </button>
 
-                            <div class="grid grid-cols-4 items-center bg-zinc-600 rounded-xl px-4 py-3">
+                {{-- Chevron (separado, não é botão) --}}
+                <div class="pr-4 text-zinc-500 shrink-0">
+                    <svg class="w-4 h-4 transition-transform duration-200 {{ $expandedExerciseId === $routineExercise->id ? 'rotate-180' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </div>
 
-                                {{-- Set number --}}
-                                <div>
-                                    <div class="w-8 h-8 flex items-center justify-center border border-zinc-700 rounded-md text-sm">
-                                        {{ $set->set_number }}
-                                    </div>
-                                </div>
+            </div>
 
-                                {{-- Weight --}}
-                                <div>
-                                    <input type="number" value="{{ $set->weight }}"
-                                        wire:blur="updateWeight({{ $set->id }}, $event.target.value)"
-                                        class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 w-24">
-                                </div>
+            {{-- Sets expandidos --}}
+            @if($expandedExerciseId === $routineExercise->id)
+                <div class="border-t border-zinc-800">
 
-                                {{-- Reps --}}
-                                <div>
-                                    <input type="number" value="{{ $set->reps }}"
-                                        wire:blur="updateReps({{ $set->id }}, $event.target.value)"
-                                        class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 w-24">
-                                </div>
+                    <div class="grid grid-cols-[3rem_1fr_1fr_2.5rem] gap-3 px-5 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                        <span class="text-center">Set</span>
+                        <span>{{ __('app.weight') }} (kg)</span>
+                        <span>{{ __('app.reps') }}</span>
+                        <span></span>
+                    </div>
 
-                                {{-- Delete --}}
-                                <div class="text-right">
-                                    <button wire:click="deleteSet({{ $set->id }})"
-                                        class="text-zinc-500 hover:text-red-500 transition">
-                                        ✕
-                                    </button>
-                                </div>
+                    @foreach($routineExercise->sets->sortBy('set_number') as $set)
+                        <div class="grid grid-cols-[3rem_1fr_1fr_2.5rem] gap-3 px-5 py-2.5 items-center border-t border-zinc-800/50">
 
+                            <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-800 text-xs font-semibold text-zinc-300 mx-auto">
+                                {{ $set->set_number }}
                             </div>
 
-                        @endforeach
+                            <input type="number"
+                                value="{{ $set->weight }}"
+                                wire:blur="updateWeight({{ $set->id }}, $event.target.value)"
+                                inputmode="decimal"
+                                placeholder="—"
+                                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-center focus:outline-none focus:border-zinc-600 transition">
 
+                            <input type="number"
+                                value="{{ $set->reps }}"
+                                wire:blur="updateReps({{ $set->id }}, $event.target.value)"
+                                inputmode="numeric"
+                                placeholder="—"
+                                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-center focus:outline-none focus:border-zinc-600 transition">
+
+                            <button wire:click="deleteSet({{ $set->id }})"
+                                class="flex items-center justify-center text-zinc-600 hover:text-red-400 transition mx-auto">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+
+                        </div>
+                    @endforeach
+
+                    <div class="px-5 py-4 border-t border-zinc-800/50">
+                        <button wire:click="addSet({{ $routineExercise->id }})"
+                            class="w-full py-2.5 rounded-xl border border-dashed border-zinc-700 text-zinc-500 hover:border-zinc-500 hover:text-zinc-300 text-sm transition">
+                            + {{ __('app.add_set') }}
+                        </button>
                     </div>
 
                 </div>
-
             @endif
-            <button wire:click="confirmDeleteExercise({{ $routineExercise->id }})"
-                class="text-red-500 hover:text-red-400 transition p-2">
-                {{ __('app.delete') }}
-            </button>
+
         </div>
+    @empty
+        <div class="flex flex-col items-center justify-center py-20 text-center">
+            <div class="text-6xl mb-4">📋</div>
+            <p class="text-zinc-400 text-sm">{{ __('app.no_exercises_yet') }}</p>
+            <p class="text-zinc-600 text-xs mt-2">{{ __('app.add_exercises_from_library') }}</p>
+        </div>
+    @endforelse
 
-    @endforeach
-    
+    {{-- Link para biblioteca --}}
+    <a href="{{ route('library.index', app()->getLocale()) }}"
+        class="flex items-center justify-center gap-2 w-full py-4 rounded-2xl border border-dashed border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 text-sm font-medium transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        {{ __('app.browse_exercises') }}
+    </a>
+
+    {{-- Modal: confirmar delete exercício --}}
     @if($showDeleteExerciseModal)
-
-        <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-            <div class="bg-zinc-600 p-6 rounded-2xl w-96 space-y-6">
-
+        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-sm space-y-4">
                 <div>
-                    <h2 class="text-xl font-semibold">
-                        {{ __('app.confirm_delete') }}
-                    </h2>
-
-                    <p class="text-zinc-400 mt-2">
-                        {{ __('app.confirm_delete_message') }}
-                    </p>
+                    <h2 class="text-lg font-semibold text-white">{{ __('app.confirm_delete') }}</h2>
+                    <p class="text-sm text-zinc-400 mt-1">{{ __('app.confirm_delete_message') }}</p>
                 </div>
-
-                <div class="flex justify-end gap-3">
-
+                <div class="flex gap-3">
                     <button wire:click="closeDeleteExerciseModal"
-                        class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition">
+                        class="flex-1 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm transition">
                         {{ __('app.cancel') }}
                     </button>
-
-                    <button wire:click="deleteExercise" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 transition">
+                    <button wire:click="deleteExercise"
+                        class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-sm font-semibold transition">
                         {{ __('app.delete') }}
                     </button>
-
                 </div>
             </div>
         </div>
-
     @endif
+
 </div>

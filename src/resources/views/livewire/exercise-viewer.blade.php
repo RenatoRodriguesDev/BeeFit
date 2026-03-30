@@ -1,127 +1,129 @@
-<div class="space-y-4">
-    <h1 class="text-3xl font-bold mb-8">
-        {{ __('app.exercises') }}
-    </h1>
+<div class="h-full flex flex-col">
+
     @if(!$exercise)
-        <div class="bg-zinc-600 rounded-3xl p-8 text-zinc-400">
-            {{ __('app.select_exercise_from_library') }}
+        {{-- Empty state --}}
+        <div class="flex-1 flex flex-col items-center justify-center text-center p-8">
+            <div class="text-6xl mb-4">🔍</div>
+            <p class="text-zinc-400 text-sm">{{ __('app.select_exercise_from_library') }}</p>
         </div>
     @else
+        <div x-data="{ show: false }" x-init="setTimeout(() => show = true, 50)"
+            x-show="show" x-transition:enter.opacity.duration.200ms
+            class="flex-1 overflow-y-auto">
 
-        <div x-data="{ show: false, videoUrl: '{{ $exercise->video_path }}' }" x-init="setTimeout(() => show = true, 50)"
-            x-show="show" x-transition.opacity.duration.300ms class="p-6 lg:p-10 bg-zinc-900">
-
-            {{-- Header --}}
-            <div>
-                <h1 class="text-3xl font-bold">
-                    {{ $exercise->translate()->name }}
-                </h1>
-
-                <div class="text-zinc-400 mt-2">
-                    {{ $exercise->equipment->translate()->name ?? '' }}
-                    •
-                    {{ $exercise->primaryMuscle->translate()->name ?? '' }}
-                </div>
-            </div>
-
-            {{-- Video Placeholder --}}
-            <div class="bg-black rounded-3xl overflow-hidden w-full lg:w-2/3 mx-auto py-4"
+            {{-- Media --}}
+            <div class="bg-zinc-950 w-full aspect-video flex items-center justify-center overflow-hidden"
                 wire:key="media-{{ $exercise->id }}">
-
                 @if($exercise->has_video)
-                    <video controls autoplay loop class="w-full h-64 object-cover">
+                    <video controls autoplay loop muted class="w-full h-full object-cover">
                         <source src="{{ asset($exercise->video_path) }}" type="video/mp4">
                     </video>
-                @else
-                    <img src="{{ asset($exercise->thumbnail_path) }}" class="w-full h-64 object-cover"
+                @elseif($exercise->thumbnail_path)
+                    <img src="{{ asset($exercise->thumbnail_path) }}"
+                        class="w-full h-full object-cover"
                         alt="{{ $exercise->translate()->name }}">
+                @else
+                    <div class="text-zinc-700 text-sm">{{ __('app.no_media') }}</div>
                 @endif
-
             </div>
 
-            {{-- Tabs estilo Hevy --}}
-            <div class="flex gap-6 border-b border-zinc-800 pb-3 text-sm">
+            <div class="px-5 py-5 space-y-5">
 
-                <button wire:click="setTab('howto')"
-                    class="{{ $tab === 'howto' ? 'text-white border-b-2 border-white pb-2' : 'text-zinc-400' }}">
-                    {{ __('app.how_to') }}
-                </button>
-
-                <button wire:click="setTab('history')"
-                    class="{{ $tab === 'history' ? 'text-white border-b-2 border-white pb-2' : 'text-zinc-400' }}">
-                    {{ __('app.history') }}
-                </button>
-
-                <button wire:click="setTab('stats')"
-                    class="{{ $tab === 'stats' ? 'text-white border-b-2 border-white pb-2' : 'text-zinc-400' }}">
-                    {{ __('app.statistics') }}
-                </button>
-
-            </div>
-
-            {{-- Conteúdo --}}
-            <div class="text-zinc-300">
-                @if($tab === 'howto')
-                    <div class="text-zinc-300 mt-4">
-                        {{ __('app.exercise_instructions_here') }}
+                {{-- Header --}}
+                <div>
+                    <h1 class="text-xl font-bold text-white">{{ $exercise->translate()->name }}</h1>
+                    <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                        @if($exercise->equipment?->translate()?->name)
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-400">
+                                {{ $exercise->equipment->translate()->name }}
+                            </span>
+                        @endif
+                        @if($exercise->primaryMuscle?->translate()?->name)
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                {{ $exercise->primaryMuscle->translate()->name }}
+                            </span>
+                        @endif
                     </div>
+                </div>
+
+                {{-- Tabs --}}
+                <div class="flex gap-1 bg-zinc-800 rounded-xl p-1">
+                    <button wire:click="setTab('howto')"
+                        class="flex-1 py-2 rounded-lg text-xs font-medium transition
+                            {{ $tab === 'howto' ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300' }}">
+                        {{ __('app.how_to') }}
+                    </button>
+                    <button wire:click="setTab('history')"
+                        class="flex-1 py-2 rounded-lg text-xs font-medium transition
+                            {{ $tab === 'history' ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300' }}">
+                        {{ __('app.history') }}
+                    </button>
+                    <button wire:click="setTab('stats')"
+                        class="flex-1 py-2 rounded-lg text-xs font-medium transition
+                            {{ $tab === 'stats' ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300' }}">
+                        {{ __('app.statistics') }}
+                    </button>
+                </div>
+
+                {{-- Conteúdo das tabs --}}
+                @if($tab === 'howto')
+                    <p class="text-sm text-zinc-400 leading-relaxed">
+                        {{ $exercise->translate()->description ?? __('app.exercise_instructions_here') }}
+                    </p>
                 @endif
 
                 @if($tab === 'history')
-                    @if($exercise)
-                        @livewire('exercise-history', ['exerciseId' => $exercise->id], key($exercise->id))
-                    @endif
+                    @livewire('exercise-history', ['exerciseId' => $exercise->id], key($exercise->id))
                 @endif
 
                 @if($tab === 'stats')
-                    <div class="space-y-4 mt-4">
-                        @php
-                            $pr = \App\Models\PersonalRecord::where('user_id', auth()->id())
-                                ->where('exercise_id', $exercise->id)
-                                ->with('workout')
-                                ->first();
-                        @endphp
+                    @php
+                        $pr = \App\Models\PersonalRecord::where('user_id', auth()->id())
+                            ->where('exercise_id', $exercise->id)
+                            ->with('workout')
+                            ->first();
+                    @endphp
 
-                        @if(!$pr)
-                            <p class="text-zinc-400 text-sm">{{ __('app.no_records_yet') }}</p>
-                        @else
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="bg-zinc-800 rounded-2xl p-4 space-y-1">
-                                    <div class="text-xs text-zinc-400 uppercase tracking-wide">{{ __('app.pr_max_weight') }}</div>
-                                    <div class="text-2xl font-bold text-white">{{ $pr->max_weight }} <span
-                                            class="text-sm font-normal text-zinc-400">kg</span></div>
-                                    <div class="text-xs text-zinc-500">{{ $pr->reps_at_max_weight }} reps</div>
-                                </div>
-                                <div class="bg-zinc-800 rounded-2xl p-4 space-y-1">
-                                    <div class="text-xs text-zinc-400 uppercase tracking-wide">{{ __('app.pr_1rm') }}</div>
-                                    <div class="text-2xl font-bold text-yellow-400">{{ $pr->estimated_1rm }} <span
-                                            class="text-sm font-normal text-zinc-400">kg</span></div>
-                                    <div class="text-xs text-zinc-500">Epley formula</div>
-                                </div>
-                                <div class="bg-zinc-800 rounded-2xl p-4 space-y-1">
-                                    <div class="text-xs text-zinc-400 uppercase tracking-wide">{{ __('app.pr_max_volume') }}</div>
-                                    <div class="text-2xl font-bold text-white">{{ number_format($pr->max_volume_set, 0) }} <span
-                                            class="text-sm font-normal text-zinc-400">kg</span></div>
-                                    <div class="text-xs text-zinc-500">{{ __('app.pr_single_set') }}</div>
-                                </div>
-                                <div class="bg-zinc-800 rounded-2xl p-4 space-y-1">
-                                    <div class="text-xs text-zinc-400 uppercase tracking-wide">{{ __('app.pr_max_reps') }}</div>
-                                    <div class="text-2xl font-bold text-white">{{ $pr->max_reps }} <span
-                                            class="text-sm font-normal text-zinc-400">reps</span></div>
-                                    <div class="text-xs text-zinc-500">{{ $pr->weight_at_max_reps }} kg</div>
-                                </div>
+                    @if(!$pr)
+                        <div class="flex flex-col items-center py-8 text-center">
+                            <div class="text-4xl mb-3">📊</div>
+                            <p class="text-sm text-zinc-500">{{ __('app.no_records_yet') }}</p>
+                        </div>
+                    @else
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-zinc-800 rounded-xl p-4">
+                                <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">{{ __('app.pr_max_weight') }}</div>
+                                <div class="text-2xl font-bold text-white">{{ $pr->max_weight }}<span class="text-sm font-normal text-zinc-400 ml-1">kg</span></div>
+                                <div class="text-xs text-zinc-500 mt-0.5">× {{ $pr->reps_at_max_weight }} reps</div>
                             </div>
-                            @if($pr->workout)
-                                <p class="text-xs text-zinc-500 text-right">
-                                    {{ __('app.pr_achieved_on') }} {{ $pr->workout->started_at->format('d M Y') }}
-                                </p>
+                            <div class="bg-zinc-800 rounded-xl p-4">
+                                <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">{{ __('app.pr_1rm') }}</div>
+                                <div class="text-2xl font-bold text-yellow-400">{{ number_format($pr->estimated_1rm, 1) }}<span class="text-sm font-normal text-zinc-400 ml-1">kg</span></div>
+                                <div class="text-xs text-zinc-500 mt-0.5">Epley</div>
+                            </div>
+                            <div class="bg-zinc-800 rounded-xl p-4">
+                                <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">{{ __('app.pr_max_reps') }}</div>
+                                <div class="text-2xl font-bold text-white">{{ $pr->max_reps }}<span class="text-sm font-normal text-zinc-400 ml-1">reps</span></div>
+                                <div class="text-xs text-zinc-500 mt-0.5">@ {{ $pr->weight_at_max_reps }} kg</div>
+                            </div>
+                            @if($pr->max_volume_set)
+                            <div class="bg-zinc-800 rounded-xl p-4">
+                                <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">{{ __('app.pr_max_volume') }}</div>
+                                <div class="text-2xl font-bold text-white">{{ number_format($pr->max_volume_set) }}<span class="text-sm font-normal text-zinc-400 ml-1">kg</span></div>
+                                <div class="text-xs text-zinc-500 mt-0.5">{{ __('app.pr_single_set') }}</div>
+                            </div>
                             @endif
+                        </div>
+
+                        @if($pr->workout)
+                            <p class="text-xs text-zinc-600 text-right">
+                                {{ __('app.pr_achieved_on') }} {{ $pr->workout->started_at->format('d M Y') }}
+                            </p>
                         @endif
-                    </div>
+                    @endif
                 @endif
+
             </div>
-
         </div>
-
     @endif
 </div>

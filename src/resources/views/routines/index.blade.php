@@ -2,24 +2,22 @@
 
 @section('content')
 
-    <h1 class="text-3xl font-bold mb-8">
-        {{ __('app.routines') }}
-    </h1>
+    <div class="max-w-2xl mx-auto space-y-5">
 
-    <div class="flex flex-col lg:grid lg:grid-cols-3 gap-6">
-
-        <div class="bg-zinc-600 p-6 rounded-2xl h-fit lg:order-last">
-            @livewire('routine-manager')
-
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-white">{{ __('app.routines') }}</h1>
             <a href="{{ route('library.index', app()->getLocale()) }}"
-                class="block w-full bg-zinc-800 text-center py-3 rounded-xl hover:bg-zinc-700 mt-4">
+                class="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
                 {{ __('app.browse_exercises') }}
             </a>
         </div>
 
-        <div class="lg:col-span-2">
-            @livewire('routine-list')
-        </div>
+        @livewire('routine-manager')
+
+        @livewire('routine-list')
 
     </div>
 

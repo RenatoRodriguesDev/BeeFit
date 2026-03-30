@@ -212,4 +212,7 @@ return [
     'recent_prs' => 'Recordes recentes',
     'no_workouts_yet' => 'Ainda sem treinos.',
 
+
+    'add_exercises_from_library' => 'Adiciona exercícios a partir da biblioteca.',
+
 ];

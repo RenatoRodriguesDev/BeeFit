@@ -212,4 +212,7 @@ return [
     'recent_prs' => 'Recent records',
     'no_workouts_yet' => 'No workouts yet.',
 
+
+    'add_exercises_from_library' => 'Add exercises from the library.',
+
 ];

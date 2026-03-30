@@ -2,16 +2,18 @@
 
 @section('content')
 
-    <div class="flex flex-col lg:flex-row lg:h-full">
+    {{-- Mobile: painel + viewer empilhados --}}
+    {{-- Desktop: sidebar fixa à esquerda + viewer à direita --}}
+    <div class="flex flex-col lg:flex-row lg:gap-0" style="min-height: calc(100vh - 4rem)">
 
-        {{-- Painel Central --}}
-        <div class="flex-1">
-            @livewire('exercise-viewer')
+        {{-- Sidebar (lista + filtros) --}}
+        <div class="lg:w-80 lg:shrink-0 lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden border-b lg:border-b-0 lg:border-r border-zinc-800">
+            @livewire('library-panel')
         </div>
 
-        {{-- Painel Lateral --}}
-        <div class="lg:w-96 lg:h-full lg:shrink-0">
-            @livewire('library-panel')
+        {{-- Viewer --}}
+        <div class="flex-1 lg:overflow-y-auto">
+            @livewire('exercise-viewer')
         </div>
 
     </div>
