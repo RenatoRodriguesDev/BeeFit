@@ -198,6 +198,9 @@ return [
     'active' => 'Ativo',
     'workout_in_progress' => 'Treino em progresso',
     'continue' => 'Continuar',
+    'duration' => 'Duração',
+    'volume' => 'Volume',
+    'sets' => 'Séries',
     'paused' => 'Pausado',
 
 ];
