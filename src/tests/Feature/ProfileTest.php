@@ -18,8 +18,10 @@ test('profile information can be updated', function () {
     $response = $this
         ->actingAs($user)
         ->patch('/profile', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name'     => 'Test User',
+            'username' => 'testuser123',
+            'email'    => 'test@example.com',
+            'locale'   => 'en',
         ]);
 
     $response
@@ -39,8 +41,10 @@ test('email verification status is unchanged when the email address is unchanged
     $response = $this
         ->actingAs($user)
         ->patch('/profile', [
-            'name' => 'Test User',
-            'email' => $user->email,
+            'name'     => 'Test User',
+            'username' => $user->username,
+            'email'    => $user->email,
+            'locale'   => 'en',
         ]);
 
     $response

@@ -1,47 +1,84 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Test Case
-|--------------------------------------------------------------------------
-|
-| The closure you provide to your test functions is always bound to a specific PHPUnit test
-| case class. By default, that class is "PHPUnit\Framework\TestCase". Of course, you may
-| need to change it using the "pest()" function to bind a different classes or traits.
-|
-*/
+use App\Models\Equipment;
+use App\Models\Exercise;
+use App\Models\ExerciseTranslation;
+use App\Models\Follow;
+use App\Models\Muscle;
+use App\Models\Routine;
+use App\Models\User;
+use App\Models\Workout;
+use App\Models\WorkoutExercise;
+use App\Models\WorkoutSet;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 pest()->extend(Tests\TestCase::class)
-    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature');
+    ->use(RefreshDatabase::class)
+    ->in('Feature', 'Unit');
 
-/*
-|--------------------------------------------------------------------------
-| Expectations
-|--------------------------------------------------------------------------
-|
-| When you're writing tests, you often need to check that values meet certain conditions. The
-| "expect()" function gives you access to a set of "expectations" methods that you can use
-| to assert different things. Of course, you may extend the Expectation API at any time.
-|
-*/
+// ── Helpers ────────────────────────────────────────────────────────────────
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
-
-/*
-|--------------------------------------------------------------------------
-| Functions
-|--------------------------------------------------------------------------
-|
-| While Pest is very powerful out-of-the-box, you may have some testing code specific to your
-| project that you don't want to repeat in every file. Here you can also expose helpers as
-| global functions to help you to reduce the number of lines of code in your test files.
-|
-*/
-
-function something()
+function createUser(array $attrs = []): User
 {
-    // ..
+    return User::factory()->create($attrs);
+}
+
+function createExercise(): Exercise
+{
+    $equipment = Equipment::create([]);
+    $muscle    = Muscle::create([]);
+
+    $exercise = Exercise::create([
+        'equipment_id'      => $equipment->id,
+        'primary_muscle_id' => $muscle->id,
+    ]);
+
+    ExerciseTranslation::create([
+        'exercise_id' => $exercise->id,
+        'locale'      => 'en',
+        'name'        => 'Test Exercise',
+    ]);
+
+    return $exercise;
+}
+
+function createWorkout(User $user, string $status = 'active'): Workout
+{
+    $routine = $user->routines()->create(['name' => 'Test Routine', 'is_active' => true]);
+
+    return Workout::create([
+        'user_id'    => $user->id,
+        'routine_id' => $routine->id,
+        'started_at' => now(),
+        'status'     => $status,
+    ]);
+}
+
+function addExerciseToWorkout(Workout $workout, ?Exercise $exercise = null): WorkoutExercise
+{
+    $exercise ??= createExercise();
+
+    $we = WorkoutExercise::create([
+        'workout_id'  => $workout->id,
+        'exercise_id' => $exercise->id,
+        'order'       => $workout->exercises()->count() + 1,
+    ]);
+
+    WorkoutSet::create([
+        'workout_exercise_id' => $we->id,
+        'set_number'          => 1,
+        'weight'              => 100,
+        'reps'                => 10,
+    ]);
+
+    return $we;
+}
+
+function follow(User $follower, User $following, string $status = 'accepted'): Follow
+{
+    return Follow::create([
+        'follower_id'  => $follower->id,
+        'following_id' => $following->id,
+        'status'       => $status,
+    ]);
 }

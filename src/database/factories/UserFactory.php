@@ -13,11 +13,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'name'              => $this->faker->name(),
+            'username'          => $this->faker->unique()->regexify('[a-z][a-z0-9_]{4,14}'),
+            'email'             => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'password'          => static::$password ??= Hash::make('password'),
+            'remember_token'    => Str::random(10),
+            'locale'            => 'en',
         ];
     }
 
@@ -25,6 +27,21 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    public function private(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_private' => true,
+        ]);
+    }
+
+    public function premium(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'plan'                => 'premium',
+            'subscription_status' => 'active',
         ]);
     }
 }
