@@ -26,7 +26,7 @@
         {{-- Logo --}}
         <div class="px-5 pt-5 pb-4">
             <a href="{{ route('dashboard') }}" class="block">
-                <img src="{{ asset('images/logo_nobg.png') }}" alt="BeeFit" class="h-9 w-auto">
+                <img src="{{ asset('images/beefit_v2_nobg.png') }}" alt="BeeFit" class="h-20 w-auto">
             </a>
         </div>
 
