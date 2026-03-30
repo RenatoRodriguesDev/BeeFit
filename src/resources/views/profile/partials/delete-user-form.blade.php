@@ -1,55 +1,55 @@
-<section class="space-y-6">
-    <header>
-        <h2 class="text-lg font-medium text-white">
-            {{ __('app.delete_account') }}
-        </h2>
+<section x-data="{ showModal: {{ $errors->userDeletion->isNotEmpty() ? 'true' : 'false' }} }" class="space-y-4">
 
-        <p class="mt-1 text-sm text-white">
-            {{ __('app.once_your_account_is_deleted_all_of_its_resources_and_data_will_be_permanently_deleted_before_deleting_your_account_please_download_any_data_or_information_that_you_wish_to_retain') }}
-        </p>
-    </header>
+    <div>
+        <h2 class="text-base font-semibold text-white">{{ __('app.delete_account') }}</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">{{ __('app.once_your_account_is_deleted_all_of_its_resources_and_data_will_be_permanently_deleted_before_deleting_your_account_please_download_any_data_or_information_that_you_wish_to_retain') }}</p>
+    </div>
 
-    <x-danger-button
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('app.delete_account') }}</x-danger-button>
+    <button type="button" @click="showModal = true"
+        class="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-sm font-semibold text-white transition">
+        {{ __('app.delete_account') }}
+    </button>
 
-    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
+    <div x-show="showModal"
+         x-transition:enter="transition duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4"
+         style="display: none">
+
+        <form method="post" action="{{ route('profile.destroy') }}"
+              class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-sm space-y-4">
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-medium text-gray-900">
-                {{ __('app.are_you_sure_you_want_to_delete_your_account') }}
-            </h2>
+            <div>
+                <h2 class="text-lg font-semibold text-white">{{ __('app.are_you_sure_you_want_to_delete_your_account') }}</h2>
+                <p class="text-sm text-zinc-400 mt-1">{{ __('app.once_your_account_is_deleted_all_of_its_resources_and_data_will_be_permanently_deleted_please_enter_your_password_to_confirm_you_would_like_to_permanently_delete_your_account') }}</p>
+            </div>
 
-            <p class="mt-1 text-sm text-gray-600">
-                {{ __('app.once_your_account_is_deleted_all_of_its_resources_and_data_will_be_permanently_deleted_please_enter_your_password_to_confirm_you_would_like_to_permanently_delete_your_account') }}
-            </p>
-
-            <div class="mt-6">
-                <x-input-label for="password" value="{{ __('app.password') }}" class="sr-only" />
-
-                <x-text-input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-3/4"
+            <div>
+                <label class="block text-sm font-medium text-zinc-300 mb-1">{{ __('app.password') }}</label>
+                <input id="password" name="password" type="password"
                     placeholder="{{ __('app.password') }}"
-                />
-
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
+                    class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
+                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-1.5" />
             </div>
 
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
+            <div class="flex gap-3">
+                <button type="button" @click="showModal = false"
+                    class="flex-1 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm transition">
                     {{ __('app.cancel') }}
-                </x-secondary-button>
-
-                <x-danger-button class="ms-3">
+                </button>
+                <button type="submit"
+                    class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-sm font-semibold transition">
                     {{ __('app.delete_account') }}
-                </x-danger-button>
+                </button>
             </div>
+
         </form>
-    </x-modal>
+    </div>
+
 </section>

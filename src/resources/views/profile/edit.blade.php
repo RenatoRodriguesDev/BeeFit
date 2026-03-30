@@ -1,29 +1,26 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-zinc-600 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
+@section('content')
 
-            <div class="p-4 sm:p-8 bg-zinc-600 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
+<div class="max-w-2xl mx-auto space-y-6">
 
-            <div class="p-4 sm:p-8 bg-zinc-600 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
-        </div>
+    <div>
+        <h1 class="text-2xl font-bold text-white">{{ __('app.profile') }}</h1>
+        <p class="text-sm text-zinc-500 mt-1">{{ __('app.update_your_account_profile_information_and_email_address') }}</p>
     </div>
-</x-app-layout>
+
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+        @include('profile.partials.update-profile-information-form')
+    </div>
+
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+        @include('profile.partials.update-password-form')
+    </div>
+
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+        @include('profile.partials.delete-user-form')
+    </div>
+
+</div>
+
+@endsection

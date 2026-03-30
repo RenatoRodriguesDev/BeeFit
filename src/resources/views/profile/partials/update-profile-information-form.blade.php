@@ -1,25 +1,22 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-white">
-            {{ __('app.profile_information') }}
-        </h2>
-        <p class="mt-1 text-sm text-gray-400">
-            {{ __('app.update_your_account_profile_information_and_email_address') }}
-        </p>
-    </header>
+
+    <div class="mb-6">
+        <h2 class="text-base font-semibold text-white">{{ __('app.profile_information') }}</h2>
+        <p class="text-sm text-zinc-500 mt-0.5">{{ __('app.update_your_account_profile_information_and_email_address') }}</p>
+    </div>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6"
+    <form method="post" action="{{ route('profile.update') }}" class="space-y-5"
           enctype="multipart/form-data">
         @csrf
         @method('patch')
 
         {{-- Avatar --}}
         <div class="flex items-center gap-5">
-            <div class="w-16 h-16 rounded-full bg-zinc-700 overflow-hidden flex items-center justify-center shrink-0">
+            <div class="avatar-container w-16 h-16 rounded-full bg-zinc-800 overflow-hidden flex items-center justify-center shrink-0">
                 @if($user->avatar_path)
                     <img src="{{ asset('storage/' . $user->avatar_path) }}"
                          alt="{{ $user->name }}"
@@ -31,7 +28,7 @@
                 @endif
             </div>
             <div>
-                <label class="cursor-pointer inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition">
+                <label class="cursor-pointer inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
@@ -41,7 +38,7 @@
                            onchange="previewAvatar(this)">
                 </label>
                 @if($user->avatar_path)
-                    <p class="text-xs text-zinc-500 mt-1">{{ __('app.upload_photo_hint') }}</p>
+                    <p class="text-xs text-zinc-600 mt-1">{{ __('app.upload_photo_hint') }}</p>
                 @endif
                 <x-input-error :messages="$errors->get('avatar')" class="mt-1" />
             </div>
@@ -52,9 +49,15 @@
             if (!input.files || !input.files[0]) return;
             const reader = new FileReader();
             reader.onload = e => {
-                const img = input.closest('form').querySelector('img');
-                const initials = input.closest('form').querySelector('.text-2xl');
-                if (img) img.src = e.target.result;
+                const container = input.closest('form').querySelector('.avatar-container');
+                let img = container.querySelector('img');
+                const initials = container.querySelector('span');
+                if (!img) {
+                    img = document.createElement('img');
+                    img.className = 'w-full h-full object-cover';
+                    container.appendChild(img);
+                }
+                img.src = e.target.result;
                 if (initials) initials.style.display = 'none';
             };
             reader.readAsDataURL(input.files[0]);
@@ -63,39 +66,39 @@
 
         {{-- Name --}}
         <div>
-            <x-input-label for="name" :value="__('app.name')" />
-            <x-text-input id="name" name="name" type="text"
-                class="mt-1 block w-full text-gray-900"
-                :value="old('name', $user->name)"
-                required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            <label for="name" class="block text-sm font-medium text-zinc-300 mb-1">{{ __('app.name') }}</label>
+            <input id="name" name="name" type="text"
+                value="{{ old('name', $user->name) }}"
+                required autofocus autocomplete="name"
+                class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
+            <x-input-error class="mt-1.5" :messages="$errors->get('name')" />
         </div>
 
         {{-- Username --}}
         <div>
-            <x-input-label for="username" :value="__('app.username')" />
-            <x-text-input id="username" name="username" type="text"
-                class="mt-1 block w-full text-gray-900"
-                :value="old('username', $user->username)"
-                required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('username')" />
+            <label for="username" class="block text-sm font-medium text-zinc-300 mb-1">{{ __('app.username') }}</label>
+            <input id="username" name="username" type="text"
+                value="{{ old('username', $user->username) }}"
+                required autocomplete="username"
+                class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
+            <x-input-error class="mt-1.5" :messages="$errors->get('username')" />
         </div>
 
         {{-- Email --}}
         <div>
-            <x-input-label for="email" :value="__('app.email')" />
-            <x-text-input id="email" name="email" type="email"
-                class="mt-1 block w-full text-gray-900"
-                :value="old('email', $user->email)"
-                required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+            <label for="email" class="block text-sm font-medium text-zinc-300 mb-1">{{ __('app.email') }}</label>
+            <input id="email" name="email" type="email"
+                value="{{ old('email', $user->email) }}"
+                required autocomplete="email"
+                class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
+            <x-input-error class="mt-1.5" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-400">
+                <div class="mt-2">
+                    <p class="text-sm text-zinc-400">
                         {{ __('app.your_email_address_is_unverified') }}
                         <button form="send-verification"
-                            class="underline text-sm text-blue-400 hover:text-blue-300 rounded-md focus:outline-none">
+                            class="underline text-sm text-violet-400 hover:text-violet-300 rounded-md focus:outline-none">
                             {{ __('app.click_here_to_re_send_the_verification_email') }}
                         </button>
                     </p>
@@ -108,78 +111,80 @@
             @endif
         </div>
 
+        {{-- Language --}}
         <div>
-            <x-input-label for="locale" :value="__('app.language')" />
-            <select id="locale" name="locale" class="mt-1 block w-full rounded border-gray-300 bg-white text-gray-900 shadow-sm">
+            <label for="locale" class="block text-sm font-medium text-zinc-300 mb-1">{{ __('app.language') }}</label>
+            <select id="locale" name="locale"
+                class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
                 <option value="pt" {{ old('locale', $user->locale) === 'pt' ? 'selected' : '' }}>{{ __('app.portuguese') }}</option>
                 <option value="en" {{ old('locale', $user->locale) === 'en' ? 'selected' : '' }}>{{ __('app.english') }}</option>
                 <option value="es" {{ old('locale', $user->locale) === 'es' ? 'selected' : '' }}>{{ __('app.spanish') }}</option>
             </select>
-            <x-input-error class="mt-2" :messages="$errors->get('locale')" />
+            <x-input-error class="mt-1.5" :messages="$errors->get('locale')" />
         </div>
 
-        {{-- Divider --}}
-        <div class="border-t border-zinc-700 pt-4">
-            <p class="text-sm text-zinc-400 mb-4">{{ __('app.physical_metrics') }}</p>
+        {{-- Physical Metrics --}}
+        <div class="border-t border-zinc-800 pt-5">
+            <p class="text-sm font-medium text-zinc-400 mb-4">{{ __('app.physical_metrics') }}</p>
 
             {{-- Gender --}}
             <div class="mb-4">
-                <x-input-label :value="__('app.gender')" />
-                <div class="flex gap-3 mt-2">
+                <label class="block text-sm font-medium text-zinc-300 mb-2">{{ __('app.gender') }}</label>
+                <div class="flex gap-3">
                     @foreach(['male' => __('app.male'), 'female' => __('app.female'), 'other' => __('app.other')] as $val => $label)
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="gender" value="{{ $val }}"
                                    {{ old('gender', $user->gender) === $val ? 'checked' : '' }}
                                    class="peer hidden">
                             <div class="py-2 text-center rounded-xl border text-sm transition
-                                        border-zinc-600 text-zinc-400
-                                        peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:text-white
-                                        hover:border-blue-400 hover:text-white">
+                                        border-zinc-700 text-zinc-400
+                                        peer-checked:bg-violet-600 peer-checked:border-violet-600 peer-checked:text-white
+                                        hover:border-zinc-500 hover:text-white">
                                 {{ $label }}
                             </div>
                         </label>
                     @endforeach
                 </div>
-                <x-input-error :messages="$errors->get('gender')" class="mt-1" />
+                <x-input-error :messages="$errors->get('gender')" class="mt-1.5" />
             </div>
 
             {{-- Birthdate --}}
             <div class="mb-4">
-                <x-input-label for="birthdate" :value="__('app.birthdate')" />
-                <x-text-input id="birthdate" name="birthdate" type="date"
-                    class="mt-1 block w-full text-gray-900"
-                    :value="old('birthdate', $user->birthdate?->format('Y-m-d'))" />
-                <x-input-error :messages="$errors->get('birthdate')" class="mt-1" />
+                <label for="birthdate" class="block text-sm font-medium text-zinc-300 mb-1">{{ __('app.birthdate') }}</label>
+                <input id="birthdate" name="birthdate" type="date"
+                    value="{{ old('birthdate', $user->birthdate?->format('Y-m-d')) }}"
+                    class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
+                <x-input-error :messages="$errors->get('birthdate')" class="mt-1.5" />
             </div>
 
             {{-- Height & Weight --}}
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <x-input-label for="height_cm" :value="__('app.height_cm')" />
-                    <x-text-input id="height_cm" name="height_cm" type="number"
-                        class="mt-1 block w-full text-gray-900"
-                        :value="old('height_cm', $user->height_cm)"
-                        placeholder="175" min="50" max="300" />
-                    <x-input-error :messages="$errors->get('height_cm')" class="mt-1" />
+                    <label for="height_cm" class="block text-sm font-medium text-zinc-300 mb-1">{{ __('app.height_cm') }}</label>
+                    <input id="height_cm" name="height_cm" type="number"
+                        value="{{ old('height_cm', $user->height_cm) }}"
+                        placeholder="175" min="50" max="300"
+                        class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
+                    <x-input-error :messages="$errors->get('height_cm')" class="mt-1.5" />
                 </div>
                 <div>
-                    <x-input-label for="weight_kg" :value="__('app.weight_kg')" />
-                    <x-text-input id="weight_kg" name="weight_kg" type="number"
-                        class="mt-1 block w-full text-gray-900"
-                        :value="old('weight_kg', $user->weight_kg)"
-                        placeholder="70.0" min="20" max="500" step="0.1" />
-                    <x-input-error :messages="$errors->get('weight_kg')" class="mt-1" />
+                    <label for="weight_kg" class="block text-sm font-medium text-zinc-300 mb-1">{{ __('app.weight_kg') }}</label>
+                    <input id="weight_kg" name="weight_kg" type="number"
+                        value="{{ old('weight_kg', $user->weight_kg) }}"
+                        placeholder="70.0" min="20" max="500" step="0.1"
+                        class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
+                    <x-input-error :messages="$errors->get('weight_kg')" class="mt-1.5" />
                 </div>
             </div>
         </div>
 
         {{-- Privacy --}}
-        <div class="pt-4 border-t border-zinc-700">
+        <div class="border-t border-zinc-800 pt-5">
             <label class="flex items-center gap-3 cursor-pointer select-none">
                 <input type="hidden" name="is_private" value="0">
                 <input type="checkbox" name="is_private" value="1"
                     {{ old('is_private', $user->is_private ?? false) ? 'checked' : '' }}
-                    class="w-4 h-4 rounded accent-purple-500">
+                    class="w-4 h-4 rounded accent-violet-500">
                 <div>
                     <span class="text-sm font-medium text-white">🔒 {{ __('app.private_account') }}</span>
                     <p class="text-xs text-zinc-500 mt-0.5">{{ __('app.private_account_hint') }}</p>
@@ -188,8 +193,11 @@
         </div>
 
         {{-- Save --}}
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('app.save') }}</x-primary-button>
+        <div class="flex items-center gap-4 pt-1">
+            <button type="submit"
+                class="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-sm font-semibold text-white transition">
+                {{ __('app.save') }}
+            </button>
 
             @if (session('status') === 'profile-updated')
                 <p x-data="{ show: true }"
@@ -201,5 +209,6 @@
                 </p>
             @endif
         </div>
+
     </form>
 </section>
