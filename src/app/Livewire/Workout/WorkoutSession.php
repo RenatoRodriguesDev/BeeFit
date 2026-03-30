@@ -82,7 +82,7 @@ class WorkoutSession extends Component
         }
 
         if ($share) {
-            return redirect()->route('social.create-post-workout', $this->workout);
+            return redirect()->route('social.create-post-workout', $this->workout->id);
         }
 
         return redirect()->route('dashboard');
