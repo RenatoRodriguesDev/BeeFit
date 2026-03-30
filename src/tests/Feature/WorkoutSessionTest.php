@@ -41,8 +41,7 @@ describe('WorkoutSession', function () {
         Livewire::test(WorkoutSession::class, ['workout' => $workout])
             ->call('cancelWorkout');
 
-        expect($workout->fresh()->status)->toBe('cancelled')
-            ->and($workout->fresh()->finished_at)->not->toBeNull();
+        expect(Workout::find($workout->id))->toBeNull();
     });
 
     it('finishing a workout marks it as completed', function () {

@@ -57,10 +57,7 @@ class WorkoutSession extends Component
 
     public function cancelWorkout()
     {
-        $this->workout->update([
-            'status' => 'cancelled',
-            'finished_at' => now(),
-        ]);
+        $this->workout->delete();
 
         return redirect()->route('routines.index');
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Workout extends Model
 {
@@ -14,7 +15,22 @@ class Workout extends Model
         'status',
         'paused_at',
         'ended_at',
+        'uuid',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Workout $workout) {
+            if (empty($workout->uuid)) {
+                $workout->uuid = (string) Str::uuid();
+            }
+        });
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 
     protected $casts = [
         'started_at' => 'datetime',

@@ -34,7 +34,7 @@
 
             <div>
                 <div class="text-xs opacity-80">
-                    Treino em progresso
+                    {{ __('app.workout_in_progress') }}
                 </div>
 
                 <div class="font-semibold">
@@ -49,7 +49,7 @@
 
                 <a href="{{ route('workouts.session', $activeWorkout) }}"
                     class="bg-white text-blue-600 px-4 py-2 rounded-xl text-sm font-semibold">
-                    Continuar
+                    {{ __('app.continue') }}
                 </a>
 
             </div>

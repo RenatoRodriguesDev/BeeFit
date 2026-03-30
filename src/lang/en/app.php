@@ -195,4 +195,9 @@ return [
 
     'suggested_for_you' => 'Suggested for you',
 
+    'active' => 'Active',
+    'workout_in_progress' => 'Workout in progress',
+    'continue' => 'Continue',
+    'paused' => 'Paused',
+
 ];
