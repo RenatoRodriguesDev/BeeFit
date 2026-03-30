@@ -29,6 +29,7 @@ class LibraryPanel extends Component
     {
         $this->activeExerciseId = $exerciseId;
         $this->dispatch('exerciseSelected', exerciseId: $exerciseId);
+        $this->js("window.dispatchEvent(new CustomEvent('exercise-clicked'))");
     }
 
     public function openRoutineModal($exerciseId)

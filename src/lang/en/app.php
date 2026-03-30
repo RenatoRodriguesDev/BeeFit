@@ -215,4 +215,10 @@ return [
 
     'add_exercises_from_library' => 'Add exercises from the library.',
 
+    'back' => 'Back',
+    'exercise' => 'Exercise',
+    'equipment' => 'Equipment',
+    'primary_muscle' => 'Primary Muscle Group',
+    'complete_workout_to_set_pr' => 'Complete a workout to set your first record.',
+
 ];

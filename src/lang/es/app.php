@@ -213,4 +213,11 @@ return [
 
     'add_exercises_from_library' => 'Añade ejercicios desde la biblioteca.',
 
+
+    'back' => 'Volver',
+    'exercise' => 'Ejercicio',
+    'equipment' => 'Equipamiento',
+    'primary_muscle' => 'Grupo Muscular Principal',
+    'complete_workout_to_set_pr' => 'Completa un entrenamiento para establecer tu primer récord.',
+
 ];
