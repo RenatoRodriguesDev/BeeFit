@@ -14,7 +14,16 @@ class RoutineList extends Component
     public $showDeleteModal = false;
     public $routineToDelete;
 
-    protected $listeners = ['refreshRoutines' => '$refresh'];
+    protected $listeners = ['refreshRoutines' => '$refresh', 'reorderRoutines'];
+
+    public function reorderRoutines(array $order): void
+    {
+        foreach ($order as $item) {
+            Routine::where('id', $item['id'])
+                ->where('user_id', auth()->id())
+                ->update(['order' => $item['order']]);
+        }
+    }
 
     public function confirmDelete($id)
     {
@@ -75,7 +84,6 @@ class RoutineList extends Component
 
             $sets = $routineExercise->sets;
 
-
             foreach ($sets as $set) {
                 WorkoutSet::create([
                     'workout_exercise_id' => $workoutExercise->id,
@@ -84,7 +92,6 @@ class RoutineList extends Component
                     'reps' => $set->reps,
                 ]);
             }
-
         }
 
         return redirect()->route('workouts.session', $workout);
@@ -95,7 +102,8 @@ class RoutineList extends Component
         return view('livewire.routine-list', [
             'routines' => Routine::where('user_id', Auth::id())
                 ->withCount('exercises')
-                ->orderBy('created_at', 'asc')
+                ->orderBy('order')
+                ->orderBy('created_at')
                 ->get()
         ]);
     }

@@ -15,6 +15,8 @@ class RoutineEditor extends Component
     public ?int $exerciseToDelete = null;
     public bool $showDeleteExerciseModal = false;
 
+    protected $listeners = ['reorderExercises'];
+
     protected $rules = [
         'routine.exercises.*.sets.*.weight' => 'nullable|numeric',
         'routine.exercises.*.sets.*.reps' => 'nullable|integer',
@@ -28,6 +30,17 @@ class RoutineEditor extends Component
             'exercises.exercise.translations',
             'exercises.sets'
         ]);
+    }
+
+    public function reorderExercises(array $order): void
+    {
+        foreach ($order as $item) {
+            RoutineExercise::where('id', $item['id'])
+                ->where('routine_id', $this->routine->id)
+                ->update(['order' => $item['order']]);
+        }
+
+        $this->refreshRoutine();
     }
 
     public function toggleExercise($exerciseId)
@@ -65,7 +78,7 @@ class RoutineEditor extends Component
         )->count();
 
         if ($totalSets <= 1) {
-            return; // impede apagar o último set
+            return;
         }
 
         $set->delete();
@@ -94,7 +107,7 @@ class RoutineEditor extends Component
     private function refreshRoutine()
     {
         $this->routine = Routine::with([
-            'exercises.exercise',
+            'exercises.exercise.translations',
             'exercises.sets'
         ])->findOrFail($this->routine->id);
     }

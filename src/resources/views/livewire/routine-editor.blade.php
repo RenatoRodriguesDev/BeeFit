@@ -18,15 +18,23 @@
     </div>
 
     {{-- Exercícios --}}
-    @forelse($routine->exercises as $routineExercise)
-        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+    <div id="sortable-exercises" class="space-y-6">
+    @forelse($routine->exercises->sortBy('order') as $routineExercise)
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden" data-id="{{ $routineExercise->id }}">
 
             {{-- Cabeçalho — flex row com botões separados (sem nesting) --}}
             <div class="flex items-center">
 
-                {{-- Área clicável principal (expand) --}}
+                {{-- Drag handle --}}
+                <div class="drag-handle pl-4 pr-1 py-5 text-zinc-600 hover:text-zinc-400 cursor-grab active:cursor-grabbing shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16"/>
+                    </svg>
+                </div>
+
+                {{-- Área clicável principal (expand) — inclui chevron --}}
                 <button wire:click="toggleExercise({{ $routineExercise->id }})"
-                    class="flex-1 flex items-center gap-4 px-5 py-5 hover:bg-zinc-800/40 transition text-left min-w-0">
+                    class="flex-1 flex items-center gap-4 px-3 py-5 hover:bg-zinc-800/40 transition text-left min-w-0">
 
                     <div class="w-14 h-14 rounded-xl overflow-hidden bg-zinc-800 shrink-0">
                         @if($routineExercise->exercise->thumbnail_path)
@@ -50,29 +58,27 @@
                                     $minReps = $routineExercise->sets->min('reps');
                                     $maxReps = $routineExercise->sets->max('reps');
                                 @endphp
-                                {{ $minReps == $maxReps ? $minReps : "$minReps–$maxReps" }} reps
+                                {{ $minReps == $maxReps ? $minReps : $minReps . '–' . $maxReps }} reps
                             @endif
                         </div>
                     </div>
+
+                    {{-- Chevron dentro do botão --}}
+                    <svg class="w-4 h-4 text-zinc-500 shrink-0 transition-transform duration-200 {{ $expandedExerciseId === $routineExercise->id ? 'rotate-180' : '' }}"
+                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
 
                 </button>
 
                 {{-- Botão apagar (separado, fora do button anterior) --}}
                 <button wire:click="confirmDeleteExercise({{ $routineExercise->id }})"
-                    class="p-3 text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition shrink-0"
+                    class="px-4 py-5 text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition shrink-0"
                     title="{{ __('app.delete') }}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>
                 </button>
-
-                {{-- Chevron (separado, não é botão) --}}
-                <div class="pr-4 text-zinc-500 shrink-0">
-                    <svg class="w-4 h-4 transition-transform duration-200 {{ $expandedExerciseId === $routineExercise->id ? 'rotate-180' : '' }}"
-                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                    </svg>
-                </div>
 
             </div>
 
@@ -136,6 +142,7 @@
             <p class="text-zinc-600 text-xs mt-2">{{ __('app.add_exercises_from_library') }}</p>
         </div>
     @endforelse
+    </div>{{-- /sortable-exercises --}}
 
     {{-- Link para biblioteca --}}
     <a href="{{ route('library.index', app()->getLocale()) }}"

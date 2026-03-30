@@ -6,6 +6,36 @@ import Sortable from 'sortablejs';
 import Toastify from 'toastify-js';
 import 'toastify-js/src/toastify.css';
 
+const sortableInstances = {};
+
+function setupSortable(id, eventName) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (sortableInstances[id]) {
+        sortableInstances[id].destroy();
+        delete sortableInstances[id];
+    }
+
+    sortableInstances[id] = new Sortable(el, {
+        animation: 150,
+        handle: '.drag-handle',
+        ghostClass: 'opacity-30',
+        onEnd: function () {
+            const order = [];
+            el.querySelectorAll('[data-id]').forEach((item, index) => {
+                order.push({ id: parseInt(item.dataset.id), order: index + 1 });
+            });
+            Livewire.dispatch(eventName, { order });
+        }
+    });
+}
+
+function initSortable() {
+    setupSortable('sortable-exercises', 'reorderExercises');
+    setupSortable('sortable-routines', 'reorderRoutines');
+}
+
 document.addEventListener('livewire:init', () => {
     Livewire.hook('morph.updated', () => {
         initSortable();
@@ -13,22 +43,6 @@ document.addEventListener('livewire:init', () => {
 
     initSortable();
 });
-
-function initSortable() {
-    const el = document.getElementById('sortable-exercises');
-    if (!el) return;
-    new Sortable(el, {
-        animation: 150,
-        handle: '.drag-handle',
-        onEnd: function (evt) {
-            let order = [];
-            el.querySelectorAll('[data-id]').forEach((item, index) => {
-                order.push({ id: item.dataset.id, order: index + 1 });
-            });
-            Livewire.dispatch('reorderExercises', { order });
-        }
-    });
-}
 
 window.toast = function(message, type = 'success') {
     let bg = type === 'success'

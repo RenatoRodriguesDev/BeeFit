@@ -6,10 +6,18 @@
             <p class="text-zinc-400 text-sm">{{ __('app.get_started_start_by_creating_a_routine') }}</p>
         </div>
     @else
+        <div id="sortable-routines" class="space-y-3">
         @foreach($routines as $routine)
-            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden" data-id="{{ $routine->id }}">
 
-                <div class="flex items-center gap-4 px-5 py-4">
+                <div class="flex items-center gap-3 px-4 py-4">
+
+                    {{-- Drag handle --}}
+                    <div class="drag-handle text-zinc-600 hover:text-zinc-400 cursor-grab active:cursor-grabbing shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16"/>
+                        </svg>
+                    </div>
 
                     {{-- Ícone --}}
                     <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center shrink-0 text-lg">
@@ -34,8 +42,16 @@
                     {{-- Acções --}}
                     <div class="flex items-center gap-2 shrink-0">
 
+                        {{-- Mobile: só ícone --}}
                         <button wire:click="startWorkout({{ $routine->id }})"
-                            class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-green-500 hover:bg-green-400 text-black text-xs font-semibold transition">
+                            class="sm:hidden p-2 rounded-xl bg-green-500 hover:bg-green-400 text-black transition"
+                            title="{{ __('app.start_workout') }}">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+
+                        {{-- Desktop: texto completo --}}
+                        <button wire:click="startWorkout({{ $routine->id }})"
+                            class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-green-500 hover:bg-green-400 text-black text-xs font-semibold transition">
                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                             {{ __('app.start_workout') }}
                         </button>
@@ -62,6 +78,7 @@
 
             </div>
         @endforeach
+        </div>{{-- /sortable-routines --}}
     @endif
 
     {{-- Modal confirmar delete --}}
