@@ -4,13 +4,15 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Carbon\Carbon;
+use App\Models\PersonalRecord;
 use App\Models\Workout;
+use App\Models\WorkoutSet;
 
 class Dashboard extends Component
 {
     public $currentMonth;
-    public $workoutsByDate = [];
-    public $selectedDate = null;
+    public $workoutsByDate  = [];
+    public $selectedDate    = null;
     public $selectedWorkouts = [];
 
     public function mount()
@@ -24,24 +26,20 @@ class Dashboard extends Component
         $workouts = Workout::where('user_id', auth()->id())
             ->where('status', 'completed')
             ->get()
-            ->groupBy(function ($workout) {
-                return $workout->started_at->format('Y-m-d');
-            });
+            ->groupBy(fn ($w) => $w->started_at->format('Y-m-d'));
 
-        $this->workoutsByDate = $workouts->map(function ($dayWorkouts) {
-            return $dayWorkouts->count();
-        })->toArray();
+        $this->workoutsByDate = $workouts->map(fn ($g) => $g->count())->toArray();
     }
 
     public function previousMonth()
     {
-        $this->currentMonth = $this->currentMonth->copy()->subMonth();
+        $this->currentMonth   = $this->currentMonth->copy()->subMonth();
         $this->selectedWorkouts = null;
     }
 
     public function nextMonth()
     {
-        $this->currentMonth = $this->currentMonth->copy()->addMonth();
+        $this->currentMonth   = $this->currentMonth->copy()->addMonth();
         $this->selectedWorkouts = null;
     }
 
@@ -57,6 +55,81 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.dashboard');
+        $userId     = auth()->id();
+        $monthStart = Carbon::now()->startOfMonth();
+        $monthEnd   = Carbon::now()->endOfMonth();
+
+        $totalWorkouts = Workout::where('user_id', $userId)
+            ->where('status', 'completed')
+            ->count();
+
+        $workoutsThisMonth = Workout::where('user_id', $userId)
+            ->where('status', 'completed')
+            ->whereBetween('started_at', [$monthStart, $monthEnd])
+            ->count();
+
+        $volumeThisMonth = (int) WorkoutSet::whereHas('workoutExercise.workout', function ($q) use ($userId, $monthStart, $monthEnd) {
+            $q->where('user_id', $userId)
+              ->where('status', 'completed')
+              ->whereBetween('started_at', [$monthStart, $monthEnd]);
+        })->selectRaw('COALESCE(SUM(weight * reps), 0) as total')->value('total');
+
+        $streak = $this->calculateStreak($userId);
+
+        $recentWorkouts = Workout::with(['routine', 'exercises.sets'])
+            ->where('user_id', $userId)
+            ->where('status', 'completed')
+            ->orderByDesc('started_at')
+            ->limit(5)
+            ->get();
+
+        $recentPRs = PersonalRecord::with(['exercise.translations'])
+            ->where('user_id', $userId)
+            ->orderByDesc('updated_at')
+            ->limit(5)
+            ->get();
+
+        return view('livewire.dashboard', compact(
+            'totalWorkouts',
+            'workoutsThisMonth',
+            'volumeThisMonth',
+            'streak',
+            'recentWorkouts',
+            'recentPRs',
+        ));
+    }
+
+    private function calculateStreak(int $userId): int
+    {
+        $dates = Workout::where('user_id', $userId)
+            ->where('status', 'completed')
+            ->orderByDesc('started_at')
+            ->pluck('started_at')
+            ->map(fn ($d) => $d->format('Y-m-d'))
+            ->unique()
+            ->values();
+
+        if ($dates->isEmpty()) {
+            return 0;
+        }
+
+        $streak = 0;
+        $check  = Carbon::today();
+
+        // Aceita que o último treino seja hoje ou ontem para manter streak
+        if ($dates->first() !== $check->format('Y-m-d')) {
+            $check = $check->subDay();
+        }
+
+        foreach ($dates as $date) {
+            if ($date === $check->format('Y-m-d')) {
+                $streak++;
+                $check = $check->subDay();
+            } else {
+                break;
+            }
+        }
+
+        return $streak;
     }
 }

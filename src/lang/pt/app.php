@@ -203,4 +203,13 @@ return [
     'sets' => 'Séries',
     'paused' => 'Pausado',
 
+
+    'streak_days' => 'Dias seguidos',
+    'this_month' => 'Este mês',
+    'volume_month' => 'Volume este mês',
+    'total_workouts' => 'Treinos no total',
+    'recent_workouts' => 'Treinos recentes',
+    'recent_prs' => 'Recordes recentes',
+    'no_workouts_yet' => 'Ainda sem treinos.',
+
 ];

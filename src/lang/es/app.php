@@ -194,4 +194,20 @@ return [
 
     'suggested_for_you' => 'Sugerencias para ti',
 
+
+    'active' => 'Activo',
+    'paused' => 'Pausado',
+    'continue' => 'Continuar',
+    'duration' => 'Duración',
+    'volume' => 'Volumen',
+    'sets' => 'Series',
+    'workout_in_progress' => 'Entrenamiento en curso',
+    'streak_days' => 'Días seguidos',
+    'this_month' => 'Este mes',
+    'volume_month' => 'Volumen este mes',
+    'total_workouts' => 'Entrenamientos totales',
+    'recent_workouts' => 'Entrenamientos recientes',
+    'recent_prs' => 'Récords recientes',
+    'no_workouts_yet' => 'Aún sin entrenamientos.',
+
 ];

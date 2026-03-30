@@ -203,4 +203,13 @@ return [
     'sets' => 'Sets',
     'paused' => 'Paused',
 
+
+    'streak_days' => 'Day streak',
+    'this_month' => 'This month',
+    'volume_month' => 'Volume this month',
+    'total_workouts' => 'All-time workouts',
+    'recent_workouts' => 'Recent workouts',
+    'recent_prs' => 'Recent records',
+    'no_workouts_yet' => 'No workouts yet.',
+
 ];
