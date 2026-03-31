@@ -10,6 +10,8 @@ WORKDIR /app
 
 COPY ./src .
 
+RUN touch /app/database/database.sqlite
+
 RUN composer install --no-dev --optimize-autoloader
 
 CMD ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]
