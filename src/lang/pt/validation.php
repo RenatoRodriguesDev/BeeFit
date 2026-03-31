@@ -23,7 +23,7 @@ return [
     'any_of' => 'O campo :attribute é inválido.',
     'array' => 'O campo :attribute deve ser um array.',
     'ascii' => 'O campo :attribute deve conter apenas caracteres alfanuméricos ASCII e símbolos.',
-    'before' => 'O campo :attribute deve ser uma data anterior a :date.',
+    'before' => 'O campo :attribute deve ser uma data anterior a hoje.',
     'before_or_equal' => 'O campo :attribute deve ser uma data anterior ou igual a :date.',
 
     'between' => [
@@ -213,6 +213,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'birthdate' => 'data de nascimento',
+    ],
 
 ];
