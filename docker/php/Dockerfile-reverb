@@ -1,0 +1,15 @@
+FROM php:8.3-cli
+
+RUN apt-get update && apt-get install -y \
+    git unzip libzip-dev \
+    && docker-php-ext-install zip pcntl
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+COPY ./src .
+
+RUN composer install --no-dev --optimize-autoloader
+
+CMD ["sh", "-c", "php artisan reverb:start --host=0.0.0.0 --port=$PORT"]
