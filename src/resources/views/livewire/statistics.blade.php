@@ -102,8 +102,8 @@
                 (function(){
                     const id     = '{{ $chartId }}';
                     const labels = @json($cData['labels']);
-                    const data   = @json($cData['data']);
-                    const prVal  = {{ $pr->max_weight ?? 'null' }};
+                    const data   = @json(array_map(fn($v) => is_null($v) || $v === 0.0 ? null : $v, $cData['data']));
+                    const prVal  = {{ $pr->max_weight ? (float) $pr->max_weight : 'null' }};
                     const isDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
                     const grid   = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
                     const tick   = isDark ? '#666' : '#999';
@@ -113,7 +113,7 @@
                         new Chart(ctx,{
                             type:'line',
                             data:{labels,datasets:[
-                                {data,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.1)',
+                                {data,spanGaps:true,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.1)',
                                  borderWidth:2,pointRadius:3,tension:0.35,fill:true,
                                  pointBackgroundColor:data.map(v=>prVal&&v>=prVal?'#EF9F27':'#378ADD')},
                                 {data:Array(labels.length).fill(prVal),borderColor:'#EF9F27',

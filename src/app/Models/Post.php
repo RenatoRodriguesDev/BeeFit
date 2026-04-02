@@ -32,6 +32,11 @@ class Post extends Model
 
     public function isLikedBy(User $user): bool
     {
+        // Use the already-loaded relation to avoid N+1 queries in feed loops
+        if ($this->relationLoaded('likes')) {
+            return $this->likes->contains('user_id', $user->id);
+        }
+
         return $this->likes()->where('user_id', $user->id)->exists();
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\PersonalRecord;
+use App\Models\Workout;
 use App\Models\WorkoutExercise;
+use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 
 class Statistics extends Component
 {
@@ -23,27 +25,37 @@ class Statistics extends Component
             ->sortByDesc('estimated_1rm')
             ->values();
 
-        // Para cada exercício, busca os últimos 8 treinos para o mini-gráfico
+        // Carrega o histórico de TODOS os exercícios de uma vez (1 query em vez de N)
+        $exerciseIds = $records->pluck('exercise_id')->all();
+
+        // Subquery para obter os 8 treinos mais recentes por exercício
+        $rankedRows = DB::table('workout_exercises as we')
+            ->join('workouts as w', 'w.id', '=', 'we.workout_id')
+            ->join('workout_sets as ws', 'ws.workout_exercise_id', '=', 'we.id')
+            ->where('w.user_id', auth()->id())
+            ->where('w.status', 'completed')
+            ->whereIn('we.exercise_id', $exerciseIds)
+            ->select(
+                'we.exercise_id',
+                'w.started_at',
+                DB::raw('MAX(ws.weight) as max_weight'),
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY we.exercise_id ORDER BY w.started_at DESC) as rn')
+            )
+            ->groupBy('we.exercise_id', 'w.id', 'w.started_at')
+            ->get();
+
+        // Agrupa por exercício, mantém os 8 mais recentes, ordena cronologicamente
+        $historyByExercise = $rankedRows
+            ->where('rn', '<=', 8)
+            ->groupBy('exercise_id')
+            ->map(fn($rows) => $rows->sortBy('started_at')->values());
+
         $chartData = [];
         foreach ($records as $pr) {
-            $history = WorkoutExercise::where('exercise_id', $pr->exercise_id)
-                ->whereHas('workout', fn($q) => $q
-                    ->where('user_id', auth()->id())
-                    ->where('status', 'completed')
-                )
-                ->with(['workout', 'sets'])
-                ->orderByDesc(
-                    \App\Models\Workout::select('started_at')
-                        ->whereColumn('id', 'workout_exercises.workout_id')
-                )
-                ->limit(8)
-                ->get()
-                ->sortBy('workout.started_at')
-                ->values();
-
+            $history = $historyByExercise->get($pr->exercise_id, collect());
             $chartData[$pr->exercise_id] = [
-                'labels' => $history->map(fn($we) => $we->workout->started_at->format('d M'))->toArray(),
-                'data'   => $history->map(fn($we) => (float) $we->sets->max('weight'))->toArray(),
+                'labels' => $history->map(fn($row) => \Carbon\Carbon::parse($row->started_at)->format('d M'))->toArray(),
+                'data'   => $history->map(fn($row) => (float) ($row->max_weight ?? 0))->toArray(),
             ];
         }
 

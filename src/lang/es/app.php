@@ -55,6 +55,8 @@ return [
     'exercise_deleted_success' => 'Ejercicio eliminado con éxito',
     'profile' => 'Perfil',
     'change_profile' => 'Cambiar Perfil',
+    'post_updated' => 'Post updated.',
+    'edit_post' => 'Edit post',
     'too_many_requests' => 'Too many requests, please slow down.',
     'logout' => 'Cerrar Sesión',
     'close' => 'Cerrar',

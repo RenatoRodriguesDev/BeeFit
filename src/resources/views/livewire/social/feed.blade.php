@@ -85,6 +85,10 @@
                     <p class="text-[11px] text-zinc-500 mt-0.5">{{ $post->created_at->diffForHumans() }}</p>
                 </div>
                 @if($post->user_id === auth()->id())
+                    <button wire:click="openEditPost({{ $post->id }})"
+                        class="text-zinc-600 hover:text-zinc-300 text-xs px-2 py-1 transition shrink-0">
+                        ✏️
+                    </button>
                     <button wire:click="confirmDeletePost({{ $post->id }})"
                         class="text-zinc-600 hover:text-red-400 text-xs px-2 py-1 transition shrink-0">
                         🗑
@@ -134,7 +138,7 @@
                 <button wire:click="toggleComments({{ $post->id }})"
                     class="ml-auto flex items-center gap-1 text-sm transition {{ $expandedPostId === $post->id ? 'text-white' : 'text-zinc-500 hover:text-white' }}">
                     <span>💬</span>
-                    <span class="text-xs">{{ $post->comments->count() }}</span>
+                    <span class="text-xs">{{ $post->comments_count }}</span>
                 </button>
             </div>
 
@@ -231,6 +235,54 @@
         'onClose'  => 'closeCommentLikers',
         'title'    => __('app.liked_by'),
     ])
+
+    {{-- Edit post modal --}}
+    @if($showEditPostModal)
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-sm overflow-hidden">
+
+                <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-800">
+                    <h2 class="text-sm font-semibold text-white">{{ __('app.edit_post') }}</h2>
+                    <button wire:click="closeEditPost" class="text-zinc-500 hover:text-white transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="p-5 space-y-4">
+                    {{-- Emoji --}}
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">{{ $editEmoji }}</span>
+                        <span class="text-xs text-zinc-500">{{ __('app.emoji') }}</span>
+                    </div>
+
+                    {{-- Description --}}
+                    <div>
+                        <textarea wire:model="editDescription" rows="4"
+                            maxlength="500"
+                            placeholder="{{ __('app.whats_on_your_mind') }}"
+                            class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition resize-none"></textarea>
+                        <p class="text-xs text-zinc-600 text-right mt-1">{{ strlen($editDescription) }}/500</p>
+                        <x-input-error :messages="$errors->get('editDescription')" class="mt-1" />
+                    </div>
+                </div>
+
+                <div class="flex gap-3 px-5 py-4 border-t border-zinc-800">
+                    <button wire:click="closeEditPost"
+                        class="flex-1 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm transition">
+                        {{ __('app.cancel') }}
+                    </button>
+                    <button wire:click="saveEditPost" wire:loading.attr="disabled" wire:target="saveEditPost"
+                        class="flex-1 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-sm font-semibold transition disabled:opacity-60">
+                        <span wire:loading.remove wire:target="saveEditPost">{{ __('app.save') }}</span>
+                        <span wire:loading wire:target="saveEditPost">...</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    @endif
 
     {{-- Delete post confirmation --}}
     @if($showDeletePostModal)

@@ -40,6 +40,12 @@ class SocialFeed extends Component
     public bool $showDeletePostModal = false;
     public ?int $postToDelete = null;
 
+    // Edit post
+    public bool $showEditPostModal = false;
+    public ?int $editingPostId = null;
+    public string $editDescription = '';
+    public string $editEmoji = '💪';
+
     public function updatingSearch(): void
     {
         $this->resetPage();
@@ -235,6 +241,42 @@ class SocialFeed extends Component
         $this->postToDelete = null;
     }
 
+    public function openEditPost(int $postId): void
+    {
+        $post = Post::find($postId);
+        if (! $post || $post->user_id !== Auth::id()) return;
+
+        $this->editingPostId    = $postId;
+        $this->editDescription  = $post->description ?? '';
+        $this->editEmoji        = $post->emoji ?? '💪';
+        $this->showEditPostModal = true;
+    }
+
+    public function saveEditPost(): void
+    {
+        $this->validate([
+            'editDescription' => 'nullable|string|max:500',
+        ]);
+
+        $post = Post::find($this->editingPostId);
+        if (! $post || $post->user_id !== Auth::id()) return;
+
+        $post->update([
+            'description' => $this->editDescription,
+            'emoji'       => $this->editEmoji,
+        ]);
+
+        $this->showEditPostModal = false;
+        $this->editingPostId    = null;
+        $this->dispatch('toast', message: __('app.post_updated'), type: 'success');
+    }
+
+    public function closeEditPost(): void
+    {
+        $this->showEditPostModal = false;
+        $this->editingPostId    = null;
+    }
+
     public function deleteComment(int $commentId): void
     {
         $comment = PostComment::find($commentId);
@@ -303,7 +345,8 @@ class SocialFeed extends Component
         $user = auth()->user();
         $followingIds = $user->followingIds();
 
-        $posts = Post::with(['user', 'workout', 'likes.user', 'comments'])
+        $posts = Post::with(['user', 'workout', 'likes', 'comments' => fn($q) => $q->limit(3)])
+            ->withCount('comments')
             ->whereIn('user_id', $followingIds)
             ->latest()
             ->paginate(10);

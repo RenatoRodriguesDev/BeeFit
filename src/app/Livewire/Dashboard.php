@@ -101,11 +101,13 @@ class Dashboard extends Component
 
     private function calculateStreak(int $userId): int
     {
+        $tz = config('app.timezone', 'UTC');
+
         $dates = Workout::where('user_id', $userId)
             ->where('status', 'completed')
             ->orderByDesc('started_at')
             ->pluck('started_at')
-            ->map(fn ($d) => $d->format('Y-m-d'))
+            ->map(fn ($d) => $d->setTimezone($tz)->format('Y-m-d'))
             ->unique()
             ->values();
 
@@ -114,7 +116,7 @@ class Dashboard extends Component
         }
 
         $streak = 0;
-        $check  = Carbon::today();
+        $check  = Carbon::today($tz);
 
         // Aceita que o último treino seja hoje ou ontem para manter streak
         if ($dates->first() !== $check->format('Y-m-d')) {
