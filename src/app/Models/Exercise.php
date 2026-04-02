@@ -35,4 +35,21 @@ class Exercise extends Model
     {
         return $this->video_path && file_exists(public_path($this->video_path));
     }
+
+    /**
+     * Resolve thumbnail URL for both legacy (public/images/) and
+     * admin-uploaded (storage/public/) exercise thumbnails.
+     */
+    public function getThumbnailUrlAttribute(): ?string
+    {
+        if (! $this->thumbnail_path) {
+            return null;
+        }
+
+        if (str_starts_with($this->thumbnail_path, 'images/') || str_starts_with($this->thumbnail_path, 'videos/')) {
+            return asset($this->thumbnail_path);
+        }
+
+        return asset('storage/' . $this->thumbnail_path);
+    }
 }

@@ -59,4 +59,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Admin
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', \App\Livewire\Admin\Dashboard::class)->name('dashboard');
+    Route::get('/users', \App\Livewire\Admin\UserManager::class)->name('users');
+    Route::get('/exercises', \App\Livewire\Admin\ExerciseManager::class)->name('exercises');
+});
+
 require __DIR__ . '/auth.php';
