@@ -14,6 +14,7 @@ use App\Notifications\PostCommented;
 use App\Notifications\PostLiked;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -49,6 +50,12 @@ class SocialFeed extends Component
     public function follow(int $userId): void
     {
         $me = Auth::user();
+        if (RateLimiter::tooManyAttempts('follow:' . $me->id, 20)) {
+            $this->dispatch('toast', message: __('app.too_many_requests'), type: 'error');
+            return;
+        }
+        RateLimiter::hit('follow:' . $me->id, 3600);
+
         if ($me->id === $userId) return;
 
         $target = User::find($userId);
@@ -82,6 +89,11 @@ class SocialFeed extends Component
     public function toggleLike(int $postId): void
     {
         $me = Auth::user();
+        if (RateLimiter::tooManyAttempts('like:' . $me->id, 60)) {
+            return;
+        }
+        RateLimiter::hit('like:' . $me->id, 60);
+
         $existing = PostLike::where('post_id', $postId)->where('user_id', $me->id)->first();
 
         if ($existing) {
@@ -138,6 +150,11 @@ class SocialFeed extends Component
         if ($body === '' || ! $this->expandedPostId) return;
 
         $me = Auth::user();
+        if (RateLimiter::tooManyAttempts('comment:' . $me->id, 30)) {
+            $this->dispatch('toast', message: __('app.too_many_requests'), type: 'error');
+            return;
+        }
+        RateLimiter::hit('comment:' . $me->id, 3600);
 
         $comment = PostComment::create([
             'post_id' => $this->expandedPostId,
@@ -157,6 +174,11 @@ class SocialFeed extends Component
     public function toggleCommentLike(int $commentId): void
     {
         $userId = auth()->id();
+        if (RateLimiter::tooManyAttempts('like:' . $userId, 60)) {
+            return;
+        }
+        RateLimiter::hit('like:' . $userId, 60);
+
         $existing = CommentLike::where('comment_id', $commentId)->where('user_id', $userId)->first();
 
         if ($existing) {

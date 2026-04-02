@@ -48,18 +48,22 @@ class PersonalRecord extends Model
      */
     public static function updateFromWorkout(int $userId, int $exerciseId, int $workoutId, \Illuminate\Support\Collection $sets): void
     {
-        // Ignora sets sem dados
-        $sets = $sets->filter(fn($s) => $s->weight > 0 && $s->reps > 0);
+        // Ignora sets sem reps (peso=0 é válido para exercícios bodyweight)
+        $sets = $sets->filter(fn($s) => $s->reps > 0);
 
         if ($sets->isEmpty()) return;
 
+        $weightedSets = $sets->filter(fn($s) => $s->weight > 0);
+
         // Calcula os melhores valores deste treino
-        $maxWeight      = $sets->max('weight');
-        $repsAtMaxWeight= $sets->where('weight', $maxWeight)->max('reps');
-        $maxVolSet      = $sets->map(fn($s) => $s->weight * $s->reps)->max();
-        $maxReps        = $sets->max('reps');
-        $weightAtMaxReps= $sets->where('reps', $maxReps)->max('weight');
-        $best1rm        = $sets->map(fn($s) => self::epley($s->weight, $s->reps))->max();
+        $maxWeight       = $weightedSets->isNotEmpty() ? $weightedSets->max('weight') : 0;
+        $repsAtMaxWeight = $maxWeight > 0 ? $weightedSets->where('weight', $maxWeight)->max('reps') : 0;
+        $maxVolSet       = $weightedSets->isNotEmpty() ? $weightedSets->map(fn($s) => $s->weight * $s->reps)->max() : 0;
+        $maxReps         = $sets->max('reps');
+        $weightAtMaxReps = $sets->where('reps', $maxReps)->max('weight') ?? 0;
+        $best1rm         = $weightedSets->isNotEmpty()
+            ? $weightedSets->map(fn($s) => self::epley($s->weight, $s->reps))->max()
+            : 0;
 
         $existing = self::where('user_id', $userId)
             ->where('exercise_id', $exerciseId)

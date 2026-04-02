@@ -41,19 +41,22 @@
                             </div>
                         </a>
                         @if($isFollowing)
-                            <button wire:click="unfollow({{ $found->id }})"
-                                class="text-xs bg-zinc-700 hover:bg-red-600/50 text-zinc-300 px-3 py-1 rounded-lg transition shrink-0">
-                                {{ __('app.following') }}
+                            <button wire:click="unfollow({{ $found->id }})" wire:loading.attr="disabled" wire:target="unfollow({{ $found->id }})"
+                                class="text-xs bg-zinc-700 hover:bg-red-600/50 text-zinc-300 px-3 py-1 rounded-lg transition shrink-0 disabled:opacity-50">
+                                <span wire:loading.remove wire:target="unfollow({{ $found->id }})">{{ __('app.following') }}</span>
+                                <span wire:loading wire:target="unfollow({{ $found->id }})">...</span>
                             </button>
                         @elseif($isPending)
-                            <button wire:click="unfollow({{ $found->id }})"
-                                class="text-xs bg-zinc-700 hover:bg-red-600/50 text-zinc-400 px-3 py-1 rounded-lg transition shrink-0">
-                                ⏳ {{ __('app.pending') }}
+                            <button wire:click="unfollow({{ $found->id }})" wire:loading.attr="disabled" wire:target="unfollow({{ $found->id }})"
+                                class="text-xs bg-zinc-700 hover:bg-red-600/50 text-zinc-400 px-3 py-1 rounded-lg transition shrink-0 disabled:opacity-50">
+                                <span wire:loading.remove wire:target="unfollow({{ $found->id }})">⏳ {{ __('app.pending') }}</span>
+                                <span wire:loading wire:target="unfollow({{ $found->id }})">...</span>
                             </button>
                         @else
-                            <button wire:click="follow({{ $found->id }})"
-                                class="text-xs bg-white text-black hover:bg-zinc-200 px-3 py-1 rounded-lg transition shrink-0 font-medium">
-                                {{ __('app.follow') }}
+                            <button wire:click="follow({{ $found->id }})" wire:loading.attr="disabled" wire:target="follow({{ $found->id }})"
+                                class="text-xs bg-white text-black hover:bg-zinc-200 px-3 py-1 rounded-lg transition shrink-0 font-medium disabled:opacity-50">
+                                <span wire:loading.remove wire:target="follow({{ $found->id }})">{{ __('app.follow') }}</span>
+                                <span wire:loading wire:target="follow({{ $found->id }})">...</span>
                             </button>
                         @endif
                     </div>
@@ -114,8 +117,8 @@
 
             {{-- Actions --}}
             <div class="px-3 py-2.5 flex items-center gap-4 border-b border-zinc-800/60">
-                <button wire:click="toggleLike({{ $post->id }})"
-                    class="text-xl transition {{ $post->isLikedBy(auth()->user()) ? 'text-red-400' : 'text-zinc-500 hover:text-red-400' }}">
+                <button wire:click="toggleLike({{ $post->id }})" wire:loading.attr="disabled" wire:target="toggleLike({{ $post->id }})"
+                    class="text-xl transition disabled:opacity-50 {{ $post->isLikedBy(auth()->user()) ? 'text-red-400' : 'text-zinc-500 hover:text-red-400' }}">
                     {{ $post->isLikedBy(auth()->user()) ? '❤️' : '🤍' }}
                 </button>
 
@@ -156,8 +159,8 @@
                                 </div>
                                 <div class="flex items-center gap-3 mt-1 pl-1">
                                     <span class="text-[10px] text-zinc-600">{{ $comment['created_at'] }}</span>
-                                    <button wire:click="toggleCommentLike({{ $comment['id'] }})"
-                                        class="text-[10px] transition {{ $comment['liked'] ? 'text-red-400' : 'text-zinc-600 hover:text-red-400' }}">
+                                    <button wire:click="toggleCommentLike({{ $comment['id'] }})" wire:loading.attr="disabled" wire:target="toggleCommentLike({{ $comment['id'] }})"
+                                        class="text-[10px] transition disabled:opacity-50 {{ $comment['liked'] ? 'text-red-400' : 'text-zinc-600 hover:text-red-400' }}">
                                         {{ $comment['liked'] ? '❤️' : '🤍' }} {{ __('app.like') }}
                                     </button>
                                     @if($comment['likes'] > 0)
@@ -193,9 +196,10 @@
                             <input wire:model="newComment" wire:keydown.enter="addComment" type="text"
                                 placeholder="{{ __('app.write_comment') }}"
                                 class="flex-1 bg-zinc-800 text-white text-xs rounded-xl px-3 py-1.5 outline-none focus:ring-1 focus:ring-zinc-600 placeholder-zinc-700 min-w-0">
-                            <button wire:click="addComment"
-                                class="shrink-0 bg-zinc-700 hover:bg-zinc-600 text-white text-xs px-3 py-1.5 rounded-xl transition">
-                                {{ __('app.send') }}
+                            <button wire:click="addComment" wire:loading.attr="disabled" wire:target="addComment"
+                                class="shrink-0 bg-zinc-700 hover:bg-zinc-600 text-white text-xs px-3 py-1.5 rounded-xl transition disabled:opacity-50">
+                                <span wire:loading.remove wire:target="addComment">{{ __('app.send') }}</span>
+                                <span wire:loading wire:target="addComment">...</span>
                             </button>
                         </div>
                     </div>

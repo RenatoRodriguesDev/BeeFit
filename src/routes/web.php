@@ -64,6 +64,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', \App\Livewire\Admin\Dashboard::class)->name('dashboard');
     Route::get('/users', \App\Livewire\Admin\UserManager::class)->name('users');
     Route::get('/exercises', \App\Livewire\Admin\ExerciseManager::class)->name('exercises');
+    Route::get('/catalog', \App\Livewire\Admin\CatalogManager::class)->name('catalog');
 });
 
 require __DIR__ . '/auth.php';

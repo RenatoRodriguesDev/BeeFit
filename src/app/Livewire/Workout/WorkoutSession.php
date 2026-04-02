@@ -25,14 +25,12 @@ class WorkoutSession extends Component
 
     public function updateWeight($setId, $value)
     {
-        WorkoutSet::findOrFail($setId)
-            ->update(['weight' => $value ?: null]);
+        $this->ownedSet($setId)->update(['weight' => $value ?: null]);
     }
 
     public function updateReps($setId, $value)
     {
-        WorkoutSet::findOrFail($setId)
-            ->update(['reps' => $value ?: null]);
+        $this->ownedSet($setId)->update(['reps' => $value ?: null]);
     }
 
     public function pauseWorkout()
@@ -90,7 +88,7 @@ class WorkoutSession extends Component
 
     public function addSet($workoutExerciseId)
     {
-        $workoutExercise = WorkoutExercise::findOrFail($workoutExerciseId);
+        $workoutExercise = $this->ownedExercise($workoutExerciseId);
 
         $lastSetNumber = $workoutExercise->sets()->max('set_number') ?? 0;
 
@@ -106,7 +104,7 @@ class WorkoutSession extends Component
 
     public function removeSet($setId)
     {
-        $set = WorkoutSet::findOrFail($setId);
+        $set = $this->ownedSet($setId);
         $exercise = $set->workoutExercise;
 
         $set->delete();
@@ -126,7 +124,7 @@ class WorkoutSession extends Component
 
     public function removeExercise($workoutExerciseId)
     {
-        $exercise = WorkoutExercise::findOrFail($workoutExerciseId);
+        $exercise = $this->ownedExercise($workoutExerciseId);
 
         $exercise->delete(); // se tiver cascade deletes melhor ainda
 
@@ -174,6 +172,20 @@ class WorkoutSession extends Component
 
         $this->workout->refresh();
         $this->showAddExerciseModal = false;
+    }
+
+    private function ownedExercise(int $id): WorkoutExercise
+    {
+        return WorkoutExercise::where('id', $id)
+            ->where('workout_id', $this->workout->id)
+            ->firstOrFail();
+    }
+
+    private function ownedSet(int $id): WorkoutSet
+    {
+        return WorkoutSet::whereHas('workoutExercise', fn($q) => $q->where('workout_id', $this->workout->id))
+            ->where('id', $id)
+            ->firstOrFail();
     }
 
     public function render()
