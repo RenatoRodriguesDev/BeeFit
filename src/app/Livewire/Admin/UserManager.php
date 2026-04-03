@@ -51,6 +51,13 @@ class UserManager extends Component
         $this->editingUserId = null;
     }
 
+        public function delete(int $id): void
+    {
+            User::findOrFail($id)->delete();
+            $this->dispatch('toast', message: 'Utilizador eliminado.', type: 'success');
+        
+    }
+
     public function render()
     {
         $users = User::query()
