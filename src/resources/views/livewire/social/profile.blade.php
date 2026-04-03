@@ -285,8 +285,12 @@
                         {{ __('app.send') }}
                     </button>
                     @if($activePost['is_own'])
+                        <button wire:click="openEditPost"
+                            class="text-zinc-500 hover:text-blue-400 text-sm px-2 shrink-0 transition">
+                            ✏️
+                        </button>
                         <button wire:click="confirmDeletePost({{ $activePost['id'] }})"
-                            class="text-zinc-600 hover:text-red-400 text-sm px-2 shrink-0 transition">
+                            class="text-zinc-500 hover:text-red-400 text-sm px-2 shrink-0 transition">
                             🗑
                         </button>
                     @endif
@@ -365,6 +369,70 @@
         </div>
     @endif
 
+
+    {{-- Edit post modal --}}
+    @if($showEditPostModal)
+        <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-[70]">
+            <div class="bg-zinc-900 p-6 rounded-2xl w-96 space-y-4">
+                <h2 class="text-base font-semibold text-white">{{ __('app.edit_post') }}</h2>
+
+                {{-- Current photo --}}
+                @if($activePost && $activePost['photo'] && !$removePhoto)
+                    <div class="relative">
+                        <img src="{{ $activePost['photo'] }}" class="w-full rounded-xl object-cover max-h-48">
+                        <button type="button" wire:click="$set('removePhoto', true)"
+                            class="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white text-xs px-2 py-1 rounded-lg transition">
+                            {{ __('app.remove_photo') }}
+                        </button>
+                    </div>
+                @elseif($removePhoto)
+                    <div class="flex items-center gap-2 text-xs text-zinc-400 bg-zinc-800 rounded-xl px-3 py-2">
+                        <span>{{ __('app.remove_photo') }} ✓</span>
+                        <button type="button" wire:click="$set('removePhoto', false)" class="ml-auto text-zinc-500 hover:text-white">↩</button>
+                    </div>
+                @endif
+
+                {{-- New photo upload --}}
+                <div>
+                    <label class="text-xs text-zinc-400 mb-1 block">{{ __('app.upload_photo') }}</label>
+                    <input type="file" wire:model="editPhoto" accept="image/*"
+                        class="w-full text-sm text-zinc-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-zinc-700 file:text-white hover:file:bg-zinc-600 cursor-pointer">
+                    @if($editPhoto)
+                        <div class="mt-2">
+                            <img src="{{ $editPhoto->temporaryUrl() }}" class="w-full rounded-xl object-cover max-h-36">
+                        </div>
+                    @endif
+                    <div wire:loading wire:target="editPhoto" class="text-xs text-zinc-500 mt-1">{{ __('app.uploading') }}...</div>
+                </div>
+
+                {{-- Description --}}
+                <div>
+                    <label class="text-xs text-zinc-400 mb-1 block">{{ __('app.description') }}</label>
+                    <textarea wire:model="editDescription" rows="3"
+                        class="w-full bg-zinc-800 text-white text-sm rounded-xl px-3 py-2 outline-none focus:ring-1 focus:ring-zinc-600 placeholder-zinc-600 resize-none"
+                        placeholder="{{ __('app.post_description_placeholder') }}"></textarea>
+                </div>
+
+                {{-- Emoji --}}
+                <div>
+                    <label class="text-xs text-zinc-400 mb-1 block">{{ __('app.emoji') }}</label>
+                    <input wire:model="editEmoji" type="text"
+                        class="w-20 bg-zinc-800 text-white text-xl text-center rounded-xl px-3 py-2 outline-none focus:ring-1 focus:ring-zinc-600">
+                </div>
+
+                <div class="flex justify-end gap-3 pt-1">
+                    <button wire:click="closeEditPost"
+                        class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm transition">
+                        {{ __('app.cancel') }}
+                    </button>
+                    <button wire:click="saveEditPost" wire:loading.attr="disabled" wire:target="saveEditPost,editPhoto"
+                        class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-sm transition disabled:opacity-50">
+                        {{ __('app.save') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 
     {{-- Remove follower confirmation --}}
     @if($followerToRemove)

@@ -15,11 +15,12 @@ use App\Notifications\PostCommented;
 use App\Notifications\PostLiked;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class UserProfile extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     public User $profileUser;
 
@@ -36,6 +37,13 @@ class UserProfile extends Component
     // Delete post confirmation
     public bool $showDeletePostModal = false;
     public ?int $postToDelete = null;
+
+    public bool $showEditPostModal = false;
+    public ?int $editingPostId = null;
+    public string $editDescription = '';
+    public string $editEmoji = '💪';
+    public $editPhoto = null;
+    public bool $removePhoto = false;
 
     // Followers modal
     public ?array $followersList = null;
@@ -326,6 +334,74 @@ class UserProfile extends Component
     {
         $this->showDeletePostModal = false;
         $this->postToDelete = null;
+    }
+
+    public function openEditPost(): void
+    {
+        if (! $this->activePost || ! $this->activePost['is_own']) return;
+
+        $this->editingPostId   = $this->activePost['id'];
+        $this->editDescription = $this->activePost['description'] ?? '';
+        $this->editEmoji       = $this->activePost['emoji'] ?? '💪';
+        $this->editPhoto       = null;
+        $this->removePhoto     = false;
+        $this->showEditPostModal = true;
+    }
+
+    public function saveEditPost(): void
+    {
+        $this->validate([
+            'editDescription' => 'nullable|string|max:500',
+            'editPhoto'       => 'nullable|image|max:4096',
+        ]);
+
+        $post = Post::find($this->editingPostId);
+        if (! $post || $post->user_id !== Auth::id()) return;
+
+        $data = [
+            'description' => $this->editDescription,
+            'emoji'       => $this->editEmoji,
+        ];
+
+        if ($this->editPhoto) {
+            // Delete old photo if exists
+            if ($post->photo_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($post->photo_path);
+            }
+            $data['photo_path'] = $this->editPhoto->store('posts', 'public');
+        } elseif ($this->removePhoto) {
+            if ($post->photo_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($post->photo_path);
+            }
+            $data['photo_path'] = null;
+        }
+
+        $post->update($data);
+
+        // Refresh activePost so the modal reflects the changes
+        if ($this->activePost) {
+            $this->activePost['description'] = $this->editDescription;
+            $this->activePost['emoji']       = $this->editEmoji;
+            if ($this->editPhoto) {
+                $this->activePost['photo'] = asset('storage/' . $data['photo_path']);
+            } elseif ($this->removePhoto) {
+                $this->activePost['photo'] = null;
+            }
+        }
+
+        $this->showEditPostModal = false;
+        $this->editingPostId    = null;
+        $this->editPhoto        = null;
+        $this->removePhoto      = false;
+        $this->dispatch('toast', message: __('app.post_updated'), type: 'success');
+    }
+
+    public function closeEditPost(): void
+    {
+        $this->showEditPostModal = false;
+        $this->editingPostId    = null;
+        $this->editPhoto        = null;
+        $this->removePhoto      = false;
     }
 
     public function deleteComment(int $commentId): void

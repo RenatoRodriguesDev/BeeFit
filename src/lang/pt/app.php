@@ -55,9 +55,11 @@ return [
     'exercise_deleted_success' => 'Exercício eliminado com sucesso',
     'profile' => 'Perfil',
     'change_profile' => 'Alterar Perfil',
-    'post_updated' => 'Post updated.',
-    'edit_post' => 'Edit post',
-    'too_many_requests' => 'Too many requests, please slow down.',
+    'post_updated' => 'Post atualizado.',
+    'edit_post' => 'Editar post',
+    'remove_photo' => 'Remover foto',
+    'uploading' => 'A carregar',
+    'too_many_requests' => 'Demasiados pedidos, por favor abranda.',
     'logout' => 'Terminar Sessão',
     'close' => 'Fechar',
     'profile_information' => 'Informações do perfil',
@@ -192,6 +194,10 @@ return [
     'write_comment' => 'Escreve um comentário...',
     'send' => 'Enviar',
     'comments' => 'Comentários',
+    'description' => 'Descrição',
+    'emoji' => 'Emoji',
+    
+    
 
     'confirm_remove_follower' => 'Remover seguidor',
     'confirm_remove_follower_message' => 'Tens a certeza que queres remover este seguidor?',

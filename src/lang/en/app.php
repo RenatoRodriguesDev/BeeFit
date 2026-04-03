@@ -57,6 +57,8 @@ return [
     'change_profile' => 'Change Profile',
     'post_updated' => 'Post updated.',
     'edit_post' => 'Edit post',
+    'remove_photo' => 'Remove photo',
+    'uploading' => 'Uploading',
     'too_many_requests' => 'Too many requests, please slow down.',
     'logout' => 'Logout',
     'close' => 'Close',
@@ -192,6 +194,8 @@ return [
     'write_comment' => 'Write a comment...',
     'send' => 'Send',
     'comments' => 'Comments',
+    'description' => 'Description',
+    'emoji' => 'Emoji',
 
     'confirm_remove_follower' => 'Remove follower',
     'confirm_remove_follower_message' => 'Are you sure you want to remove this follower?',

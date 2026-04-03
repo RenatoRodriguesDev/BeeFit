@@ -85,14 +85,32 @@
                     <p class="text-[11px] text-zinc-500 mt-0.5">{{ $post->created_at->diffForHumans() }}</p>
                 </div>
                 @if($post->user_id === auth()->id())
-                    <button wire:click="openEditPost({{ $post->id }})"
-                        class="text-zinc-600 hover:text-zinc-300 text-xs px-2 py-1 transition shrink-0">
-                        ✏️
-                    </button>
-                    <button wire:click="confirmDeletePost({{ $post->id }})"
-                        class="text-zinc-600 hover:text-red-400 text-xs px-2 py-1 transition shrink-0">
-                        🗑
-                    </button>
+                    <div x-data="{ open: false }" class="relative shrink-0">
+                        <button @click="open = !open" @click.away="open = false"
+                            class="w-8 h-8 flex items-center justify-center rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>
+                            </svg>
+                        </button>
+                        <div x-show="open" x-transition
+                            class="absolute right-0 top-9 bg-zinc-800 border border-zinc-700 rounded-xl shadow-xl w-36 py-1 z-20"
+                            style="display:none">
+                            <button @click="open = false" wire:click="openEditPost({{ $post->id }})"
+                                class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white transition text-left">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                {{ __('app.edit') }}
+                            </button>
+                            <button @click="open = false" wire:click="confirmDeletePost({{ $post->id }})"
+                                class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition text-left">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                                {{ __('app.delete') }}
+                            </button>
+                        </div>
+                    </div>
                 @endif
             </div>
 

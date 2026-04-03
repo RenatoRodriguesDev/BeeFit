@@ -55,9 +55,11 @@ return [
     'exercise_deleted_success' => 'Ejercicio eliminado con éxito',
     'profile' => 'Perfil',
     'change_profile' => 'Cambiar Perfil',
-    'post_updated' => 'Post updated.',
-    'edit_post' => 'Edit post',
-    'too_many_requests' => 'Too many requests, please slow down.',
+    'post_updated' => 'Post actualizado.',
+    'edit_post' => 'Editar post',
+    'remove_photo' => 'Eliminar foto',
+    'uploading' => 'Subiendo',
+    'too_many_requests' => 'Demasiadas solicitudes, por favor reduce la velocidad.',
     'logout' => 'Cerrar Sesión',
     'close' => 'Cerrar',
     'profile_information' => 'Información del perfil',
@@ -194,6 +196,8 @@ return [
     'write_comment' => 'Escribe un comentario...',
     'send' => 'Enviar',
     'comments' => 'Comentarios',
+    'description' => 'Descripción',
+    'emoji' => 'Emoji',
 
     'suggested_for_you' => 'Sugerencias para ti',
 
