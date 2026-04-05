@@ -43,7 +43,6 @@ class UserProfile extends Component
     public string $editDescription = '';
     public string $editEmoji = '💪';
     public $editPhoto = null;
-    public bool $removePhoto = false;
 
     // Followers modal
     public ?array $followersList = null;
@@ -344,7 +343,6 @@ class UserProfile extends Component
         $this->editDescription = $this->activePost['description'] ?? '';
         $this->editEmoji       = $this->activePost['emoji'] ?? '💪';
         $this->editPhoto       = null;
-        $this->removePhoto     = false;
         $this->showEditPostModal = true;
     }
 
@@ -364,35 +362,25 @@ class UserProfile extends Component
         ];
 
         if ($this->editPhoto) {
-            // Delete old photo if exists
             if ($post->photo_path) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($post->photo_path);
             }
             $data['photo_path'] = $this->editPhoto->store('posts', 'public');
-        } elseif ($this->removePhoto) {
-            if ($post->photo_path) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($post->photo_path);
-            }
-            $data['photo_path'] = null;
         }
 
         $post->update($data);
 
-        // Refresh activePost so the modal reflects the changes
         if ($this->activePost) {
             $this->activePost['description'] = $this->editDescription;
             $this->activePost['emoji']       = $this->editEmoji;
             if ($this->editPhoto) {
                 $this->activePost['photo'] = asset('storage/' . $data['photo_path']);
-            } elseif ($this->removePhoto) {
-                $this->activePost['photo'] = null;
             }
         }
 
         $this->showEditPostModal = false;
         $this->editingPostId    = null;
         $this->editPhoto        = null;
-        $this->removePhoto      = false;
         $this->dispatch('toast', message: __('app.post_updated'), type: 'success');
     }
 
@@ -401,7 +389,6 @@ class UserProfile extends Component
         $this->showEditPostModal = false;
         $this->editingPostId    = null;
         $this->editPhoto        = null;
-        $this->removePhoto      = false;
     }
 
     public function deleteComment(int $commentId): void
