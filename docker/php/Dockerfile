@@ -39,6 +39,9 @@ RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available
 EXPOSE 80
 
 CMD ["sh", "-c", "\
+mkdir -p storage/framework/views storage/framework/cache storage/framework/sessions storage/logs storage/app/public && \
+chmod -R 775 storage bootstrap/cache && \
+chown -R www-data:www-data storage bootstrap/cache && \
 php artisan storage:link --force 2>/dev/null || true && \
 php artisan migrate --force && \
 php artisan config:cache && \
