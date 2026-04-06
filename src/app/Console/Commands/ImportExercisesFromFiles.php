@@ -325,9 +325,82 @@ class ImportExercisesFromFiles extends Command
 
     // ── Translations ──────────────────────────────────────────────────────────
 
+    // Manual overrides: exact EN name (lowercase) → [pt, es]
+    // Use this for cases where Google Translate produces wrong/awkward results
+    private array $manualTranslations = [
+        'sit up'          => ['pt' => 'Flexão abdominal',       'es' => 'Abdominal'],
+        'sit-up'          => ['pt' => 'Flexão abdominal',       'es' => 'Abdominal'],
+        'pull up'         => ['pt' => 'Dominada',               'es' => 'Dominada'],
+        'pull-up'         => ['pt' => 'Dominada',               'es' => 'Dominada'],
+        'push up'         => ['pt' => 'Flexão de braços',       'es' => 'Flexión de brazos'],
+        'push-up'         => ['pt' => 'Flexão de braços',       'es' => 'Flexión de brazos'],
+        'chin up'         => ['pt' => 'Dominada supinada',      'es' => 'Dominada supina'],
+        'chin-up'         => ['pt' => 'Dominada supinada',      'es' => 'Dominada supina'],
+        'jumping jack'    => ['pt' => 'Jumping jack',           'es' => 'Jumping jack'],
+        'mountain climber'=> ['pt' => 'Escalador',              'es' => 'Escalador'],
+        'leg raise'       => ['pt' => 'Elevação de pernas',     'es' => 'Elevación de piernas'],
+        'calf raise'      => ['pt' => 'Elevação de gémeos',     'es' => 'Elevación de gemelos'],
+        'hip thrust'      => ['pt' => 'Hip thrust',             'es' => 'Hip thrust'],
+        'glute bridge'    => ['pt' => 'Ponte glúteos',          'es' => 'Puente de glúteos'],
+        'face pull'       => ['pt' => 'Face pull',              'es' => 'Face pull'],
+        'farmers walk'    => ['pt' => 'Farmers walk',           'es' => 'Farmers walk'],
+        'ab wheel'        => ['pt' => 'Roda abdominal',         'es' => 'Rueda abdominal'],
+        'battle rope'     => ['pt' => 'Battle rope',            'es' => 'Battle rope'],
+        'box jump'        => ['pt' => 'Salto à caixa',          'es' => 'Salto al cajón'],
+        'step up'         => ['pt' => 'Step up',                'es' => 'Step up'],
+        'flutter kick'    => ['pt' => 'Batimento de pernas',    'es' => 'Patada de flutter'],
+        'toe touch'       => ['pt' => 'Toque nos pés',          'es' => 'Toque de pies'],
+        'good morning'    => ['pt' => 'Good morning',           'es' => 'Good morning'],
+        'superman'        => ['pt' => 'Superman',               'es' => 'Superman'],
+        'dead bug'        => ['pt' => 'Dead bug',               'es' => 'Dead bug'],
+        'bird dog'        => ['pt' => 'Bird dog',               'es' => 'Bird dog'],
+        'dragon flag'     => ['pt' => 'Dragon flag',            'es' => 'Dragon flag'],
+        'hollow body'     => ['pt' => 'Hollow body',            'es' => 'Hollow body'],
+        'donkey kick'     => ['pt' => 'Coice de burro',         'es' => 'Patada de burro'],
+        'side bend'       => ['pt' => 'Flexão lateral',         'es' => 'Flexión lateral'],
+        'russian twist'   => ['pt' => 'Torção russa',           'es' => 'Giro ruso'],
+        'scissor kick'    => ['pt' => 'Tesoura',                'es' => 'Tijeras'],
+        'heel touch'      => ['pt' => 'Toque no calcanhar',     'es' => 'Toque de talón'],
+    ];
+
+    // Terms universally used in gyms — never translate these
+    private array $noTranslateTerms = [
+        'deadlift', 'squat', 'bench', 'press', 'curl', 'row', 'lunge', 'plank',
+        'crunch', 'dip', 'shrug', 'fly', 'pullover', 'pulldown', 'pushdown',
+        'extension', 'flexion', 'hyperextension', 'Romanian', 'Bulgarian',
+        'Arnold', 'Zercher', 'Sumo', 'Nordic', 'Pendlay', 'Zottman',
+        'barbell', 'dumbbell', 'kettlebell', 'cable', 'smith', 'lever',
+        'EZ', 'T-bar', 'hack', 'goblet', 'preacher', 'incline', 'decline',
+        'overhead', 'upright', 'lateral', 'front', 'rear', 'drag',
+        'hammer', 'reverse', 'supinated', 'neutral', 'close', 'wide',
+        'Romanian deadlift', 'skull crusher', 'face pull', 'farmers walk',
+        'hip thrust', 'glute bridge', 'burpee', 'thruster', 'snatch', 'clean',
+        'jerk', 'turkish', 'windmill', 'swing', 'landmine', 'pallof',
+        'bird dog', 'dead bug', 'hollow body', 'dragon flag', 'ab wheel',
+        'box jump', 'step up', 'sled push', 'battle rope', 'jump rope',
+        'treadmill', 'elliptical', 'assault bike', 'rowing', 'sit up',
+    ];
+
+    private function shouldTranslate(string $name): bool
+    {
+        $lower = strtolower($name);
+        foreach ($this->noTranslateTerms as $term) {
+            if (str_contains($lower, strtolower($term))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private function insertTranslations(int $exerciseId, string $nameEn): void
     {
-        if ($this->option('skip-translate')) {
+        $lower   = strtolower($nameEn);
+        $manual  = $this->manualTranslations[$lower] ?? null;
+
+        if ($manual) {
+            $namePt = $manual['pt'];
+            $nameEs = $manual['es'];
+        } elseif ($this->option('skip-translate') || ! $this->shouldTranslate($nameEn)) {
             $namePt = $nameEn;
             $nameEs = $nameEn;
         } else {
