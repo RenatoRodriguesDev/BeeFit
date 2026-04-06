@@ -80,8 +80,13 @@
                     @endif
                 </a>
                 <div class="flex-1 min-w-0">
-                    <a href="{{ route('social.profile', $post->user->username) }}"
-                        class="font-semibold text-white text-sm hover:underline leading-none">{{ $post->user->name }}</a>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <a href="{{ route('social.profile', $post->user->username) }}"
+                            class="font-semibold text-white text-sm hover:underline leading-none">{{ $post->user->name }}</a>
+                        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-gradient-to-r {{ $post->user->levelBadgeColor() }} text-white">
+                            Lv.{{ $post->user->level() }}
+                        </span>
+                    </div>
                     <p class="text-[11px] text-zinc-500 mt-0.5">{{ $post->created_at->diffForHumans() }}</p>
                 </div>
                 @if($post->user_id === auth()->id())

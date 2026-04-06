@@ -32,6 +32,7 @@ class User extends Authenticatable
         'theme_mode',
         'username',
         'is_private',
+        'xp',
     ];
 
     protected $hidden = [
@@ -194,5 +195,135 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    // ─── Achievements ──────────────────────────────────────────────
+
+    public function achievements()
+    {
+        return $this->belongsToMany(Achievement::class, 'user_achievements')
+            ->withPivot('unlocked_at')
+            ->withTimestamps();
+    }
+
+    public function hasAchievement(string $key): bool
+    {
+        return $this->achievements()->where('key', $key)->exists();
+    }
+
+    // ─── XP & Level ────────────────────────────────────────────────
+
+    // XP total para atingir o início de cada nível (índice = nível)
+    private static array $levelThresholds = [
+        1  => 0,
+        2  => 200,
+        3  => 500,
+        4  => 900,
+        5  => 1500,
+        6  => 2300,
+        7  => 3300,
+        8  => 4600,
+        9  => 6200,
+        10 => 8200,
+        15 => 18000,
+        20 => 35000,
+        25 => 60000,
+        30 => 95000,
+        40 => 185000,
+        50 => 320000,
+    ];
+
+    public function level(): int
+    {
+        $xp    = $this->xp ?? 0;
+        $level = 1;
+
+        foreach (self::$levelThresholds as $lvl => $threshold) {
+            if ($xp >= $threshold) {
+                $level = $lvl;
+            } else {
+                break;
+            }
+        }
+
+        // Para níveis intermédios não na tabela, interpola
+        $maxDefined = max(array_keys(self::$levelThresholds));
+        if ($level === $maxDefined) {
+            // Acima do máximo: cada 10000 XP = 1 nível extra
+            $extra = (int) floor(($xp - self::$levelThresholds[$maxDefined]) / 10000);
+            $level += $extra;
+        }
+
+        return $level;
+    }
+
+    public function xpForCurrentLevel(): int
+    {
+        $lvl = $this->level();
+        return self::$levelThresholds[$lvl] ?? $this->xpForLevelN($lvl);
+    }
+
+    public function xpForNextLevel(): int
+    {
+        $lvl = $this->level() + 1;
+        return self::$levelThresholds[$lvl] ?? $this->xpForLevelN($lvl);
+    }
+
+    public function xpProgress(): int
+    {
+        return ($this->xp ?? 0) - $this->xpForCurrentLevel();
+    }
+
+    public function xpNeeded(): int
+    {
+        return $this->xpForNextLevel() - $this->xpForCurrentLevel();
+    }
+
+    public function xpProgressPercent(): int
+    {
+        $needed = $this->xpNeeded();
+        if ($needed <= 0) return 100;
+        return (int) min(100, floor($this->xpProgress() / $needed * 100));
+    }
+
+    private function xpForLevelN(int $n): int
+    {
+        $max = max(array_keys(self::$levelThresholds));
+        return self::$levelThresholds[$max] + ($n - $max) * 10000;
+    }
+
+    public function levelTitle(): string
+    {
+        $lvl = $this->level();
+        $tier = match(true) {
+            $lvl >= 50 => 'immortal',
+            $lvl >= 40 => 'legend',
+            $lvl >= 30 => 'champion',
+            $lvl >= 20 => 'warrior',
+            $lvl >= 15 => 'athlete',
+            $lvl >= 10 => 'veteran',
+            $lvl >= 5  => 'trainee',
+            default    => 'beginner',
+        };
+
+        return __('levels.' . $tier);
+    }
+
+    public function levelBadgeColor(): string
+    {
+        return match(true) {
+            $this->level() >= 50 => 'from-red-500 to-orange-400',
+            $this->level() >= 30 => 'from-yellow-400 to-amber-500',
+            $this->level() >= 20 => 'from-violet-500 to-purple-600',
+            $this->level() >= 10 => 'from-blue-500 to-cyan-400',
+            $this->level() >= 5  => 'from-green-500 to-emerald-400',
+            default               => 'from-zinc-500 to-zinc-400',
+        };
+    }
+
+    public function addXp(int $amount): void
+    {
+        $this->increment('xp', $amount);
+        $this->refresh();
     }
 }

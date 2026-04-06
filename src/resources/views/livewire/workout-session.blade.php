@@ -222,6 +222,61 @@
         </div>
     @endif
 
+    {{-- ── MODAL: XP & ACHIEVEMENTS ───────────────────────────────────── --}}
+    @if($showXpModal && $xpResult)
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-sm space-y-5 text-center">
+                <div class="text-5xl">⚡</div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white">{{ __('app.workout_complete') }}</h2>
+                    <p class="text-zinc-400 text-sm mt-1">{{ __('app.xp_earned') }}</p>
+                </div>
+
+                {{-- XP earned --}}
+                <div class="bg-zinc-800 rounded-xl py-4">
+                    <span class="text-4xl font-black text-yellow-400">+{{ $xpResult['xp'] }}</span>
+                    <span class="text-yellow-500 font-semibold ml-1">XP</span>
+                </div>
+
+                {{-- Level & progress --}}
+                @php $user = auth()->user()->fresh(); @endphp
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-zinc-400">{{ $user->levelTitle() }}</span>
+                        <span class="font-semibold">{{ __('app.level') }} {{ $user->level() }}</span>
+                    </div>
+                    <div class="w-full bg-zinc-700 rounded-full h-2.5">
+                        <div class="h-2.5 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 transition-all"
+                             style="width: {{ $user->xpProgressPercent() }}%"></div>
+                    </div>
+                    <div class="text-xs text-zinc-500">{{ $user->xpProgress() }} / {{ $user->xpNeeded() }} XP</div>
+                </div>
+
+                {{-- Achievements unlocked --}}
+                @if(!empty($xpResult['achievements']))
+                    <div class="space-y-2">
+                        <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider">{{ __('app.achievements_unlocked') }}</p>
+                        @foreach($xpResult['achievements'] as $achievement)
+                            <div class="flex items-center gap-3 bg-zinc-800 rounded-xl px-4 py-3 text-left">
+                                <span class="text-2xl">{{ $achievement->icon }}</span>
+                                <div>
+                                    <p class="font-semibold text-sm text-white">{{ $achievement->name }}</p>
+                                    <p class="text-xs text-zinc-400">{{ $achievement->description }}</p>
+                                </div>
+                                <span class="ml-auto text-yellow-400 text-xs font-bold">+{{ $achievement->xp_reward }} XP</span>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                <button wire:click="goToDashboard"
+                    class="w-full py-3 rounded-xl bg-white text-black font-semibold text-sm hover:bg-zinc-200 transition">
+                    {{ __('app.continue') }}
+                </button>
+            </div>
+        </div>
+    @endif
+
     {{-- ── MODAL: ADICIONAR EXERCÍCIO ─────────────────────────────────── --}}
     @if($showAddExerciseModal)
         <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">

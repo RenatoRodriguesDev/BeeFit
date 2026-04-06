@@ -60,6 +60,45 @@
         </div>
     </div>
 
+    {{-- XP / Level card --}}
+    <div class="bg-zinc-900 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-lg font-black bg-gradient-to-r {{ $profileUser->levelBadgeColor() }} bg-clip-text text-transparent">
+                    {{ __('app.level') }} {{ $profileUser->level() }}
+                </span>
+                <span class="text-xs text-zinc-400">· {{ $profileUser->levelTitle() }}</span>
+            </div>
+            <span class="text-sm font-bold text-yellow-400">{{ number_format($profileUser->xp ?? 0) }} XP</span>
+        </div>
+        @if($isOwn)
+            <div class="space-y-1">
+                <div class="w-full bg-zinc-700 rounded-full h-2">
+                    <div class="h-2 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500"
+                         style="width: {{ $profileUser->xpProgressPercent() }}%"></div>
+                </div>
+                <div class="text-xs text-zinc-500 text-right">{{ $profileUser->xpProgress() }} / {{ $profileUser->xpNeeded() }} XP {{ __('app.level') }} {{ $profileUser->level() + 1 }}</div>
+            </div>
+        @endif
+
+        {{-- Achievements --}}
+        @php $achievements = $profileUser->achievements()->orderByPivot('unlocked_at', 'desc')->get(); @endphp
+        @if($achievements->isNotEmpty())
+            <div>
+                <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">{{ __('app.my_achievements') }}</p>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($achievements as $ach)
+                        <div title="{{ $ach->name }}: {{ $ach->description }}"
+                             class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-xl cursor-default"
+                             x-data x-tooltip.raw="{{ $ach->name }}">
+                            {{ $ach->icon }}
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    </div>
+
     {{-- Follow requests (own private profile) --}}
     @if($isOwn && count($followRequests) > 0)
         <div class="bg-zinc-900 rounded-2xl p-4 space-y-2">

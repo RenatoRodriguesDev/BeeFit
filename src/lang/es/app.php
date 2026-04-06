@@ -232,4 +232,18 @@ return [
     'primary_muscle' => 'Grupo Muscular Principal',
     'complete_workout_to_set_pr' => 'Completa un entrenamiento para establecer tu primer récord.',
 
+    // XP / Gamification
+    'workout_complete'       => '¡Entrenamiento Completo!',
+    'xp_earned'              => 'Ganaste XP en este entrenamiento',
+    'achievements_unlocked'  => 'Logros Desbloqueados',
+    'level'                  => 'Nivel',
+    'leaderboard'            => 'Clasificación',
+    'global'                 => 'Global',
+    'friends'                => 'Amigos',
+    'rank'                   => 'Posición',
+    'my_achievements'        => 'Mis Logros',
+    'no_achievements_yet'    => '¡Completa entrenamientos para ganar logros!',
+    'xp'                     => 'XP',
+    'you'                    => 'Tu',
+
 ];

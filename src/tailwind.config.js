@@ -11,6 +11,13 @@ export default {
     safelist: [
         // Backgrounds
         "bg-beeyellow",
+        // Level badge gradients (returned dynamically from User::levelBadgeColor())
+        "from-zinc-500", "to-zinc-400",
+        "from-green-500", "to-emerald-400",
+        "from-blue-500", "to-cyan-400",
+        "from-violet-500", "to-purple-600",
+        "from-yellow-400", "to-amber-500",
+        "from-red-500", "to-orange-400",
     ],
 
     theme: {

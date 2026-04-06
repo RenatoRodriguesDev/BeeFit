@@ -233,4 +233,18 @@ return [
     'primary_muscle' => 'Primary Muscle Group',
     'complete_workout_to_set_pr' => 'Complete a workout to set your first record.',
 
+    // XP / Gamification
+    'workout_complete'       => 'Workout Complete!',
+    'xp_earned'              => 'You earned XP for this workout',
+    'achievements_unlocked'  => 'Achievements Unlocked',
+    'level'                  => 'Level',
+    'leaderboard'            => 'Leaderboard',
+    'global'                 => 'Global',
+    'friends'                => 'Friends',
+    'rank'                   => 'Rank',
+    'my_achievements'        => 'My Achievements',
+    'no_achievements_yet'    => 'Complete workouts to earn achievements!',
+    'xp'                     => 'XP',
+    'you'                    => 'You',
+
 ];

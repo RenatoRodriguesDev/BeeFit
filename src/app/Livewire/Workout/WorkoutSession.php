@@ -7,12 +7,14 @@ use App\Models\Workout;
 use App\Models\WorkoutExercise;
 use App\Models\WorkoutSet;
 use App\Models\Exercise;
+use App\Services\XpService;
 
 
 class WorkoutSession extends Component
 {
     public Workout $workout;
     public array $completedSets = [];
+    public ?array $xpResult = null;
 
     public function mount(Workout $workout)
     {
@@ -113,10 +115,21 @@ class WorkoutSession extends Component
             );
         }
 
+        // Award XP and check achievements
+        $user = auth()->user();
+        $this->xpResult = app(XpService::class)->processWorkout($user, $this->workout);
+
         if ($share) {
             return redirect()->route('social.create-post-workout', $this->workout->id);
         }
 
+        // Show XP modal instead of redirecting immediately
+        $this->showSharePrompt = false;
+        $this->showXpModal = true;
+    }
+
+    public function goToDashboard(): mixed
+    {
         return redirect()->route('dashboard');
     }
 
@@ -168,6 +181,7 @@ class WorkoutSession extends Component
     }
 
     public bool $showSharePrompt = false;
+    public bool $showXpModal = false;
 
     public function promptFinish(): void
     {

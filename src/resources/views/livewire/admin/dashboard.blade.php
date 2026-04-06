@@ -86,6 +86,29 @@
             </div>
         </div>
 
+        {{-- Quick links --}}
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+            <h2 class="text-sm font-semibold text-white mb-4">Gestão</h2>
+            <div class="grid grid-cols-2 gap-3">
+                <a href="{{ route('admin.users') }}" class="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition">
+                    <span class="text-xl">👥</span>
+                    <span class="text-sm font-medium text-white">Utilizadores</span>
+                </a>
+                <a href="{{ route('admin.exercises') }}" class="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition">
+                    <span class="text-xl">🏋️</span>
+                    <span class="text-sm font-medium text-white">Exercícios</span>
+                </a>
+                <a href="{{ route('admin.catalog') }}" class="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition">
+                    <span class="text-xl">📚</span>
+                    <span class="text-sm font-medium text-white">Catálogo</span>
+                </a>
+                <a href="{{ route('admin.achievements') }}" class="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition">
+                    <span class="text-xl">🏆</span>
+                    <span class="text-sm font-medium text-white">Conquistas</span>
+                </a>
+            </div>
+        </div>
+
         {{-- Recent users --}}
         <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
             <div class="flex items-center justify-between mb-4">

@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\LibraryController;
 use App\Http\Controllers\Web\RoutinesController;
 use App\Livewire\Workout\WorkoutSession;
 use App\Http\Controllers\Web\SubscriptionController;
+use App\Livewire\Leaderboard;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -34,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/workouts/{workout}', WorkoutShow::class
     )->name('workouts.show');
     Route::get('/statistics', \App\Livewire\Statistics::class)->name('statistics');
+    Route::get('/leaderboard', Leaderboard::class)->name('leaderboard');
 
     // Social
     Route::get('/social', SocialFeed::class)->name('social.feed');
@@ -65,6 +67,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/users', \App\Livewire\Admin\UserManager::class)->name('users');
     Route::get('/exercises', \App\Livewire\Admin\ExerciseManager::class)->name('exercises');
     Route::get('/catalog', \App\Livewire\Admin\CatalogManager::class)->name('catalog');
+    Route::get('/achievements', \App\Livewire\Admin\AchievementManager::class)->name('achievements');
 });
 
 require __DIR__ . '/auth.php';

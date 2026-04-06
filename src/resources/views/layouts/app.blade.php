@@ -66,6 +66,13 @@
                 {{ __('app.statistics') }}
             </a>
 
+            <a href="{{ route('leaderboard') }}" class="{{ $navLink(request()->routeIs('leaderboard')) }}">
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 17l3-3 4 4 4-6 4 2M3 21h18"/>
+                </svg>
+                {{ __('app.leaderboard') }}
+            </a>
+
             {{-- Social --}}
             <div class="pt-4 pb-1">
                 <p class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest px-3 mb-1">{{ __('app.social') }}</p>

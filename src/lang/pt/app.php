@@ -236,4 +236,18 @@ return [
     'primary_muscle' => 'Grupo Muscular Primário',
     'complete_workout_to_set_pr' => 'Completa um treino para definir o teu primeiro recorde.',
 
+    // XP / Gamification
+    'workout_complete'       => 'Treino Concluído!',
+    'xp_earned'              => 'Ganhaste XP neste treino',
+    'achievements_unlocked'  => 'Conquistas Desbloqueadas',
+    'level'                  => 'Nível',
+    'leaderboard'            => 'Classificação',
+    'global'                 => 'Global',
+    'friends'                => 'Amigos',
+    'rank'                   => 'Posição',
+    'my_achievements'        => 'As Minhas Conquistas',
+    'no_achievements_yet'    => 'Completa treinos para ganhar conquistas!',
+    'xp'                     => 'XP',
+    'you'                    => 'Tu',
+
 ];
