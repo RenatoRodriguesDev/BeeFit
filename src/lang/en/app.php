@@ -89,6 +89,8 @@ return [
     'remove_exercise' => 'Remove exercise',
     'remove' => 'Remove',
     'add_set' => 'Add set',
+    'mark_done' => 'Mark as done',
+    'mark_undone' => 'Mark as undone',
     'start_workout' => 'Start Workout',
     'resume' => 'Resume',
     'add_exercise' => 'Add exercise',

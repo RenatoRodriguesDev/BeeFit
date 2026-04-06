@@ -89,6 +89,8 @@ return [
     'remove_exercise' => 'Remover exercício',
     'remove' => 'Remover',
     'add_set' => 'Adicionar série',
+    'mark_done' => 'Marcar como feita',
+    'mark_undone' => 'Marcar como não feita',
     'start_workout' => 'Iniciar Treino',
     'resume' => 'Retomar',
     'add_exercise' => 'Adicionar exercício',

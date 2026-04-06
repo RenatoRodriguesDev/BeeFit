@@ -12,6 +12,7 @@ use App\Models\Exercise;
 class WorkoutSession extends Component
 {
     public Workout $workout;
+    public array $completedSets = [];
 
     public function mount(Workout $workout)
     {
@@ -21,6 +22,15 @@ class WorkoutSession extends Component
             'exercises.exercise',
             'exercises.sets'
         );
+    }
+
+    public function toggleSetDone(int $setId): void
+    {
+        if (in_array($setId, $this->completedSets)) {
+            $this->completedSets = array_values(array_filter($this->completedSets, fn($id) => $id !== $setId));
+        } else {
+            $this->completedSets[] = $setId;
+        }
     }
 
     public function updateWeight($setId, $value)
