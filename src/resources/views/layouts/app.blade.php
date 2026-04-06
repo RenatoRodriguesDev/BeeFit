@@ -134,7 +134,7 @@
                     </svg>
                 </button>
 
-                <div x-show="open" @click.away="open = false" x-transition
+                <div x-cloak x-show="open" @click.away="open = false" x-transition
                     class="absolute bottom-full left-0 mb-1 w-full bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden z-50">
 
                     <a href="{{ route('profile.edit') }}"
@@ -242,11 +242,11 @@
             </button>
 
             {{-- Overlay --}}
-            <div x-show="open" @click="open = false" x-transition:enter.opacity.duration.200ms x-transition:leave.opacity.duration.150ms
+            <div x-cloak x-show="open" @click="open = false" x-transition:enter.opacity.duration.200ms x-transition:leave.opacity.duration.150ms
                 class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"></div>
 
             {{-- Sheet --}}
-            <div x-show="open"
+            <div x-cloak x-show="open"
                 x-transition:enter="transition duration-300 transform"
                 x-transition:enter-start="translate-y-full"
                 x-transition:enter-end="translate-y-0"
