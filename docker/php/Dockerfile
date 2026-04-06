@@ -39,6 +39,11 @@ RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available
 EXPOSE 80
 
 CMD ["sh", "-c", "\
+php artisan storage:link --force 2>/dev/null || true && \
+php artisan migrate --force && \
+php artisan config:cache && \
+php artisan route:cache && \
+php artisan view:cache && \
 rm -f /etc/apache2/mods-enabled/mpm_* && \
 a2enmod mpm_prefork && \
 apache2ctl configtest && \
