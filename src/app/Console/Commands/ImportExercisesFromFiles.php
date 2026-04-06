@@ -9,7 +9,6 @@ use App\Models\ExerciseTranslation;
 use App\Models\Muscle;
 use App\Models\MuscleTranslation;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class ImportExercisesFromFiles extends Command
@@ -64,14 +63,13 @@ class ImportExercisesFromFiles extends Command
     {
         if ($this->option('fresh')) {
             $this->warn('Deleting all non-custom exercises...');
-            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            // Delete in dependency order to satisfy foreign key constraints (works on both MySQL and PostgreSQL)
             ExerciseTranslation::whereHas('exercise', fn($q) => $q->where('is_custom', false))->delete();
             Exercise::where('is_custom', false)->delete();
-            MuscleTranslation::all()->each->delete();
-            Muscle::all()->each->delete();
-            EquipmentTranslation::all()->each->delete();
-            Equipment::all()->each->delete();
-            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+            MuscleTranslation::query()->delete();
+            Muscle::query()->delete();
+            EquipmentTranslation::query()->delete();
+            Equipment::query()->delete();
             $this->info('Cleared.');
         }
 
