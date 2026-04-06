@@ -14,7 +14,13 @@ class Exercise extends Model
         'primary_muscle_id',
         'thumbnail_path',
         'video_path',
+        'is_custom',
+        'exercise_type',
     ];
+
+    public function isCardio(): bool     { return $this->exercise_type === 'cardio'; }
+    public function isBodyweight(): bool { return $this->exercise_type === 'bodyweight'; }
+    public function isStrength(): bool   { return $this->exercise_type === 'strength'; }
 
     protected function translationModel(): string
     {

@@ -413,11 +413,14 @@ class UserProfile extends Component
             'name'      => $workout->routine?->name ?? __('app.workout'),
             'date'      => $workout->finished_at?->format('d M Y') ?? $workout->created_at->format('d M Y'),
             'exercises' => $workout->exercises->map(fn($we) => [
-                'name' => $we->exercise->translate()->name,
-                'sets' => $we->sets->map(fn($s) => [
-                    'number' => $s->set_number,
-                    'weight' => $s->weight,
-                    'reps'   => $s->reps,
+                'name'     => $we->exercise->translate()->name,
+                'is_cardio' => $we->exercise->isCardio(),
+                'sets'     => $we->sets->map(fn($s) => [
+                    'number'           => $s->set_number,
+                    'weight'           => $s->weight,
+                    'reps'             => $s->reps,
+                    'duration_seconds' => $s->duration_seconds,
+                    'distance_meters'  => $s->distance_meters,
                 ])->toArray(),
             ])->toArray(),
         ];

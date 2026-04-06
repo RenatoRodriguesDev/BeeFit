@@ -54,34 +54,66 @@
                     @endif
                 </div>
 
+                @php $isCardio = $workoutExercise->exercise->isCardio(); @endphp
+
                 {{-- Cabeçalho das colunas --}}
-                <div class="grid grid-cols-3 gap-2 px-4 py-2 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
-                    <span>{{ __('app.set') }}</span>
-                    <span>{{ __('app.weight') }} (kg)</span>
-                    <span>{{ __('app.reps') }}</span>
-                </div>
+                @if($isCardio)
+                    <div class="grid grid-cols-3 gap-2 px-4 py-2 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                        <span>{{ __('app.set') }}</span>
+                        <span>{{ __('app.duration') }}</span>
+                        <span>{{ __('app.distance') }}</span>
+                    </div>
+                @else
+                    <div class="grid grid-cols-3 gap-2 px-4 py-2 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                        <span>{{ __('app.set') }}</span>
+                        <span>{{ __('app.weight') }} (kg)</span>
+                        <span>{{ __('app.reps') }}</span>
+                    </div>
+                @endif
 
                 {{-- Sets --}}
                 @foreach($workoutExercise->sets as $set)
                     <div class="grid grid-cols-3 gap-2 px-4 py-2.5 border-t border-zinc-800/60 text-sm">
                         <span class="text-zinc-500">{{ $set->set_number }}</span>
-                        <span class="text-white font-medium">{{ $set->weight ?? '—' }}</span>
-                        <span class="text-white font-medium">{{ $set->reps ?? '—' }}</span>
+                        @if($isCardio)
+                            <span class="text-white font-medium">
+                                {{ $set->duration_seconds ? sprintf('%d:%02d', intdiv($set->duration_seconds, 60), $set->duration_seconds % 60) : '—' }}
+                            </span>
+                            <span class="text-white font-medium">
+                                {{ $set->distance_meters ? number_format($set->distance_meters / 1000, 2) . ' km' : '—' }}
+                            </span>
+                        @else
+                            <span class="text-white font-medium">{{ $set->weight ?? '—' }}</span>
+                            <span class="text-white font-medium">{{ $set->reps ?? '—' }}</span>
+                        @endif
                     </div>
                 @endforeach
 
                 {{-- PR badge --}}
                 @if($pr)
                     <div class="px-4 py-3 border-t border-zinc-800/60 flex flex-wrap gap-3">
-                        @if($pr->max_weight)
-                            <span class="text-xs bg-yellow-500/10 text-yellow-400 px-2.5 py-1 rounded-full">
-                                Max {{ $pr->max_weight }}kg × {{ $pr->reps_at_max_weight }} reps
-                            </span>
-                        @endif
-                        @if($pr->estimated_1rm)
-                            <span class="text-xs bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-full">
-                                1RM ~{{ number_format($pr->estimated_1rm, 1) }}kg
-                            </span>
+                        @if($isCardio)
+                            @if($pr->max_distance)
+                                <span class="text-xs bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-full">
+                                    {{ number_format($pr->max_distance / 1000, 2) }} km
+                                </span>
+                            @endif
+                            @if($pr->best_pace)
+                                <span class="text-xs bg-yellow-500/10 text-yellow-400 px-2.5 py-1 rounded-full">
+                                    {{ sprintf('%d:%02d', intdiv($pr->best_pace, 60), $pr->best_pace % 60) }} min/km
+                                </span>
+                            @endif
+                        @else
+                            @if($pr->max_weight)
+                                <span class="text-xs bg-yellow-500/10 text-yellow-400 px-2.5 py-1 rounded-full">
+                                    Max {{ $pr->max_weight }}kg × {{ $pr->reps_at_max_weight }} reps
+                                </span>
+                            @endif
+                            @if($pr->estimated_1rm)
+                                <span class="text-xs bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-full">
+                                    1RM ~{{ number_format($pr->estimated_1rm, 1) }}kg
+                                </span>
+                            @endif
                         @endif
                     </div>
                 @endif

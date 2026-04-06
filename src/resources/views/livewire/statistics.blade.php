@@ -73,28 +73,60 @@
                         <div class="px-4 py-3 text-xs text-zinc-600 italic">{{ __('app.need_more_sessions') }}</div>
                     @endif
 
-                    <div class="grid grid-cols-2 border-t border-zinc-800 mt-auto">
-                        <div class="p-3 border-r border-zinc-800">
-                            <div class="text-xs text-zinc-400">{{ __('app.pr_max_weight') }}</div>
-                            <div class="font-semibold text-white mt-0.5">{{ $pr->max_weight }} kg</div>
-                            <div class="text-xs text-zinc-500">× {{ $pr->reps_at_max_weight }} reps</div>
+                    @if($pr->exercise?->isCardio())
+                        {{-- Cardio metrics --}}
+                        <div class="grid grid-cols-2 border-t border-zinc-800 mt-auto">
+                            <div class="p-3 border-r border-zinc-800">
+                                <div class="text-xs text-zinc-400">{{ __('app.distance') }}</div>
+                                <div class="font-semibold text-white mt-0.5">
+                                    {{ $pr->max_distance ? number_format($pr->max_distance / 1000, 2) . ' km' : '—' }}
+                                </div>
+                                <div class="text-xs text-zinc-500">{{ __('app.pr_best') }}</div>
+                            </div>
+                            <div class="p-3">
+                                <div class="text-xs text-zinc-400">{{ __('app.duration') }}</div>
+                                <div class="font-semibold text-white mt-0.5">
+                                    {{ $pr->max_duration ? sprintf('%d:%02d', intdiv($pr->max_duration, 60), $pr->max_duration % 60) : '—' }}
+                                </div>
+                                <div class="text-xs text-zinc-500">{{ __('app.pr_best') }}</div>
+                            </div>
+                            <div class="p-3 border-t border-zinc-800 col-span-2">
+                                <div class="text-xs text-zinc-400">{{ __('app.pace') }}</div>
+                                <div class="font-semibold text-yellow-400 mt-0.5">
+                                    @if($pr->best_pace)
+                                        {{ sprintf('%d:%02d', intdiv($pr->best_pace, 60), $pr->best_pace % 60) }} min/km
+                                    @else
+                                        —
+                                    @endif
+                                </div>
+                                <div class="text-xs text-zinc-500">{{ __('app.pr_best') }}</div>
+                            </div>
                         </div>
-                        <div class="p-3">
-                            <div class="text-xs text-zinc-400">{{ __('app.pr_1rm') }}</div>
-                            <div class="font-semibold text-yellow-400 mt-0.5">{{ $pr->estimated_1rm }} kg</div>
-                            <div class="text-xs text-zinc-500">Epley</div>
+                    @else
+                        {{-- Strength / bodyweight metrics --}}
+                        <div class="grid grid-cols-2 border-t border-zinc-800 mt-auto">
+                            <div class="p-3 border-r border-zinc-800">
+                                <div class="text-xs text-zinc-400">{{ __('app.pr_max_weight') }}</div>
+                                <div class="font-semibold text-white mt-0.5">{{ $pr->max_weight }} kg</div>
+                                <div class="text-xs text-zinc-500">× {{ $pr->reps_at_max_weight }} reps</div>
+                            </div>
+                            <div class="p-3">
+                                <div class="text-xs text-zinc-400">{{ __('app.pr_1rm') }}</div>
+                                <div class="font-semibold text-yellow-400 mt-0.5">{{ $pr->estimated_1rm }} kg</div>
+                                <div class="text-xs text-zinc-500">Epley</div>
+                            </div>
+                            <div class="p-3 border-t border-r border-zinc-800">
+                                <div class="text-xs text-zinc-400">{{ __('app.pr_max_volume') }}</div>
+                                <div class="font-semibold text-white mt-0.5">{{ number_format($pr->max_volume_set, 0) }} kg</div>
+                                <div class="text-xs text-zinc-500">{{ __('app.pr_single_set') }}</div>
+                            </div>
+                            <div class="p-3 border-t border-zinc-800">
+                                <div class="text-xs text-zinc-400">{{ __('app.pr_max_reps') }}</div>
+                                <div class="font-semibold text-white mt-0.5">{{ $pr->max_reps }} reps</div>
+                                <div class="text-xs text-zinc-500">@ {{ $pr->weight_at_max_reps }} kg</div>
+                            </div>
                         </div>
-                        <div class="p-3 border-t border-r border-zinc-800">
-                            <div class="text-xs text-zinc-400">{{ __('app.pr_max_volume') }}</div>
-                            <div class="font-semibold text-white mt-0.5">{{ number_format($pr->max_volume_set, 0) }} kg</div>
-                            <div class="text-xs text-zinc-500">{{ __('app.pr_single_set') }}</div>
-                        </div>
-                        <div class="p-3 border-t border-zinc-800">
-                            <div class="text-xs text-zinc-400">{{ __('app.pr_max_reps') }}</div>
-                            <div class="font-semibold text-white mt-0.5">{{ $pr->max_reps }} reps</div>
-                            <div class="text-xs text-zinc-500">@ {{ $pr->weight_at_max_reps }} kg</div>
-                        </div>
-                    </div>
+                    @endif
                 </div>
 
                 @if(count($cData['data']) > 1)
@@ -103,7 +135,10 @@
                     const id     = '{{ $chartId }}';
                     const labels = @json($cData['labels']);
                     const data   = @json(array_map(fn($v) => is_null($v) || $v === 0.0 ? null : $v, $cData['data']));
-                    const prVal  = {{ $pr->max_weight ? (float) $pr->max_weight : 'null' }};
+                    const isCardio = {{ $cData['isCardio'] ? 'true' : 'false' }};
+                    const prVal  = isCardio
+                        ? {{ $pr->max_distance ? round($pr->max_distance / 1000, 2) : 'null' }}
+                        : {{ $pr->max_weight ? (float) $pr->max_weight : 'null' }};
                     const isDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
                     const grid   = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
                     const tick   = isDark ? '#666' : '#999';
@@ -120,10 +155,10 @@
                                  borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false}
                             ]},
                             options:{responsive:true,maintainAspectRatio:false,
-                                plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>v.raw+' kg'}}},
+                                plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>isCardio?v.raw+' km':v.raw+' kg'}}},
                                 scales:{
                                     x:{display:false},
-                                    y:{grid:{color:grid},ticks:{color:tick,font:{size:9},maxTicksLimit:3,callback:v=>v+'kg'},border:{display:false}}
+                                    y:{grid:{color:grid},ticks:{color:tick,font:{size:9},maxTicksLimit:3,callback:v=>isCardio?v+'km':v+'kg'},border:{display:false}}
                                 }
                             }
                         });

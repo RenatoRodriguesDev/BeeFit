@@ -11,6 +11,8 @@ class WorkoutSet extends Model
         'set_number',
         'weight',
         'reps',
+        'duration_seconds',
+        'distance_meters',
     ];
 
     public function workoutExercise()

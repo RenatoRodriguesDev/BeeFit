@@ -330,13 +330,22 @@
                             <div>
                                 <p class="font-semibold text-white text-sm mb-2">{{ $ex['name'] }}</p>
                                 <div class="grid grid-cols-3 text-xs text-zinc-500 px-2 mb-1">
-                                    <span>{{ __('app.set') }}</span><span>{{ __('app.weight') }}</span><span>{{ __('app.reps') }}</span>
+                                    @if($ex['is_cardio'])
+                                        <span>{{ __('app.set') }}</span><span>{{ __('app.duration') }}</span><span>{{ __('app.distance') }}</span>
+                                    @else
+                                        <span>{{ __('app.set') }}</span><span>{{ __('app.weight') }}</span><span>{{ __('app.reps') }}</span>
+                                    @endif
                                 </div>
                                 @foreach($ex['sets'] as $set)
                                     <div class="grid grid-cols-3 bg-zinc-800 rounded-lg px-2 py-1.5 text-sm mb-1">
                                         <span class="text-zinc-400">{{ $set['number'] }}</span>
-                                        <span>{{ $set['weight'] }} kg</span>
-                                        <span>{{ $set['reps'] }} reps</span>
+                                        @if($ex['is_cardio'])
+                                            <span>{{ $set['duration_seconds'] ? sprintf('%d:%02d', intdiv($set['duration_seconds'], 60), $set['duration_seconds'] % 60) : '—' }}</span>
+                                            <span>{{ $set['distance_meters'] ? number_format($set['distance_meters'] / 1000, 2) . ' km' : '—' }}</span>
+                                        @else
+                                            <span>{{ $set['weight'] }} kg</span>
+                                            <span>{{ $set['reps'] }} reps</span>
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>

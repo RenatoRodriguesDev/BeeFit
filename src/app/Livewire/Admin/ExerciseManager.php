@@ -25,6 +25,7 @@ class ExerciseManager extends Component
     public int|string $equipmentId = '';
     public int|string $muscleId = '';
     public bool $isCustom = false;
+    public string $exerciseType = 'strength';
     public $thumbnail = null;
     public $video = null;
     public string $keepThumbnail = '';
@@ -55,9 +56,10 @@ class ExerciseManager extends Component
     {
         $exercise = Exercise::with('translations')->findOrFail($id);
         $this->editingId = $id;
-        $this->equipmentId = $exercise->equipment_id ?? '';
-        $this->muscleId = $exercise->primary_muscle_id ?? '';
-        $this->isCustom = (bool) $exercise->is_custom;
+        $this->equipmentId   = $exercise->equipment_id ?? '';
+        $this->muscleId      = $exercise->primary_muscle_id ?? '';
+        $this->isCustom      = (bool) $exercise->is_custom;
+        $this->exerciseType  = $exercise->exercise_type ?? 'strength';
         $this->keepThumbnail = $exercise->thumbnail_path ?? '';
         $this->keepVideo = $exercise->video_path ?? '';
         $this->thumbnail = null;
@@ -91,9 +93,10 @@ class ExerciseManager extends Component
         ]);
 
         $data = [
-            'equipment_id'     => $this->equipmentId,
+            'equipment_id'      => $this->equipmentId,
             'primary_muscle_id' => $this->muscleId,
-            'is_custom'        => $this->isCustom,
+            'is_custom'         => $this->isCustom,
+            'exercise_type'     => $this->exerciseType,
         ];
 
         if ($this->thumbnail) {
@@ -143,10 +146,11 @@ class ExerciseManager extends Component
 
     private function resetForm(): void
     {
-        $this->equipmentId = '';
-        $this->muscleId = '';
-        $this->isCustom = false;
-        $this->thumbnail = null;
+        $this->equipmentId  = '';
+        $this->muscleId     = '';
+        $this->isCustom     = false;
+        $this->exerciseType = 'strength';
+        $this->thumbnail    = null;
         $this->video = null;
         $this->keepThumbnail = '';
         $this->keepVideo = '';

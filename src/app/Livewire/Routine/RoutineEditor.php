@@ -104,6 +104,30 @@ class RoutineEditor extends Component
         ]);
     }
 
+    public function updateDuration($setId, $value)
+    {
+        RoutineSet::findOrFail($setId)->update([
+            'duration_seconds' => $this->parseToSeconds($value)
+        ]);
+    }
+
+    public function updateDistance($setId, $value)
+    {
+        $meters = $value !== '' && $value !== null ? round((float) $value * 1000, 1) : null;
+        RoutineSet::findOrFail($setId)->update(['distance_meters' => $meters]);
+    }
+
+    private function parseToSeconds(?string $value): ?int
+    {
+        if (! $value) return null;
+        if (str_contains($value, ':')) {
+            [$min, $sec] = explode(':', $value);
+            return (int)$min * 60 + (int)$sec;
+        }
+        // Número sem ":" → assume minutos
+        return (int) $value * 60;
+    }
+
     private function refreshRoutine()
     {
         $this->routine = Routine::with([

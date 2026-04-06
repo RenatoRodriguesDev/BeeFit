@@ -79,10 +79,18 @@
                                 {{ $exercise->primaryMuscle?->translate('en')?->name ?? '—' }}
                             </td>
                             <td class="px-5 py-3">
-                                <span class="px-2 py-0.5 rounded-full text-xs
-                                    {{ $exercise->is_custom ? 'bg-amber-600/20 text-amber-400' : 'bg-zinc-800 text-zinc-500' }}">
-                                    {{ $exercise->is_custom ? 'custom' : 'global' }}
-                                </span>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="px-2 py-0.5 rounded-full text-xs
+                                        {{ $exercise->is_custom ? 'bg-amber-600/20 text-amber-400' : 'bg-zinc-800 text-zinc-500' }}">
+                                        {{ $exercise->is_custom ? 'custom' : 'global' }}
+                                    </span>
+                                    @if($exercise->exercise_type !== 'strength')
+                                        <span class="px-2 py-0.5 rounded-full text-xs
+                                            {{ $exercise->exercise_type === 'cardio' ? 'bg-blue-600/20 text-blue-400' : 'bg-green-600/20 text-green-400' }}">
+                                            {{ $exercise->exercise_type }}
+                                        </span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-5 py-3">
                                 <div class="flex items-center justify-end gap-2">
@@ -157,6 +165,17 @@
                             </select>
                             <x-input-error :messages="$errors->get('muscleId')" class="mt-1" />
                         </div>
+                    </div>
+
+                    {{-- Tipo de exercício --}}
+                    <div>
+                        <label class="block text-sm font-medium text-zinc-300 mb-1">Tipo de exercício</label>
+                        <select wire:model="exerciseType"
+                            class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
+                            <option value="strength">Força (peso + reps)</option>
+                            <option value="cardio">Cardio (duração + distância)</option>
+                            <option value="bodyweight">Peso corporal (só reps)</option>
+                        </select>
                     </div>
 
                     {{-- Custom toggle --}}

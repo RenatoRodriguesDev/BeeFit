@@ -177,15 +177,28 @@
                                 </div>
                             </div>
                             <div class="text-right shrink-0 ml-3 space-y-0.5">
-                                @if($pr->max_weight)
-                                    <div class="text-xs font-semibold text-white">
-                                        {{ $pr->max_weight }}kg × {{ $pr->reps_at_max_weight }}
-                                    </div>
-                                @endif
-                                @if($pr->estimated_1rm)
-                                    <div class="text-xs text-blue-400">
-                                        1RM ~{{ number_format($pr->estimated_1rm, 1) }}kg
-                                    </div>
+                                @if($pr->exercise?->isCardio())
+                                    @if($pr->max_distance)
+                                        <div class="text-xs font-semibold text-white">
+                                            {{ number_format($pr->max_distance / 1000, 2) }} km
+                                        </div>
+                                    @endif
+                                    @if($pr->best_pace)
+                                        <div class="text-xs text-blue-400">
+                                            {{ sprintf('%d:%02d', intdiv($pr->best_pace, 60), $pr->best_pace % 60) }} min/km
+                                        </div>
+                                    @endif
+                                @else
+                                    @if($pr->max_weight)
+                                        <div class="text-xs font-semibold text-white">
+                                            {{ $pr->max_weight }}kg × {{ $pr->reps_at_max_weight }}
+                                        </div>
+                                    @endif
+                                    @if($pr->estimated_1rm)
+                                        <div class="text-xs text-blue-400">
+                                            1RM ~{{ number_format($pr->estimated_1rm, 1) }}kg
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
                         </div>

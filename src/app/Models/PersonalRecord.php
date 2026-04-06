@@ -16,6 +16,9 @@ class PersonalRecord extends Model
         'max_reps',
         'weight_at_max_reps',
         'estimated_1rm',
+        'max_distance',
+        'max_duration',
+        'best_pace',
     ];
 
     public function user()
@@ -48,6 +51,14 @@ class PersonalRecord extends Model
      */
     public static function updateFromWorkout(int $userId, int $exerciseId, int $workoutId, \Illuminate\Support\Collection $sets): void
     {
+        $exercise = Exercise::find($exerciseId);
+
+        // Cardio: métricas de duração/distância
+        if ($exercise?->isCardio()) {
+            self::updateCardioFromWorkout($userId, $exerciseId, $workoutId, $sets);
+            return;
+        }
+
         // Ignora sets sem reps (peso=0 é válido para exercícios bodyweight)
         $sets = $sets->filter(fn($s) => $s->reps > 0);
 
@@ -112,5 +123,50 @@ class PersonalRecord extends Model
         if ($updated) {
             $existing->update($updates);
         }
+    }
+
+    public static function updateCardioFromWorkout(int $userId, int $exerciseId, int $workoutId, \Illuminate\Support\Collection $sets): void
+    {
+        $sets = $sets->filter(fn($s) => $s->duration_seconds > 0 || $s->distance_meters > 0);
+        if ($sets->isEmpty()) return;
+
+        $maxDistance = $sets->max('distance_meters') ?? 0;
+        $maxDuration = $sets->max('duration_seconds') ?? 0;
+
+        // Melhor ritmo: set com maior distância e duração (min seg/km)
+        $bestPace = null;
+        foreach ($sets as $s) {
+            if ($s->distance_meters > 0 && $s->duration_seconds > 0) {
+                $pace = (int) round($s->duration_seconds / ($s->distance_meters / 1000));
+                if ($bestPace === null || $pace < $bestPace) {
+                    $bestPace = $pace;
+                }
+            }
+        }
+
+        $existing = self::where('user_id', $userId)->where('exercise_id', $exerciseId)->first();
+
+        if (! $existing) {
+            self::create([
+                'user_id'      => $userId,
+                'exercise_id'  => $exerciseId,
+                'workout_id'   => $workoutId,
+                'max_distance' => $maxDistance,
+                'max_duration' => $maxDuration,
+                'best_pace'    => $bestPace,
+            ]);
+            return;
+        }
+
+        $updates = ['workout_id' => $workoutId];
+        $updated = false;
+
+        if ($maxDistance > ($existing->max_distance ?? 0)) { $updates['max_distance'] = $maxDistance; $updated = true; }
+        if ($maxDuration > ($existing->max_duration ?? 0)) { $updates['max_duration'] = $maxDuration; $updated = true; }
+        if ($bestPace !== null && ($existing->best_pace === null || $bestPace < $existing->best_pace)) {
+            $updates['best_pace'] = $bestPace; $updated = true;
+        }
+
+        if ($updated) $existing->update($updates);
     }
 }

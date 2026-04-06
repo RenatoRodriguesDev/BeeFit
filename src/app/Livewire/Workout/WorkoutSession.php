@@ -33,6 +33,30 @@ class WorkoutSession extends Component
         $this->ownedSet($setId)->update(['reps' => $value ?: null]);
     }
 
+    public function updateDuration($setId, $value)
+    {
+        // value vem em "mm:ss" ou segundos
+        $this->ownedSet($setId)->update(['duration_seconds' => $this->parseToSeconds($value)]);
+    }
+
+    public function updateDistance($setId, $value)
+    {
+        // value em km, guarda em metros
+        $meters = $value ? round((float) $value * 1000, 1) : null;
+        $this->ownedSet($setId)->update(['distance_meters' => $meters]);
+    }
+
+    private function parseToSeconds(?string $value): ?int
+    {
+        if (! $value) return null;
+        if (str_contains($value, ':')) {
+            [$min, $sec] = explode(':', $value);
+            return (int)$min * 60 + (int)$sec;
+        }
+        // Número sem ":" → assume minutos
+        return (int) $value * 60;
+    }
+
     public function pauseWorkout()
     {
         $this->workout->update([
@@ -92,11 +116,13 @@ class WorkoutSession extends Component
 
         $lastSetNumber = $workoutExercise->sets()->max('set_number') ?? 0;
 
+        $isCardio = $workoutExercise->exercise->isCardio();
+
         WorkoutSet::create([
             'workout_exercise_id' => $workoutExercise->id,
-            'set_number' => $lastSetNumber + 1,
-            'weight' => 0,
-            'reps' => 0,
+            'set_number'          => $lastSetNumber + 1,
+            'weight'              => $isCardio ? null : 0,
+            'reps'                => $isCardio ? null : 0,
         ]);
 
         $this->workout->refresh();

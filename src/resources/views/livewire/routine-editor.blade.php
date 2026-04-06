@@ -86,12 +86,23 @@
             @if($expandedExerciseId === $routineExercise->id)
                 <div class="border-t border-zinc-800">
 
-                    <div class="grid grid-cols-[3rem_1fr_1fr_2.5rem] gap-3 px-5 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
-                        <span class="text-center">Set</span>
-                        <span>{{ __('app.weight') }} (kg)</span>
-                        <span>{{ __('app.reps') }}</span>
-                        <span></span>
-                    </div>
+                    @php $isCardio = $routineExercise->exercise->isCardio(); @endphp
+
+                    @if($isCardio)
+                        <div class="grid grid-cols-[3rem_1fr_1fr_2.5rem] gap-3 px-5 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                            <span class="text-center">Set</span>
+                            <span>{{ __('app.duration') }} (mm:ss)</span>
+                            <span>{{ __('app.distance') }} (km)</span>
+                            <span></span>
+                        </div>
+                    @else
+                        <div class="grid grid-cols-[3rem_1fr_1fr_2.5rem] gap-3 px-5 py-3 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                            <span class="text-center">Set</span>
+                            <span>{{ __('app.weight') }} (kg)</span>
+                            <span>{{ __('app.reps') }}</span>
+                            <span></span>
+                        </div>
+                    @endif
 
                     @foreach($routineExercise->sets->sortBy('set_number') as $set)
                         <div class="grid grid-cols-[3rem_1fr_1fr_2.5rem] gap-3 px-5 py-2.5 items-center border-t border-zinc-800/50">
@@ -100,19 +111,36 @@
                                 {{ $set->set_number }}
                             </div>
 
-                            <input type="number"
-                                value="{{ $set->weight }}"
-                                wire:blur="updateWeight({{ $set->id }}, $event.target.value)"
-                                inputmode="decimal"
-                                placeholder="—"
-                                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-center focus:outline-none focus:border-zinc-600 transition">
+                            @if($isCardio)
+                                <input type="text"
+                                    value="{{ $set->duration_seconds ? sprintf('%02d:%02d', intdiv($set->duration_seconds, 60), $set->duration_seconds % 60) : '' }}"
+                                    wire:blur="updateDuration({{ $set->id }}, $event.target.value)"
+                                    placeholder="00:00"
+                                    inputmode="numeric"
+                                    class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-center focus:outline-none focus:border-zinc-600 transition">
 
-                            <input type="number"
-                                value="{{ $set->reps }}"
-                                wire:blur="updateReps({{ $set->id }}, $event.target.value)"
-                                inputmode="numeric"
-                                placeholder="—"
-                                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-center focus:outline-none focus:border-zinc-600 transition">
+                                <input type="number"
+                                    value="{{ $set->distance_meters ? number_format($set->distance_meters / 1000, 2, '.', '') : '' }}"
+                                    wire:blur="updateDistance({{ $set->id }}, $event.target.value)"
+                                    placeholder="0.00"
+                                    inputmode="decimal"
+                                    step="0.01"
+                                    class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-center focus:outline-none focus:border-zinc-600 transition">
+                            @else
+                                <input type="number"
+                                    value="{{ $set->weight }}"
+                                    wire:blur="updateWeight({{ $set->id }}, $event.target.value)"
+                                    inputmode="decimal"
+                                    placeholder="—"
+                                    class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-center focus:outline-none focus:border-zinc-600 transition">
+
+                                <input type="number"
+                                    value="{{ $set->reps }}"
+                                    wire:blur="updateReps({{ $set->id }}, $event.target.value)"
+                                    inputmode="numeric"
+                                    placeholder="—"
+                                    class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-center focus:outline-none focus:border-zinc-600 transition">
+                            @endif
 
                             <button wire:click="deleteSet({{ $set->id }})"
                                 class="flex items-center justify-center text-zinc-600 hover:text-red-400 transition mx-auto">
