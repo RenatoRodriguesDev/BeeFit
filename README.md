@@ -1,6 +1,6 @@
 # BeeFit
 
-A fitness tracking web app built with Laravel 12. Users create exercise routines, log workout sessions with real-time set/rep/weight tracking, view personal records, share workouts on a social feed, and follow other users.
+A fitness tracking web app built with Laravel 12. Users create exercise routines, log workout sessions with real-time set/rep/weight tracking, earn XP and level up, unlock achievements, view personal records, share workouts on a social feed, and follow other users.
 
 ## Stack
 
@@ -48,6 +48,15 @@ A fitness tracking web app built with Laravel 12. Users create exercise routines
 - In-app notification bell with real-time delivery (Laravel Reverb)
 - Accept / reject follow requests directly from notifications
 - Notifications for: follow requests, follow accepted, post liked, post commented
+
+### Gamification (RPG)
+- XP awarded on every completed workout: 50 base + 5/set + duration bonuses + new-exercise bonuses
+- 50-level system with exponential thresholds and 8 title tiers (Beginner → Immortal)
+- 18 achievements (first workout, streaks, personal records, heavy lifter, marathon, early bird, …)
+- XP progress bar and achievement badges on user profiles
+- Global and friends leaderboard ranked by total XP (`/leaderboard`)
+- Post-workout modal showing XP earned and newly unlocked achievements
+- Level badge displayed next to usernames in the social feed
 
 ### Internationalisation
 - UI available in Portuguese, English and Spanish
@@ -111,6 +120,7 @@ php artisan migrate:fresh --seed
 | `Follow` | Follower/following relationships with `pending` / `accepted` status |
 | `Post → PostComment → PostLike` | Social feed content |
 | `Equipment`, `Muscle` | Translated via `*_translations` tables |
+| `Achievement` | Key, icon, XP reward; unlocked per user via `user_achievements` pivot |
 
 ### Livewire Components
 
@@ -123,6 +133,8 @@ php artisan migrate:fresh --seed
 | Statistics | `Statistics` — personal records overview |
 | Social | `Social/SocialFeed`, `UserProfile`, `CreatePost` |
 | Notifications | `NotificationBell` — real-time bell with accept/reject |
+| Leaderboard | `Leaderboard` — global and friends tabs ranked by XP |
+| Admin | `Admin/Dashboard`, `UserManager`, `ExerciseManager`, `CatalogManager`, `AchievementManager` |
 
 ### Real-time (Reverb)
 
@@ -136,6 +148,12 @@ Notifications are broadcast over a private WebSocket channel (`App.Models.User.{
 | Laravel Reverb | `beeFit-reverb` | 8080 |
 | MySQL 8 | `beeFit_mysql` | 3307 |
 | Redis | `beeFit_redis` | 6379 |
+
+### XP & Achievement Flow
+
+`XpService::processWorkout(User, Workout)` is called inside `WorkoutSession::finishWorkout()` after personal records are computed. It returns `['xp' => int, 'achievements' => Achievement[]]` which drives the post-workout modal. XP is added permanently via `User::addXp()`. Achievements are checked and attached once via `user_achievements` pivot.
+
+The streak counter (`currentStreak`) reads all completed workouts ordered by `finished_at` descending, groups by calendar date, and walks backwards counting consecutive days.
 
 ### Subscription Flow
 

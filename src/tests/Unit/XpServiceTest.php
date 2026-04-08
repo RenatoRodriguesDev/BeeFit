@@ -239,26 +239,16 @@ describe('XpService — achievements', function () {
 
 describe('XpService — streak calculation', function () {
 
-    // Helper: create a completed workout bypassing mass-assignment guards
-    function completedWorkout(\App\Models\User $user, \Carbon\Carbon $finishedAt): \App\Models\Workout
-    {
-        $w = createWorkout($user);
-        \Illuminate\Support\Facades\DB::table('workouts')->where('id', $w->id)->update([
-            'status'      => 'completed',
-            'finished_at' => $finishedAt->toDateTimeString(),
-        ]);
-        return $w->fresh();
-    }
-
     it('returns 1 for a single workout today', function () {
-        $user = createUser();
+        $user  = createUser();
         $today = \Carbon\Carbon::create(2025, 6, 15, 12, 0, 0);
         \Carbon\Carbon::setTestNow($today);
 
-        completedWorkout($user, $today);
+        $w = createWorkout($user);
+        $w->update(['status' => 'completed', 'finished_at' => $today]);
 
-        $service = app(XpService::class);
-        $streak  = (new ReflectionMethod($service, 'currentStreak'))->invoke($service, $user);
+        $streak = (new ReflectionMethod(app(XpService::class), 'currentStreak'))
+            ->invoke(app(XpService::class), $user);
 
         \Carbon\Carbon::setTestNow();
         expect($streak)->toBe(1);
@@ -269,10 +259,11 @@ describe('XpService — streak calculation', function () {
         $today = \Carbon\Carbon::create(2025, 6, 15, 12, 0, 0);
         \Carbon\Carbon::setTestNow($today);
 
-        completedWorkout($user, $today->copy()->subDays(3));
+        $w = createWorkout($user);
+        $w->update(['status' => 'completed', 'finished_at' => $today->copy()->subDays(3)]);
 
-        $service = app(XpService::class);
-        $streak  = (new ReflectionMethod($service, 'currentStreak'))->invoke($service, $user);
+        $streak = (new ReflectionMethod(app(XpService::class), 'currentStreak'))
+            ->invoke(app(XpService::class), $user);
 
         \Carbon\Carbon::setTestNow();
         expect($streak)->toBe(0);
@@ -283,12 +274,17 @@ describe('XpService — streak calculation', function () {
         $today = \Carbon\Carbon::create(2025, 6, 15, 12, 0, 0);
         \Carbon\Carbon::setTestNow($today);
 
-        foreach ([0, 1, 2] as $daysAgo) {
-            completedWorkout($user, $today->copy()->subDays($daysAgo)->startOfDay()->addHours(10));
-        }
+        $w0 = createWorkout($user);
+        $w0->update(['status' => 'completed', 'finished_at' => $today->copy()->startOfDay()->addHours(10)]);
 
-        $service = app(XpService::class);
-        $streak  = (new ReflectionMethod($service, 'currentStreak'))->invoke($service, $user);
+        $w1 = createWorkout($user);
+        $w1->update(['status' => 'completed', 'finished_at' => $today->copy()->subDay()->startOfDay()->addHours(10)]);
+
+        $w2 = createWorkout($user);
+        $w2->update(['status' => 'completed', 'finished_at' => $today->copy()->subDays(2)->startOfDay()->addHours(10)]);
+
+        $streak = (new ReflectionMethod(app(XpService::class), 'currentStreak'))
+            ->invoke(app(XpService::class), $user);
 
         \Carbon\Carbon::setTestNow();
         expect($streak)->toBe(3);
@@ -299,11 +295,14 @@ describe('XpService — streak calculation', function () {
         $today = \Carbon\Carbon::create(2025, 6, 15, 12, 0, 0);
         \Carbon\Carbon::setTestNow($today);
 
-        completedWorkout($user, $today->copy()->startOfDay()->addHours(10));          // today
-        completedWorkout($user, $today->copy()->subDays(3)->startOfDay()->addHours(10)); // 3 days ago — gap
+        $w0 = createWorkout($user);
+        $w0->update(['status' => 'completed', 'finished_at' => $today->copy()->startOfDay()->addHours(10)]);
 
-        $service = app(XpService::class);
-        $streak  = (new ReflectionMethod($service, 'currentStreak'))->invoke($service, $user);
+        $w1 = createWorkout($user);
+        $w1->update(['status' => 'completed', 'finished_at' => $today->copy()->subDays(3)->startOfDay()->addHours(10)]);
+
+        $streak = (new ReflectionMethod(app(XpService::class), 'currentStreak'))
+            ->invoke(app(XpService::class), $user);
 
         \Carbon\Carbon::setTestNow();
         expect($streak)->toBe(1);
@@ -314,9 +313,11 @@ describe('XpService — streak calculation', function () {
         $today = \Carbon\Carbon::create(2025, 6, 15, 12, 0, 0);
         \Carbon\Carbon::setTestNow($today);
 
-        // 2 prior completed workouts on consecutive days
-        completedWorkout($user, $today->copy()->subDays(2)->startOfDay()->addHours(10));
-        completedWorkout($user, $today->copy()->subDays(1)->startOfDay()->addHours(10));
+        $w0 = createWorkout($user);
+        $w0->update(['status' => 'completed', 'finished_at' => $today->copy()->subDays(2)->startOfDay()->addHours(10)]);
+
+        $w1 = createWorkout($user);
+        $w1->update(['status' => 'completed', 'finished_at' => $today->copy()->subDay()->startOfDay()->addHours(10)]);
 
         // Today's workout — processed by XpService
         $workout = createWorkout($user);

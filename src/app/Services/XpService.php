@@ -168,7 +168,7 @@ class XpService
         for ($i = 0; $i < $dates->count() - 1; $i++) {
             $current  = \Carbon\Carbon::parse($dates[$i]);
             $previous = \Carbon\Carbon::parse($dates[$i + 1]);
-            if ($current->diffInDays($previous) === 1) {
+            if ((int) abs($current->diffInDays($previous)) === 1) {
                 $streak++;
             } else {
                 break;
