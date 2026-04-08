@@ -101,7 +101,7 @@
 
                 {{-- Botão + --}}
                 <button wire:click.stop="openRoutineModal({{ $exercise->id }})"
-                    class="shrink-0 w-7 h-7 flex items-center justify-center rounded-lg text-zinc-600 hover:bg-violet-600/20 hover:text-violet-400 transition opacity-0 group-hover:opacity-100 {{ $activeExerciseId == $exercise->id ? 'opacity-100' : '' }}"
+                    class="shrink-0 w-7 h-7 flex items-center justify-center rounded-lg text-zinc-600 hover:bg-violet-600/20 hover:text-violet-400 transition {{ $activeExerciseId == $exercise->id ? 'text-violet-400' : '' }}"
                     title="{{ __('app.add') }}">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
