@@ -45,7 +45,8 @@ describe('PersonalRecord::updateFromWorkout()', function () {
             ->and($record->max_reps)->toBe(10);
     });
 
-    it('skips sets with zero weight', function () {
+    it('creates a record for bodyweight sets (weight=0) if they have reps', function () {
+        // weight=0 is valid for bodyweight exercises; a PR is still recorded for reps
         $user     = createUser();
         $exercise = createExercise();
         $workout  = createWorkout($user);
@@ -55,7 +56,10 @@ describe('PersonalRecord::updateFromWorkout()', function () {
 
         PersonalRecord::updateFromWorkout($user->id, $exercise->id, $workout->id, $we->sets()->get());
 
-        expect(PersonalRecord::where('user_id', $user->id)->count())->toBe(0);
+        $record = PersonalRecord::where('user_id', $user->id)->first();
+        expect($record)->not->toBeNull()
+            ->and($record->max_weight)->toBe(0.0)
+            ->and($record->max_reps)->toBe(10);
     });
 
     it('skips sets with zero reps', function () {

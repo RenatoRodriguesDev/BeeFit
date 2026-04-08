@@ -25,7 +25,7 @@ class Leaderboard extends Component
                 ->get();
         }
 
-        $myRank = User::where('xp', '>', $user->xp)->count() + 1;
+        $myRank = User::where('xp', '>', $user->xp ?? 0)->count() + 1;
 
         return view('livewire.leaderboard', [
             'users'  => $users,

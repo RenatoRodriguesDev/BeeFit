@@ -164,6 +164,8 @@
                                 value="{{ $set->weight }}"
                                 wire:blur="updateWeight({{ $set->id }}, $event.target.value)"
                                 inputmode="decimal"
+                                step="0.5"
+                                min="0"
                                 class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 text-sm text-center focus:outline-none focus:border-zinc-500 transition">
 
                             {{-- Reps --}}

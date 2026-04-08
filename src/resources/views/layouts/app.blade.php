@@ -284,20 +284,53 @@
                 </div>
 
                 <div class="p-4 space-y-1">
+                    {{-- XP / Level badge --}}
+                    @php $authUser = auth()->user(); @endphp
+                    <a href="{{ route('social.profile') }}" @click="open = false"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-800/60 border border-zinc-700/50 mb-2 hover:bg-zinc-800 transition">
+                        <div class="flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br {{ $authUser->levelBadgeColor() }} text-white text-xs font-bold shrink-0">
+                            {{ $authUser->level() }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-xs font-semibold text-white truncate">{{ $authUser->levelTitle() }}</div>
+                            <div class="w-full bg-zinc-700 rounded-full h-1.5 mt-1">
+                                <div class="h-1.5 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500"
+                                     style="width: {{ $authUser->xpProgressPercent() }}%"></div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold text-yellow-400 shrink-0">{{ number_format($authUser->xp ?? 0) }} XP</span>
+                    </a>
+
+                    <a href="{{ route('statistics') }}" @click="open = false"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        {{ __('app.statistics') }}
+                    </a>
+
+                    <a href="{{ route('leaderboard') }}" @click="open = false"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 17l3-3 4 4 4-6 4 2M3 21h18"/>
+                        </svg>
+                        {{ __('app.leaderboard') }}
+                    </a>
+
+                    <a href="{{ route('social.profile') }}" @click="open = false"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                        </svg>
+                        {{ __('app.my_achievements') }}
+                    </a>
+
                     <a href="{{ route('profile.edit') }}" @click="open = false"
                         class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                         {{ __('app.change_profile') }}
-                    </a>
-
-                    <a href="{{ route('social.profile') }}" @click="open = false"
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                        {{ __('app.my_profile') }}
                     </a>
 
                     <form method="POST" action="{{ route('logout') }}">
