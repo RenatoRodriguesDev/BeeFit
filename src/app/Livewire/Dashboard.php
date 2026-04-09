@@ -105,6 +105,7 @@ class Dashboard extends Component
 
         $dates = Workout::where('user_id', $userId)
             ->where('status', 'completed')
+            ->where('started_at', '>=', now()->subDays(60))
             ->orderByDesc('started_at')
             ->pluck('started_at')
             ->map(fn ($d) => $d->setTimezone($tz)->format('Y-m-d'))

@@ -492,7 +492,7 @@ class UserProfile extends Component
             || $isFollowing;
 
         $posts = $canSeePosts
-            ? Post::with(['workout', 'likes', 'comments'])
+            ? Post::with(['workout', 'likes', 'comments.user'])
                 ->where('user_id', $this->profileUser->id)
                 ->latest()
                 ->paginate(12)

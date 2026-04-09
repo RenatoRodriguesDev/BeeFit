@@ -74,9 +74,10 @@
                     </svg>
                 </button>
 
-                <button wire:click="promptFinish"
-                    class="px-4 py-2 rounded-xl bg-green-500 hover:bg-green-400 text-black font-semibold text-sm transition">
-                    {{ __('app.finish') }}
+                <button wire:click="promptFinish" wire:loading.attr="disabled" wire:loading.class="opacity-75"
+                    class="px-4 py-2 rounded-xl bg-green-500 hover:bg-green-400 text-black font-semibold text-sm transition flex items-center gap-2">
+                    <svg wire:loading wire:target="promptFinish" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                    <span>{{ __('app.finish') }}</span>
                 </button>
             </div>
         </div>
@@ -86,7 +87,7 @@
     <main class="flex-1 max-w-2xl mx-auto w-full px-4 py-6 space-y-4">
 
         @foreach($workout->exercises as $workoutExercise)
-            <div class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+            <div wire:key="exercise-{{ $workoutExercise->id }}" class="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
 
                 <div class="flex items-center justify-between px-4 py-3">
                     <h2 class="font-semibold text-sm">
@@ -105,7 +106,7 @@
 
                 {{-- Cabeçalho --}}
                 @if($isCardio)
-                    <div class="grid grid-cols-[1.25rem_2.5rem_1fr_1fr_2rem] gap-2 px-4 pb-1 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                    <div class="grid grid-cols-[2.75rem_2.5rem_1fr_1fr_2rem] gap-2 px-4 pb-1 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
                         <span></span>
                         <span class="text-center">Set</span>
                         <span>{{ __('app.duration') }} (mm:ss)</span>
@@ -113,7 +114,7 @@
                         <span></span>
                     </div>
                 @else
-                    <div class="grid grid-cols-[1.25rem_2.5rem_1fr_1fr_2rem] gap-2 px-4 pb-1 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
+                    <div class="grid grid-cols-[2.75rem_2.5rem_1fr_1fr_2rem] gap-2 px-4 pb-1 text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
                         <span></span>
                         <span class="text-center">Set</span>
                         <span>{{ __('app.weight') }} (kg)</span>
@@ -124,17 +125,19 @@
 
                 @foreach($workoutExercise->sets as $set)
                     @php $isDone = in_array($set->id, $completedSets); @endphp
-                    <div class="grid grid-cols-[1.25rem_2.5rem_1fr_1fr_2rem] gap-2 px-4 py-2 items-center border-t border-zinc-800/60 transition-colors {{ $isDone ? 'bg-green-950/30' : '' }}">
+                    <div wire:key="set-{{ $set->id }}" class="grid grid-cols-[2.75rem_2.5rem_1fr_1fr_2rem] gap-2 px-4 py-2 items-center border-t border-zinc-800/60 transition-colors {{ $isDone ? 'bg-green-950/30' : '' }}">
 
                         {{-- Marcador de série concluída --}}
                         <button wire:click="toggleSetDone({{ $set->id }})"
-                            class="flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors shrink-0 {{ $isDone ? 'bg-green-500 border-green-500' : 'border-zinc-600 hover:border-green-500' }}"
+                            class="flex items-center justify-center w-11 h-11 rounded-xl transition-colors shrink-0 {{ $isDone ? 'bg-green-500/20' : 'hover:bg-zinc-800' }}"
                             title="{{ $isDone ? __('app.mark_undone') : __('app.mark_done') }}">
+                            <span class="flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors {{ $isDone ? 'bg-green-500 border-green-500' : 'border-zinc-600' }}">
                             @if($isDone)
                                 <svg class="w-3 h-3 text-black" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                                 </svg>
                             @endif
+                            </span>
                         </button>
 
                         <div class="flex items-center justify-center w-7 h-7 rounded-lg bg-zinc-800 text-xs font-semibold text-zinc-300 mx-auto">
@@ -211,11 +214,12 @@
                     <p class="text-sm text-zinc-400 mt-1">{{ __('app.share_workout_prompt') }}</p>
                 </div>
                 <div class="flex flex-col gap-3">
-                    <button wire:click="finishWorkout(true)"
-                        class="w-full py-3 rounded-xl bg-white text-black font-semibold text-sm hover:bg-zinc-200 transition">
-                        📸 {{ __('app.yes_share') }}
+                    <button wire:click="finishWorkout(true)" wire:loading.attr="disabled" wire:loading.class="opacity-75" wire:target="finishWorkout"
+                        class="w-full py-3 rounded-xl bg-white text-black font-semibold text-sm hover:bg-zinc-200 transition flex items-center justify-center gap-2">
+                        <svg wire:loading wire:target="finishWorkout" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                        <span>📸 {{ __('app.yes_share') }}</span>
                     </button>
-                    <button wire:click="finishWorkout(false)"
+                    <button wire:click="finishWorkout(false)" wire:loading.attr="disabled" wire:loading.class="opacity-75" wire:target="finishWorkout"
                         class="w-full py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm transition">
                         {{ __('app.skip') }}
                     </button>

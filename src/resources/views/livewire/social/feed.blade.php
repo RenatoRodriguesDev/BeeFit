@@ -399,17 +399,17 @@
                     </div>
                 </a>
                 @if($isFollowing)
-                    <button wire:click="unfollow({{ $suggested->id }})"
+                    <button wire:click="unfollow({{ $suggested->id }})" wire:loading.attr="disabled" wire:loading.class="opacity-50" wire:target="unfollow({{ $suggested->id }}),follow({{ $suggested->id }})"
                         class="text-[10px] bg-zinc-700 hover:bg-red-600/50 text-zinc-300 px-2 py-1 rounded-lg transition shrink-0">
                         {{ __('app.following') }}
                     </button>
                 @elseif($isPending)
-                    <button wire:click="unfollow({{ $suggested->id }})"
+                    <button wire:click="unfollow({{ $suggested->id }})" wire:loading.attr="disabled" wire:loading.class="opacity-50" wire:target="unfollow({{ $suggested->id }}),follow({{ $suggested->id }})"
                         class="text-[10px] bg-zinc-700 text-zinc-400 px-2 py-1 rounded-lg transition shrink-0">
                         ⏳
                     </button>
                 @else
-                    <button wire:click="follow({{ $suggested->id }})"
+                    <button wire:click="follow({{ $suggested->id }})" wire:loading.attr="disabled" wire:loading.class="opacity-50" wire:target="follow({{ $suggested->id }}),unfollow({{ $suggested->id }})"
                         class="text-[10px] bg-white text-black hover:bg-zinc-200 px-2 py-1 rounded-lg transition shrink-0 font-semibold">
                         {{ __('app.follow') }}
                     </button>

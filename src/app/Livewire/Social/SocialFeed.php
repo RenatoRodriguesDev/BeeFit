@@ -348,7 +348,7 @@ class SocialFeed extends Component
         $user = auth()->user();
         $followingIds = $user->followingIds();
 
-        $posts = Post::with(['user', 'workout', 'likes', 'comments' => fn($q) => $q->limit(3)])
+        $posts = Post::with(['user', 'workout', 'likes', 'comments' => fn($q) => $q->with('user')->limit(3)])
             ->withCount('comments')
             ->whereIn('user_id', $followingIds)
             ->latest()

@@ -25,7 +25,7 @@
         <div class="space-y-2">
             @foreach($users as $index => $player)
                 @php
-                    $rank = $index + 1;
+                    $rank = $users->firstItem() + $index;
                     $isMe = $player->id === auth()->id();
                     $medal = match($rank) { 1 => '🥇', 2 => '🥈', 3 => '🥉', default => null };
                 @endphp
@@ -76,6 +76,13 @@
                 </div>
             @endif
         </div>
+
+        {{-- Pagination --}}
+        @if($users->hasPages())
+            <div class="flex justify-center">
+                {{ $users->links() }}
+            </div>
+        @endif
 
     </div>
 </div>
