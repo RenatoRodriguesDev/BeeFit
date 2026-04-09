@@ -59,19 +59,22 @@
 </div>
 
 @if($history->isNotEmpty())
+@script
 <script>
-(function() {
-    const labels = @json($chartData->pluck('label'));
-    const data   = @json($chartData->pluck('max'));
-    const pr     = {{ $pr?->max_weight ?? 'null' }};
-    const isDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
-    const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
-    const textColor = isDark ? '#888' : '#999';
+    const labels    = @json($chartData->pluck('label'));
+    const data      = @json($chartData->pluck('max'));
+    const pr        = {{ $pr?->max_weight ?? 'null' }};
+    const gridColor = 'rgba(255,255,255,0.07)';
+    const textColor = '#888';
+    const chartKey  = 'historyChart-{{ $exerciseId }}';
 
-    function buildChart() {
-        const ctx = document.getElementById('historyChart-{{ $exerciseId }}');
-        if (!ctx || !window.Chart) { setTimeout(buildChart, 100); return; }
+    if (window['_chart_' + chartKey]) {
+        window['_chart_' + chartKey].destroy();
+        delete window['_chart_' + chartKey];
+    }
 
+    const ctx = document.getElementById(chartKey);
+    if (ctx && window.Chart) {
         const datasets = [{
             label: '{{ __("app.max_weight_per_session") }}',
             data,
@@ -96,7 +99,7 @@
             });
         }
 
-        new Chart(ctx, {
+        window['_chart_' + chartKey] = new Chart(ctx, {
             type: 'line',
             data: { labels, datasets },
             options: {
@@ -121,7 +124,6 @@
             }
         });
     }
-    buildChart();
-})();
 </script>
+@endscript
 @endif

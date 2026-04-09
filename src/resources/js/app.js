@@ -1,5 +1,7 @@
 import './bootstrap';
 import './echo';
+import Chart from 'chart.js/auto';
+window.Chart = Chart;
 
 import Sortable from 'sortablejs';
 
