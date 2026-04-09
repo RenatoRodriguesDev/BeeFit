@@ -87,9 +87,10 @@ class LibraryPanel extends Component
         }
 
         if ($this->search) {
-            $query->whereHas('translations', function ($q) {
-                $q->where('locale', app()->getLocale())
-                  ->where('name', 'like', '%' . $this->search . '%');
+            $term = strtolower($this->search);
+            $query->whereHas('translations', function ($q) use ($term) {
+                $q->whereIn('locale', [app()->getLocale(), config('app.fallback_locale')])
+                  ->whereRaw('LOWER(name) LIKE ?', ['%' . $term . '%']);
             });
         }
 

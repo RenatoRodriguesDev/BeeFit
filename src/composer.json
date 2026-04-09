@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^4.1",
+        "predis/predis": "^3.4",
         "stripe/stripe-php": "^19.4"
     },
     "require-dev": {
