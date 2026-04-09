@@ -63,15 +63,19 @@ class SubscriptionController extends Controller
     {
         $session = StripeSession::retrieve($request->session_id);
 
+        // Verify this session belongs to the authenticated user
+        if ((int) $session->metadata->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         if ($session->payment_status === 'paid') {
             $user = Auth::user();
-            $user->update([
-                'stripe_customer_id'      => $session->customer,
-                'stripe_subscription_id'  => $session->subscription,
-                'subscription_status'     => 'active',
-                'plan'                    => $session->metadata->plan,
-                'role'                    => $session->metadata->plan,
-            ]);
+            $user->stripe_customer_id     = $session->customer;
+            $user->stripe_subscription_id = $session->subscription;
+            $user->subscription_status    = 'active';
+            $user->plan                   = $session->metadata->plan;
+            $user->role                   = $session->metadata->plan;
+            $user->save();
         }
 
         return redirect()->route('dashboard')
@@ -121,12 +125,11 @@ class SubscriptionController extends Controller
         $user = User::where('stripe_customer_id', $sub->customer)->first();
         if (!$user) return;
 
-        $user->update([
-            'subscription_status'    => $sub->status,
-            'subscription_ends_at'   => $sub->current_period_end
-                ? \Carbon\Carbon::createFromTimestamp($sub->current_period_end)
-                : null,
-        ]);
+        $user->subscription_status  = $sub->status;
+        $user->subscription_ends_at = $sub->current_period_end
+            ? \Carbon\Carbon::createFromTimestamp($sub->current_period_end)
+            : null;
+        $user->save();
     }
 
     private function handleSubscriptionDeleted(Event $event): void
@@ -135,11 +138,10 @@ class SubscriptionController extends Controller
         $user = User::where('stripe_customer_id', $sub->customer)->first();
         if (!$user) return;
 
-        $user->update([
-            'plan'                => 'free',
-            'role'                => 'user',
-            'subscription_status' => 'canceled',
-        ]);
+        $user->plan                = 'free';
+        $user->role                = 'user';
+        $user->subscription_status = 'canceled';
+        $user->save();
     }
 
     private function handlePaymentFailed(Event $event): void
@@ -148,6 +150,7 @@ class SubscriptionController extends Controller
         $user    = User::where('stripe_customer_id', $invoice->customer)->first();
         if (!$user) return;
 
-        $user->update(['subscription_status' => 'past_due']);
+        $user->subscription_status = 'past_due';
+        $user->save();
     }
 }

@@ -12,17 +12,13 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    // Only user-controlled inputs. Privileged fields (role, plan, stripe_*, xp)
+    // are intentionally excluded -- set them explicitly via property assignment + save().
     protected $fillable = [
         'name',
         'email',
         'password',
         'locale',
-        'role',
-        'plan',
-        'stripe_customer_id',
-        'stripe_subscription_id',
-        'subscription_status',
-        'subscription_ends_at',
         'avatar_path',
         'birthdate',
         'height_cm',
