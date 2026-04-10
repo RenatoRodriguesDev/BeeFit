@@ -58,7 +58,7 @@ Route::post('/stripe/webhook', [SubscriptionController::class, 'webhook'])
     ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -74,6 +74,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 require __DIR__ . '/auth.php';
+
+// Legal pages
+Route::get('/privacy', fn() => view('privacy'))->name('privacy');
+Route::get('/terms', fn() => view('terms'))->name('terms');
 
 // Sitemap
 Route::get('/sitemap.xml', function () {

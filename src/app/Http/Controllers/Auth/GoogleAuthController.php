@@ -44,7 +44,8 @@ class GoogleAuthController extends Controller
                     'email'     => $googleUser->getEmail(),
                     'username'  => $this->generateUsername($googleUser->getName()),
                     'locale'    => app()->getLocale(),
-                    'password'  => null,
+                    'password'           => null,
+                'email_verified_at'  => now(),
                 ]);
                 $user->google_id   = $googleUser->getId();
                 $user->avatar_path = $googleUser->getAvatar();

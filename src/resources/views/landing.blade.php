@@ -158,6 +158,8 @@
     <nav class="mt-2 space-x-4">
         <a href="{{ route('login') }}" class="hover:text-gray-600 transition">{{ __('app.login') }}</a>
         <a href="{{ route('register') }}" class="hover:text-gray-600 transition">{{ __('app.register') }}</a>
+        <a href="{{ route('privacy') }}" class="hover:text-gray-600 transition">{{ __('app.privacy_policy') }}</a>
+        <a href="{{ route('terms') }}" class="hover:text-gray-600 transition">{{ __('app.terms_of_service') }}</a>
     </nav>
 </footer>
 @endsection
