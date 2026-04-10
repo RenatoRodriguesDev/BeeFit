@@ -116,10 +116,13 @@ class User extends Authenticatable
     public function avatarUrl(): string
     {
         if ($this->avatar_path) {
+            // Google OAuth stores full URLs; local uploads are relative paths
+            if (str_starts_with($this->avatar_path, 'http')) {
+                return $this->avatar_path;
+            }
             return asset('storage/' . $this->avatar_path);
         }
 
-        // Fallback: avatar com iniciais (gerado por UI)
         return '';
     }
 

@@ -47,6 +47,7 @@ class RoutineManager extends Component
 
     public function render()
     {
-        return view('livewire.routine-manager');
+        return view('livewire.routine-manager')
+            ->title(__('app.routines'));
     }
 }

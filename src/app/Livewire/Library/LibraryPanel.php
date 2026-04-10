@@ -98,6 +98,7 @@ class LibraryPanel extends Component
             'exercises'     => $query->get(),
             'equipmentList' => Equipment::with('translations')->get(),
             'musclesList'   => Muscle::with('translations')->get(),
-        ]);
+        ])
+            ->title(__('app.library'));
     }
 }

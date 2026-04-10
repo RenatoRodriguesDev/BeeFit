@@ -240,6 +240,7 @@ class WorkoutSession extends Component
 
     public function render()
     {
-        return view('livewire.workout-session');
+        return view('livewire.workout-session')
+            ->title((__('app.workout') . ' — ' . ($this->workout->routine->name ?? __('app.workout'))));
     }
 }

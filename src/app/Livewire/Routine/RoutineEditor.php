@@ -175,6 +175,7 @@ class RoutineEditor extends Component
 
     public function render()
     {
-        return view('livewire.routine-editor');
+        return view('livewire.routine-editor')
+            ->title(($this->routine->name ?? __('app.edit_routine')));
     }
 }

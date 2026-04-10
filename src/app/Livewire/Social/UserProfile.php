@@ -501,6 +501,7 @@ class UserProfile extends Component
         return view('livewire.social.profile', compact(
             'posts', 'isFollowing', 'isPending', 'followerCount', 'followingCount',
             'followRequests', 'canSeePosts', 'isOwn'
-        ));
+        ))
+            ->title(('@' . ($this->profileUser->username ?? '')));
     }
 }

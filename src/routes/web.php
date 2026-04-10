@@ -15,8 +15,11 @@ use App\Http\Controllers\Web\SubscriptionController;
 use App\Livewire\Leaderboard;
 
 Route::get('/', function () {
-    return redirect()->route('login');
-})->middleware('guest');
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+    return view('landing');
+})->name('home');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', Dashboard::class)
@@ -71,3 +74,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 require __DIR__ . '/auth.php';
+
+// Sitemap
+Route::get('/sitemap.xml', function () {
+    return response()->view('sitemap')
+        ->header('Content-Type', 'application/xml');
+})->name('sitemap');
+
+// Google OAuth
+Route::middleware('guest')->prefix('auth/google')->group(function () {
+    Route::get('redirect', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'redirect'])->name('google.redirect');
+    Route::get('callback', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'callback'])->name('google.callback');
+});

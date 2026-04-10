@@ -96,7 +96,8 @@ class Dashboard extends Component
             'streak',
             'recentWorkouts',
             'recentPRs',
-        ));
+        ))
+            ->title(__('app.dashboard'));
     }
 
     private function calculateStreak(int $userId): int

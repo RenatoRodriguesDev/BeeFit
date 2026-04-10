@@ -38,6 +38,7 @@ class Dashboard extends Component
         ];
 
         return view('livewire.admin.dashboard', compact('stats', 'recentUsers', 'subscriptionBreakdown'))
-            ->layout('layouts.admin');
+            ->layout('layouts.admin')
+            ->title('Admin — Dashboard');
     }
 }

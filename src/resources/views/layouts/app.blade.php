@@ -6,8 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>BeeFit</title>
+    {{-- Title: componentes Livewire definem via ->title(); formato "Página • BeeFit" --}}
+    <title>{{ isset($title) ? $title . ' • BeeFit' : 'BeeFit' }}</title>
+
+    {{-- SEO base --}}
+    <meta name="description" content="BeeFit — regista treinos, acompanha recordes pessoais e atinge os teus objetivos de fitness.">
+    <meta name="robots" content="noindex, nofollow">{{-- app autenticada: não indexar --}}
+
     <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
+    <link rel="canonical" href="{{ url()->current() }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -123,7 +130,7 @@
 
                     <div class="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center shrink-0">
                         @if(auth()->user()->avatar_path)
-                            <img src="{{ asset('storage/' . auth()->user()->avatar_path) }}"
+                            <img src="{{ avatar_url(auth()->user()->avatar_path) }}"
                                 class="w-full h-full object-cover" alt="">
                         @else
                             <span class="text-xs font-bold text-white">{{ auth()->user()->initials() }}</span>
@@ -239,7 +246,7 @@
                     {{ request()->routeIs('profile.*') ? 'text-white' : 'text-zinc-500' }}">
                 <div class="w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center">
                     @if(auth()->user()->avatar_path)
-                        <img src="{{ asset('storage/' . auth()->user()->avatar_path) }}"
+                        <img src="{{ avatar_url(auth()->user()->avatar_path) }}"
                             class="w-full h-full object-cover" alt="">
                     @else
                         <span class="text-[9px] font-bold text-white">{{ auth()->user()->initials() }}</span>
@@ -271,7 +278,7 @@
                 <div class="flex items-center gap-3 px-6 py-4 border-b border-zinc-800">
                     <div class="w-11 h-11 rounded-full overflow-hidden bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center shrink-0">
                         @if(auth()->user()->avatar_path)
-                            <img src="{{ asset('storage/' . auth()->user()->avatar_path) }}"
+                            <img src="{{ avatar_url(auth()->user()->avatar_path) }}"
                                 class="w-full h-full object-cover" alt="">
                         @else
                             <span class="text-sm font-bold text-white">{{ auth()->user()->initials() }}</span>

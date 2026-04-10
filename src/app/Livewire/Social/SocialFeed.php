@@ -381,6 +381,7 @@ class SocialFeed extends Component
                 ->values();
         }
 
-        return view('livewire.social.feed', compact('posts', 'searchResults', 'suggestions'));
+        return view('livewire.social.feed', compact('posts', 'searchResults', 'suggestions'))
+            ->title(__('app.feed'));
     }
 }

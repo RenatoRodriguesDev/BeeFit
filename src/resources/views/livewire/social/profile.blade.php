@@ -7,7 +7,7 @@
             {{-- Avatar --}}
             <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-xl overflow-hidden shrink-0">
                 @if($profileUser->avatar_path)
-                    <img src="{{ asset('storage/' . $profileUser->avatar_path) }}" class="w-full h-full object-cover">
+                    <img src="{{ avatar_url($profileUser->avatar_path) }}" class="w-full h-full object-cover">
                 @else
                     {{ $profileUser->initials() }}
                 @endif
@@ -188,7 +188,7 @@
                             <a href="{{ route('social.profile', $u['username']) }}" class="flex items-center gap-3 flex-1 min-w-0">
                                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
                                     @if($u['avatar_path'])
-                                        <img src="{{ asset('storage/' . $u['avatar_path']) }}" class="w-full h-full object-cover">
+                                        <img src="{{ avatar_url($u['avatar_path']) }}" class="w-full h-full object-cover">
                                     @else
                                         {{ $u['initials'] }}
                                     @endif
@@ -266,7 +266,7 @@
                                     <a href="{{ route('social.profile', $comment['user']['username']) }}"
                                         class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold overflow-hidden shrink-0 mt-0.5">
                                         @if($comment['user']['avatar_path'])
-                                            <img src="{{ asset('storage/' . $comment['user']['avatar_path']) }}" class="w-full h-full object-cover">
+                                            <img src="{{ avatar_url($comment['user']['avatar_path']) }}" class="w-full h-full object-cover">
                                         @else
                                             {{ $comment['user']['initials'] }}
                                         @endif
@@ -311,7 +311,7 @@
                 <div class="border-t border-zinc-800 p-3 flex gap-2 shrink-0">
                     <div class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold overflow-hidden shrink-0 mt-1">
                         @if(auth()->user()->avatar_path)
-                            <img src="{{ asset('storage/' . auth()->user()->avatar_path) }}" class="w-full h-full object-cover">
+                            <img src="{{ avatar_url(auth()->user()->avatar_path) }}" class="w-full h-full object-cover">
                         @else
                             {{ auth()->user()->initials() }}
                         @endif

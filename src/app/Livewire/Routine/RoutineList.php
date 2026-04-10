@@ -105,6 +105,7 @@ class RoutineList extends Component
                 ->orderBy('order')
                 ->orderBy('created_at')
                 ->get()
-        ]);
+        ])
+            ->title(__('app.routines'));
     }
 }

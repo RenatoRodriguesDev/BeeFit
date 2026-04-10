@@ -72,6 +72,7 @@ class UserManager extends Component
             ->paginate(20);
 
         return view('livewire.admin.user-manager', compact('users'))
-            ->layout('layouts.admin');
+            ->layout('layouts.admin')
+            ->title('Admin — ' . __('app.users'));
     }
 }

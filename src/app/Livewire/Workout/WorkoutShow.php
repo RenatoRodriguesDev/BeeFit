@@ -39,7 +39,8 @@ class WorkoutShow extends Component
             fn ($e) => $e->sets->sum(fn ($s) => ($s->weight ?? 0) * ($s->reps ?? 0))
         );
 
-        return view('livewire.workout-show', compact('records', 'duration', 'totalSets', 'totalVolume'));
+        return view('livewire.workout-show', compact('records', 'duration', 'totalSets', 'totalVolume'))
+            ->title(__('app.workout_summary'));
     }
     
 }

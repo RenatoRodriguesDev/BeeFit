@@ -75,6 +75,7 @@ class Statistics extends Component
             'best_pace'    => $cardioRecords->filter(fn($pr) => $pr->best_pace)->min('best_pace'),
         ];
 
-        return view('livewire.statistics', compact('records', 'chartData', 'totals'));
+        return view('livewire.statistics', compact('records', 'chartData', 'totals'))
+            ->title(__('app.statistics'));
     }
 }

@@ -1,2 +1,17 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /dashboard
+Disallow: /routines
+Disallow: /library
+Disallow: /statistics
+Disallow: /workouts
+Disallow: /leaderboard
+Disallow: /social
+Disallow: /admin
+Disallow: /profile
+Disallow: /subscription/checkout
+Disallow: /subscription/portal
+Disallow: /stripe/
+Disallow: /auth/google/
+
+Sitemap: https://beefit.app/sitemap.xml

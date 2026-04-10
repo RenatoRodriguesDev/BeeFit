@@ -116,6 +116,7 @@ class CatalogManager extends Component
         $muscles   = Muscle::with('translations')->get()->sortBy(fn($m) => $m->translate('en')?->name);
 
         return view('livewire.admin.catalog-manager', compact('equipment', 'muscles'))
-            ->layout('layouts.admin');
+            ->layout('layouts.admin')
+            ->title('Admin — ' . __('app.catalog'));
     }
 }

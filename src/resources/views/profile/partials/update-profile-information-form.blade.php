@@ -18,7 +18,7 @@
         <div class="flex items-center gap-5">
             <div class="avatar-container w-16 h-16 rounded-full bg-zinc-800 overflow-hidden flex items-center justify-center shrink-0">
                 @if($user->avatar_path)
-                    <img src="{{ asset('storage/' . $user->avatar_path) }}"
+                    <img src="{{ avatar_url($user->avatar_path) }}"
                          alt="{{ $user->name }}"
                          class="w-full h-full object-cover">
                 @else

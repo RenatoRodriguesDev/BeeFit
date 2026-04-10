@@ -177,6 +177,7 @@ class ExerciseManager extends Component
         $muscleList    = Muscle::with('translations')->get();
 
         return view('livewire.admin.exercise-manager', compact('exercises', 'equipmentList', 'muscleList'))
-            ->layout('layouts.admin');
+            ->layout('layouts.admin')
+            ->title('Admin — ' . __('app.exercises'));
     }
 }

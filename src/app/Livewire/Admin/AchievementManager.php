@@ -131,6 +131,7 @@ class AchievementManager extends Component
     {
         return view('livewire.admin.achievement-manager', [
             'achievements' => Achievement::orderBy('xp_reward')->get(),
-        ]);
+        ])
+            ->title('Admin — ' . __('app.achievements'));
     }
 }

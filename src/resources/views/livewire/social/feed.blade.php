@@ -30,7 +30,7 @@
                         <a href="{{ route('social.profile', $found->username) }}" class="flex items-center gap-2 flex-1 min-w-0">
                             <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
                                 @if($found->avatar_path)
-                                    <img src="{{ asset('storage/' . $found->avatar_path) }}" class="w-full h-full object-cover">
+                                    <img src="{{ avatar_url($found->avatar_path) }}" class="w-full h-full object-cover">
                                 @else
                                     {{ $found->initials() }}
                                 @endif
@@ -74,7 +74,7 @@
                 <a href="{{ route('social.profile', $post->user->username) }}"
                     class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold overflow-hidden shrink-0">
                     @if($post->user->avatar_path)
-                        <img src="{{ asset('storage/' . $post->user->avatar_path) }}" class="w-full h-full object-cover">
+                        <img src="{{ avatar_url($post->user->avatar_path) }}" class="w-full h-full object-cover">
                     @else
                         <span class="text-xs">{{ $post->user->initials() }}</span>
                     @endif
@@ -173,7 +173,7 @@
                             <a href="{{ route('social.profile', $comment['user']['username']) }}"
                                 class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold overflow-hidden shrink-0 mt-0.5">
                                 @if($comment['user']['avatar_path'])
-                                    <img src="{{ asset('storage/' . $comment['user']['avatar_path']) }}" class="w-full h-full object-cover">
+                                    <img src="{{ avatar_url($comment['user']['avatar_path']) }}" class="w-full h-full object-cover">
                                 @else
                                     {{ $comment['user']['initials'] }}
                                 @endif
@@ -214,7 +214,7 @@
                     <div class="flex gap-2 pt-1">
                         <div class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold overflow-hidden shrink-0 mt-1.5">
                             @if(auth()->user()->avatar_path)
-                                <img src="{{ asset('storage/' . auth()->user()->avatar_path) }}" class="w-full h-full object-cover">
+                                <img src="{{ avatar_url(auth()->user()->avatar_path) }}" class="w-full h-full object-cover">
                             @else
                                 {{ auth()->user()->initials() }}
                             @endif
@@ -388,7 +388,7 @@
                 <a href="{{ route('social.profile', $suggested->username) }}" class="flex items-center gap-2 flex-1 min-w-0">
                     <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0">
                         @if($suggested->avatar_path)
-                            <img src="{{ asset('storage/' . $suggested->avatar_path) }}" class="w-full h-full object-cover">
+                            <img src="{{ avatar_url($suggested->avatar_path) }}" class="w-full h-full object-cover">
                         @else
                             {{ $suggested->initials() }}
                         @endif

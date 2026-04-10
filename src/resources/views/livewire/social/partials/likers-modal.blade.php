@@ -12,7 +12,7 @@
                         class="flex items-center gap-3 hover:bg-zinc-800 rounded-xl p-2 transition">
                         <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
                             @if($liker['avatar_path'])
-                                <img src="{{ asset('storage/' . $liker['avatar_path']) }}" class="w-full h-full object-cover">
+                                <img src="{{ avatar_url($liker['avatar_path']) }}" class="w-full h-full object-cover">
                             @else
                                 {{ $liker['initials'] }}
                             @endif
