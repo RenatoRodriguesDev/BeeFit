@@ -73,6 +73,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/achievements', \App\Livewire\Admin\AchievementManager::class)->name('achievements');
 });
 
+// Trainer (only trainer role)
+Route::middleware(['auth', 'trainer'])->prefix('trainer')->name('trainer.')->group(function () {
+    Route::get('/clients', \App\Livewire\Trainer\ClientManager::class)->name('clients');
+    Route::get('/plans', \App\Livewire\Trainer\PlanList::class)->name('plans');
+    Route::get('/plans/{trainerPlan}', \App\Livewire\Trainer\PlanEditor::class)->name('plans.edit');
+});
+
+// Student: my trainer's assigned plans (auth only)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/my-trainer', \App\Livewire\Student\MyTrainerPlans::class)->name('my-trainer');
+});
+
 require __DIR__ . '/auth.php';
 
 // Legal pages

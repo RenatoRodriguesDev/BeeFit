@@ -37,11 +37,10 @@ class UserManager extends Component
     public function saveUser(): void
     {
         $user = User::findOrFail($this->editingUserId);
-        $user->update([
-            'role'                => $this->editRole,
-            'plan'                => $this->editPlan,
-            'subscription_status' => $this->editSubscriptionStatus,
-        ]);
+        $user->role                = $this->editRole;
+        $user->plan                = $this->editPlan;
+        $user->subscription_status = $this->editSubscriptionStatus;
+        $user->save();
         $this->editingUserId = null;
         $this->dispatch('toast', message: 'Utilizador atualizado.', type: 'success');
     }

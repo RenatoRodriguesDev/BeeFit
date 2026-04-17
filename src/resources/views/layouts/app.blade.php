@@ -99,6 +99,41 @@
                 {{ __('app.my_profile') }}
             </a>
 
+            {{-- Trainer section (trainer role only) --}}
+            @if(auth()->user()->isTrainer())
+                <div class="pt-4 pb-1">
+                    <p class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest px-3 mb-1">{{ __('app.trainer') }}</p>
+                </div>
+                <a href="{{ route('trainer.clients') }}" class="{{ $navLink(request()->routeIs('trainer.clients')) }}">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    {{ __('app.trainer_clients') }}
+                </a>
+                <a href="{{ route('trainer.plans') }}" class="{{ $navLink(request()->routeIs('trainer.plans*')) }}">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    {{ __('app.trainer_plans') }}
+                </a>
+            @endif
+
+            {{-- My Trainer section (anyone who has a trainer, including admins) --}}
+            @if(! auth()->user()->isTrainer())
+                @php $hasPendingOrTrainer = \App\Models\TrainerClient::where('client_id', auth()->id())->whereIn('status', ['invited', 'active'])->exists(); @endphp
+                @if($hasPendingOrTrainer)
+                    <div class="pt-4 pb-1">
+                        <p class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest px-3 mb-1">{{ __('app.my_trainer') }}</p>
+                    </div>
+                    <a href="{{ route('my-trainer') }}" class="{{ $navLink(request()->routeIs('my-trainer')) }}">
+                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        {{ __('app.my_trainer') }}
+                    </a>
+                @endif
+            @endif
+
             @if(auth()->user()->isAdmin())
                 <div class="pt-3 border-t border-zinc-800/60 mt-3">
                     <p class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest px-3 mb-1">Admin</p>
@@ -339,6 +374,43 @@
                         </svg>
                         {{ __('app.change_profile') }}
                     </a>
+
+                    {{-- Trainer section (mobile) --}}
+                    @if(auth()->user()->isTrainer())
+                        <div class="border-t border-zinc-800 mt-2 pt-2">
+                            <p class="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest px-4 mb-1">{{ __('app.trainer') }}</p>
+                            <a href="{{ route('trainer.clients') }}" @click="open = false"
+                               class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                {{ __('app.trainer_clients') }}
+                            </a>
+                            <a href="{{ route('trainer.plans') }}" @click="open = false"
+                               class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                {{ __('app.trainer_plans') }}
+                            </a>
+                        </div>
+                    @endif
+
+                    {{-- My Trainer section (mobile) --}}
+                    @if(! auth()->user()->isTrainer())
+                        @php $hasPendingOrTrainerMobile = \App\Models\TrainerClient::where('client_id', auth()->id())->whereIn('status', ['invited', 'active'])->exists(); @endphp
+                        @if($hasPendingOrTrainerMobile)
+                            <div class="border-t border-zinc-800 mt-2 pt-2">
+                                <a href="{{ route('my-trainer') }}" @click="open = false"
+                                   class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    {{ __('app.my_trainer') }}
+                                </a>
+                            </div>
+                        @endif
+                    @endif
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

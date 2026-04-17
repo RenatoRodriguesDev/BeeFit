@@ -57,7 +57,7 @@ class User extends Authenticatable
 
     public function isTrainer(): bool
     {
-        return $this->role === 'trainer';
+        return $this->role === 'trainer' || $this->plan === 'trainer';
     }
 
     public function isPremium(): bool
@@ -147,6 +147,47 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    // ─── Trainer relations ─────────────────────────────────────────
+
+    /** Clients this trainer has (trainer side) */
+    public function trainerClients()
+    {
+        return $this->hasMany(TrainerClient::class, 'trainer_id');
+    }
+
+    /** Active clients only */
+    public function activeClients()
+    {
+        return $this->trainerClients()->where('status', 'active')->with('client');
+    }
+
+    /** Plans this trainer created */
+    public function trainerPlans()
+    {
+        return $this->hasMany(TrainerPlan::class, 'trainer_id');
+    }
+
+    /** The trainer relationship from the client side */
+    public function myTrainerRelation()
+    {
+        return $this->hasOne(TrainerClient::class, 'client_id')
+            ->where('status', 'active');
+    }
+
+    /** Plans assigned to this user as a client */
+    public function assignedPlans()
+    {
+        return $this->hasMany(TrainerPlanAssignment::class, 'client_id')
+            ->where('is_active', true)
+            ->with(['plan.planRoutines.routine.exercises', 'plan.trainer']);
+    }
+
+    /** Check if user is an active client of a trainer */
+    public function hasTrainer(): bool
+    {
+        return $this->myTrainerRelation()->exists();
     }
 
     // ─── Follow relations ──────────────────────────────────────────

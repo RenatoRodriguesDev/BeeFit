@@ -127,7 +127,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-zinc-300 mb-1">Role</label>
-                    <select wire:model="editRole"
+                    <select wire:model.live="editRole"
                         class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
                         <option value="user">user</option>
                         <option value="trainer">trainer</option>
@@ -137,7 +137,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-zinc-300 mb-1">Plano</label>
-                    <select wire:model="editPlan"
+                    <select wire:model.live="editPlan"
                         class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
                         <option value="free">free</option>
                         <option value="premium">premium</option>
@@ -147,7 +147,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-zinc-300 mb-1">Estado da Subscrição</label>
-                    <select wire:model="editSubscriptionStatus"
+                    <select wire:model.live="editSubscriptionStatus"
                         class="w-full bg-zinc-800 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-500 transition">
                         <option value="none">none</option>
                         <option value="active">active</option>
