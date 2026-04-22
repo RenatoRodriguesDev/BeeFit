@@ -45,6 +45,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/social/profile/{username?}', UserProfile::class)->name('social.profile');
     Route::get('/social/post/create', CreatePost::class)->name('social.create-post');
     Route::get('/social/post/create/{workoutId}', CreatePost::class)->name('social.create-post-workout');
+    Route::get('/social/post/{id}', function (int $id) {
+        $post = \App\Models\Post::with('user')->findOrFail($id);
+        return redirect()->route('social.profile', [$post->user->username, 'openPost' => $id]);
+    })->name('social.post.show');
 
     // Subscrições
     Route::get('/plans', [SubscriptionController::class, 'plans'])->name('subscription.plans');

@@ -64,7 +64,12 @@
                         @endif
                     </div>
                 @else
-                    <a href="{{ route("social.profile", $data["user_username"]) }}"
+                    @php
+                        $href = in_array($data['type'], ['post_liked', 'post_commented']) && !empty($data['post_id'])
+                            ? route('social.post.show', $data['post_id'])
+                            : route('social.profile', $data['user_username']);
+                    @endphp
+                    <a href="{{ $href }}"
                         wire:click="markRead({{ chr(39) }}{{ $notif->id }}{{ chr(39) }})"
                         class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-800 transition {{ $isUnread ? "bg-zinc-800/50" : "" }}">
                         <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0 mt-0.5">

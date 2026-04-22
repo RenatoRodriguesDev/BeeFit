@@ -54,6 +54,10 @@ class UserProfile extends Component
         $this->profileUser = $username
             ? User::where('username', $username)->firstOrFail()
             : auth()->user();
+
+        if ($postId = request()->integer('openPost')) {
+            $this->openPost($postId);
+        }
     }
 
     // ─── Follow ────────────────────────────────────────────────────
