@@ -98,7 +98,7 @@ class User extends Authenticatable
             $this->isPremium()  => PHP_INT_MAX, // ilimitado
             $this->isTrainer()  => PHP_INT_MAX,
             $this->isAdmin()    => PHP_INT_MAX,
-            default             => 3, // free
+            default             => 5, // free
         };
     }
 

@@ -86,7 +86,13 @@ class SubscriptionController extends Controller
 
     public function portal()
     {
-        $user    = Auth::user();
+        $user = Auth::user();
+
+        if (! $user->stripe_customer_id) {
+            return redirect()->route('subscription.plans')
+                ->with('error', __('app.no_active_subscription'));
+        }
+
         $session = \Stripe\BillingPortal\Session::create([
             'customer'   => $user->stripe_customer_id,
             'return_url' => route('profile.edit'),

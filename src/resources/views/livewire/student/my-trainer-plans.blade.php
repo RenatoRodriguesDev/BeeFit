@@ -125,7 +125,7 @@
                                                         <div class="flex items-center gap-2 min-w-0">
                                                             @if($entry->day_label)
                                                                 <span class="text-xs bg-yellow-500/15 text-yellow-400 px-2 py-0.5 rounded-full font-medium shrink-0">
-                                                                    {{ __('app.day_' . $entry->day_label) }}
+                                                                    {{ __('app.day_' . strtolower($entry->day_label)) }}
                                                                 </span>
                                                             @endif
                                                             <p class="text-sm font-medium text-white truncate">{{ $entry->routine->name }}</p>

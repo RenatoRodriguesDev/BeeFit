@@ -134,7 +134,7 @@
                 {
                     "@@type": "Question",
                     "name": "O BeeFit é gratuito?",
-                    "acceptedAnswer": {"@@type": "Answer", "text": "Sim, o BeeFit tem um plano gratuito com até 3 rotinas e registo ilimitado de treinos."}
+                    "acceptedAnswer": {"@@type": "Answer", "text": "Sim, o BeeFit tem um plano gratuito com até 5 rotinas e registo ilimitado de treinos."}
                 },
                 {
                     "@@type": "Question",

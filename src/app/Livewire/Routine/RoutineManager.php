@@ -22,6 +22,8 @@ class RoutineManager extends Component
     public $showDeleteModal = false;
     public $routineToDelete = null;
 
+    protected $listeners = ['refreshRoutines' => '$refresh'];
+
     public function createRoutine()
     {
         $this->validate([
@@ -52,7 +54,11 @@ class RoutineManager extends Component
 
     public function render()
     {
-        return view('livewire.routine-manager')
+        $user      = auth()->user();
+        $canCreate = $user->canCreateRoutine();
+        $isPaid    = $user->isPremium() || $user->isTrainer() || $user->isAdmin();
+
+        return view('livewire.routine-manager', compact('canCreate', 'isPaid'))
             ->title(__('app.routines'));
     }
 }

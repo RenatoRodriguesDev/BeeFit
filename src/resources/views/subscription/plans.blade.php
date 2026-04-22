@@ -14,7 +14,7 @@
             <div class="text-3xl font-bold mt-2">€0<span class="text-sm font-normal text-zinc-400">/mês</span></div>
         </div>
         <ul class="space-y-2 text-sm text-zinc-300 flex-1 mb-6">
-            <li class="flex gap-2"><span class="text-green-400">✓</span> Até 3 rotinas</li>
+            <li class="flex gap-2"><span class="text-green-400">✓</span> Até 5 rotinas</li>
             <li class="flex gap-2"><span class="text-green-400">✓</span> Acesso à biblioteca de exercícios</li>
             <li class="flex gap-2"><span class="text-green-400">✓</span> Registo de treinos</li>
             <li class="flex gap-2"><span class="text-zinc-600">✗</span> Estatísticas avançadas</li>
@@ -40,6 +40,7 @@
         </div>
         <ul class="space-y-2 text-sm text-zinc-300 flex-1 mb-6">
             <li class="flex gap-2"><span class="text-green-400">✓</span> Rotinas ilimitadas</li>
+            <li class="flex gap-2"><span class="text-green-400">✓</span> Partilhar rotinas com link</li>
             <li class="flex gap-2"><span class="text-green-400">✓</span> Estatísticas avançadas</li>
             <li class="flex gap-2"><span class="text-green-400">✓</span> Recordes pessoais</li>
             <li class="flex gap-2"><span class="text-green-400">✓</span> Tema personalizado (cores)</li>
@@ -90,7 +91,7 @@
 
 </div>
 
-@if($user->hasActiveSubscription())
+@if($user->hasActiveSubscription() && $user->stripe_customer_id)
     <div class="mt-8">
         <a href="{{ route('subscription.portal') }}"
            class="text-sm text-zinc-400 hover:text-white underline transition">
