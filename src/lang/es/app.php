@@ -122,6 +122,8 @@ return [
     'setup_your_profile' => 'Configura tu perfil',
     'setup_profile_subtitle' => 'Ayúdanos a personalizar tu experiencia. Puedes actualizarlo en cualquier momento.',
     'upload_photo' => 'Subir foto',
+    'photo_from_gallery' => 'Galería',
+    'photo_from_camera' => 'Cámara',
     'gender' => 'Género',
     'male' => 'Masculino',
     'female' => 'Femenino',

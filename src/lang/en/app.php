@@ -122,6 +122,8 @@ return [
     'setup_your_profile' => 'Set up your profile',
     'setup_profile_subtitle' => 'Help us personalise your experience. You can always update this later.',
     'upload_photo' => 'Upload photo',
+    'photo_from_gallery' => 'Gallery',
+    'photo_from_camera' => 'Camera',
     'gender' => 'Gender',
     'male' => 'Male',
     'female' => 'Female',
