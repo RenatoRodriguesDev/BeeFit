@@ -82,19 +82,47 @@
         @endif
 
         {{-- Achievements --}}
-        @php $achievements = $profileUser->achievements()->orderByPivot('unlocked_at', 'desc')->get(); @endphp
+        @php
+            $achievements = $profileUser->achievements()->orderByPivot('unlocked_at', 'desc')->get();
+            $totalAchievements = \App\Models\Achievement::count();
+        @endphp
         @if($achievements->isNotEmpty())
-            <div>
-                <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">{{ __('app.my_achievements') }}</p>
+            <div x-data="{ ach: null }">
+                <div class="flex items-center gap-2 mb-2">
+                    <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider">{{ __('app.my_achievements') }}</p>
+                    <span class="text-xs text-zinc-600">{{ $achievements->count() }}/{{ $totalAchievements }}</span>
+                </div>
                 <div class="flex flex-wrap gap-2">
                     @foreach($achievements as $ach)
-                        <div title="{{ $ach->name }}: {{ $ach->description }}"
-                             class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-xl cursor-default"
-                             x-data x-tooltip.raw="{{ $ach->name }}">
+                        <button type="button"
+                                @click="ach = { icon: '{{ $ach->icon }}', name: {{ Js::from($ach->name) }}, description: {{ Js::from($ach->description) }}, xp: {{ (int) $ach->xp_reward }}, unlocked_at: {{ Js::from($ach->pivot->unlocked_at ? \Carbon\Carbon::parse($ach->pivot->unlocked_at)->format('d M Y') : '') }} }"
+                                class="w-10 h-10 rounded-xl bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center text-xl transition cursor-pointer"
+                                title="{{ $ach->name }}">
                             {{ $ach->icon }}
-                        </div>
+                        </button>
                     @endforeach
                 </div>
+
+                {{-- Achievement detail modal --}}
+                <template x-teleport="body">
+                    <div x-show="ach" x-cloak
+                         class="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+                         @click.self="ach = null" @keydown.escape.window="ach = null">
+                        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
+                            <div class="text-5xl mb-3" x-text="ach?.icon"></div>
+                            <h3 class="text-lg font-bold text-white mb-1" x-text="ach?.name"></h3>
+                            <p class="text-sm text-zinc-400 leading-relaxed mb-4" x-text="ach?.description"></p>
+                            <div class="flex items-center justify-center gap-4 text-xs text-zinc-500 border-t border-zinc-800 pt-3">
+                                <span class="font-semibold text-yellow-400" x-text="'+' + ach?.xp + ' XP'"></span>
+                                <span x-text="ach?.unlocked_at"></span>
+                            </div>
+                            <button @click="ach = null"
+                                class="mt-4 w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-medium py-2.5 rounded-xl transition">
+                                {{ __('app.close') }}
+                            </button>
+                        </div>
+                    </div>
+                </template>
             </div>
         @endif
     </div>
@@ -212,59 +240,117 @@
 
     {{-- Post detail modal --}}
     @if($activePost)
-        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-            wire:click.self="closePost">
-            <div class="bg-zinc-900 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden">
+        <div class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end md:items-center justify-center p-0 md:p-4"
+             wire:click.self="closePost">
 
-                {{-- Photo --}}
+            {{-- Close button (outside, top-right, desktop only) --}}
+            <button wire:click="closePost"
+                class="hidden md:flex fixed top-4 right-4 z-[60] w-10 h-10 items-center justify-center rounded-full bg-zinc-800/80 text-zinc-300 hover:text-white hover:bg-zinc-700 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <div class="bg-zinc-900 rounded-t-3xl md:rounded-2xl w-full md:max-w-4xl md:max-h-[90vh] flex flex-col md:flex-row overflow-hidden shadow-2xl">
+
+                {{-- LEFT: Image --}}
                 @if($activePost['photo'])
-                    <img src="{{ $activePost['photo'] }}" class="w-full max-h-64 object-cover shrink-0">
+                    <div class="md:w-[55%] md:shrink-0 bg-black flex items-center justify-center md:rounded-l-2xl overflow-hidden">
+                        <img src="{{ $activePost['photo'] }}"
+                             class="w-full max-h-[40vh] md:max-h-full md:h-full object-cover md:object-contain">
+                    </div>
+                @else
+                    <div class="md:w-[55%] md:shrink-0 bg-zinc-950 flex items-center justify-center text-6xl md:rounded-l-2xl min-h-[200px] md:min-h-0">
+                        {{ $activePost['emoji'] ?? '💪' }}
+                    </div>
                 @endif
 
-                <div class="flex-1 overflow-y-auto">
-                    <div class="p-4 space-y-3">
+                {{-- RIGHT: Details --}}
+                <div class="flex flex-col flex-1 min-h-0 overflow-hidden">
 
-                        {{-- Workout badge --}}
-                        @if($activePost['workout'])
-                            <button wire:click="loadWorkoutDetail({{ $activePost['workout_id'] }})"
-                                class="w-full flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg px-3 py-2 transition text-left">
-                                <span>{{ $activePost['emoji'] }}</span>
-                                <div class="flex-1 min-w-0">
-                                    <span class="text-zinc-300 text-xs font-medium block truncate">{{ $activePost['workout'] }}</span>
-                                    <span class="text-zinc-600 text-[10px]">{{ __('app.tap_to_see_detail') }}</span>
-                                </div>
-                                <span class="text-zinc-600 text-xs">›</span>
-                            </button>
-                        @endif
-
-                        {{-- Description --}}
-                        @if($activePost['description'])
-                            <p class="text-sm text-zinc-200 leading-relaxed">{{ $activePost['description'] }}</p>
-                        @endif
-
-                        {{-- Actions row --}}
-                        <div class="flex items-center gap-4 pt-1 border-t border-zinc-800">
-                            <button wire:click="togglePostLike"
-                                class="text-xl transition {{ $activePost['liked'] ? 'text-red-400' : 'text-zinc-500 hover:text-red-400' }}">
-                                {{ $activePost['liked'] ? '❤️' : '🤍' }}
-                            </button>
-                            @if($activePost['likes'] > 0)
-                                <button wire:click="loadPostLikers"
-                                    class="text-xs text-zinc-400 hover:text-white transition">
-                                    {{ $activePost['likes'] }} {{ __('app.likes') }}
-                                </button>
+                    {{-- Header: user + actions --}}
+                    <div class="shrink-0 flex items-center gap-3 px-4 py-3 border-b border-zinc-800">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
+                            @if($profileUser->avatar_path)
+                                <img src="{{ avatar_url($profileUser->avatar_path) }}" class="w-full h-full object-cover">
                             @else
-                                <span class="text-xs text-zinc-700">0 {{ __('app.likes') }}</span>
+                                {{ $profileUser->initials() }}
                             @endif
-                            <span class="ml-auto text-[11px] text-zinc-600">{{ $activePost['date'] }}</span>
                         </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-white truncate">{{ $profileUser->name }}</p>
+                            @if($profileUser->username)
+                                <p class="text-xs text-zinc-500">{{ '@' . $profileUser->username }}</p>
+                            @endif
+                        </div>
+                        {{-- Owner actions --}}
+                        @if($activePost['is_own'])
+                            <button wire:click="openEditPost"
+                                class="p-2 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                            </button>
+                            <button wire:click="confirmDeletePost({{ $activePost['id'] }})"
+                                class="p-2 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-zinc-800 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        @endif
+                        {{-- Mobile close --}}
+                        <button wire:click="closePost"
+                            class="md:hidden p-2 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    {{-- Scrollable content --}}
+                    <div class="flex-1 overflow-y-auto p-4 space-y-4">
+
+                        {{-- Description + workout badge --}}
+                        @if($activePost['description'] || $activePost['workout'])
+                            <div class="space-y-2">
+                                @if($activePost['description'])
+                                    <div class="flex gap-2.5">
+                                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0">
+                                            @if($profileUser->avatar_path)
+                                                <img src="{{ avatar_url($profileUser->avatar_path) }}" class="w-full h-full object-cover">
+                                            @else
+                                                {{ $profileUser->initials() }}
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <span class="text-sm font-semibold text-white">{{ $profileUser->name }}</span>
+                                            <span class="text-sm text-zinc-300 ml-1.5">{{ $activePost['description'] }}</span>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @if($activePost['workout'])
+                                    <button wire:click="loadWorkoutDetail({{ $activePost['workout_id'] }})"
+                                        class="w-full flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl px-3 py-2.5 transition text-left">
+                                        <span class="text-lg">{{ $activePost['emoji'] }}</span>
+                                        <div class="flex-1 min-w-0">
+                                            <span class="text-zinc-200 text-xs font-semibold block truncate">{{ $activePost['workout'] }}</span>
+                                            <span class="text-zinc-600 text-[10px]">{{ __('app.tap_to_see_detail') }}</span>
+                                        </div>
+                                        <svg class="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </button>
+                                @endif
+                            </div>
+                        @endif
 
                         {{-- Comments --}}
                         <div class="space-y-3">
                             @foreach($modalComments as $comment)
-                                <div class="flex gap-2" wire:key="mc-{{ $comment['id'] }}">
+                                <div class="flex gap-2.5" wire:key="mc-{{ $comment['id'] }}">
                                     <a href="{{ route('social.profile', $comment['user']['username']) }}"
-                                        class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold overflow-hidden shrink-0 mt-0.5">
+                                        class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0 mt-0.5">
                                         @if($comment['user']['avatar_path'])
                                             <img src="{{ avatar_url($comment['user']['avatar_path']) }}" class="w-full h-full object-cover">
                                         @else
@@ -272,26 +358,26 @@
                                         @endif
                                     </a>
                                     <div class="flex-1 min-w-0">
-                                        <div class="bg-zinc-800 rounded-xl px-2.5 py-1.5">
+                                        <div>
                                             <a href="{{ route('social.profile', $comment['user']['username']) }}"
-                                                class="text-[11px] font-semibold text-white hover:underline">{{ $comment['user']['name'] }}</a>
-                                            <p class="text-xs text-zinc-300 mt-0.5 break-words">{{ $comment['body'] }}</p>
+                                                class="text-sm font-semibold text-white hover:underline">{{ $comment['user']['name'] }}</a>
+                                            <span class="text-sm text-zinc-300 ml-1.5 break-words">{{ $comment['body'] }}</span>
                                         </div>
-                                        <div class="flex items-center gap-3 mt-1 pl-1">
-                                            <span class="text-[10px] text-zinc-600">{{ $comment['created_at'] }}</span>
+                                        <div class="flex items-center gap-3 mt-1">
+                                            <span class="text-[11px] text-zinc-600">{{ $comment['created_at'] }}</span>
                                             <button wire:click="toggleCommentLike({{ $comment['id'] }})"
-                                                class="text-[10px] transition {{ $comment['liked'] ? 'text-red-400' : 'text-zinc-600 hover:text-red-400' }}">
-                                                {{ $comment['liked'] ? '❤️' : '🤍' }} {{ __('app.like') }}
+                                                class="text-[11px] font-semibold transition {{ $comment['liked'] ? 'text-red-400' : 'text-zinc-500 hover:text-zinc-300' }}">
+                                                {{ __('app.like') }}
                                             </button>
                                             @if($comment['likes'] > 0)
                                                 <button wire:click="loadCommentLikers({{ $comment['id'] }})"
-                                                    class="text-[10px] text-zinc-600 hover:text-white transition">
+                                                    class="text-[11px] text-zinc-500 hover:text-white transition">
                                                     {{ $comment['likes'] }} {{ __('app.likes') }}
                                                 </button>
                                             @endif
                                             @if($comment['user']['id'] === auth()->id())
                                                 <button wire:click="deleteComment({{ $comment['id'] }})"
-                                                    class="text-[10px] text-zinc-700 hover:text-red-400 transition ml-auto">
+                                                    class="text-[11px] text-zinc-700 hover:text-red-400 transition">
                                                     {{ __('app.delete') }}
                                                 </button>
                                             @endif
@@ -301,39 +387,49 @@
                             @endforeach
 
                             @if(empty($modalComments))
-                                <p class="text-xs text-zinc-700 text-center py-1">{{ __('app.no_comments_yet') }}</p>
+                                <p class="text-xs text-zinc-700 text-center py-4">{{ __('app.no_comments_yet') }}</p>
                             @endif
                         </div>
                     </div>
-                </div>
 
-                {{-- Add comment + actions --}}
-                <div class="border-t border-zinc-800 p-3 flex gap-2 shrink-0">
-                    <div class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold overflow-hidden shrink-0 mt-1">
-                        @if(auth()->user()->avatar_path)
-                            <img src="{{ avatar_url(auth()->user()->avatar_path) }}" class="w-full h-full object-cover">
-                        @else
-                            {{ auth()->user()->initials() }}
-                        @endif
+                    {{-- Bottom: likes + comment input --}}
+                    <div class="shrink-0 border-t border-zinc-800">
+                        {{-- Like row --}}
+                        <div class="flex items-center gap-3 px-4 pt-3 pb-2">
+                            <button wire:click="togglePostLike"
+                                class="transition {{ $activePost['liked'] ? 'text-red-400' : 'text-zinc-400 hover:text-red-400' }}">
+                                <svg class="w-6 h-6" fill="{{ $activePost['liked'] ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                </svg>
+                            </button>
+                            @if($activePost['likes'] > 0)
+                                <button wire:click="loadPostLikers" class="text-sm font-semibold text-white hover:underline">
+                                    {{ $activePost['likes'] }} {{ __('app.likes') }}
+                                </button>
+                            @else
+                                <span class="text-sm text-zinc-600">0 {{ __('app.likes') }}</span>
+                            @endif
+                            <span class="ml-auto text-xs text-zinc-600">{{ $activePost['date'] }}</span>
+                        </div>
+
+                        {{-- Comment input --}}
+                        <div class="flex items-center gap-2 px-4 pb-4">
+                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0">
+                                @if(auth()->user()->avatar_path)
+                                    <img src="{{ avatar_url(auth()->user()->avatar_path) }}" class="w-full h-full object-cover">
+                                @else
+                                    {{ auth()->user()->initials() }}
+                                @endif
+                            </div>
+                            <input wire:model="newComment" wire:keydown.enter="addComment" type="text"
+                                placeholder="{{ __('app.write_comment') }}"
+                                class="flex-1 bg-transparent text-sm text-white outline-none placeholder-zinc-600 min-w-0 border-b border-zinc-700 focus:border-zinc-400 pb-1 transition">
+                            <button wire:click="addComment"
+                                class="text-sm font-semibold text-blue-400 hover:text-blue-300 transition shrink-0">
+                                {{ __('app.send') }}
+                            </button>
+                        </div>
                     </div>
-                    <input wire:model="newComment" wire:keydown.enter="addComment" type="text"
-                        placeholder="{{ __('app.write_comment') }}"
-                        class="flex-1 bg-zinc-800 text-white text-xs rounded-xl px-3 py-1.5 outline-none focus:ring-1 focus:ring-zinc-600 placeholder-zinc-700 min-w-0">
-                    <button wire:click="addComment"
-                        class="shrink-0 bg-zinc-700 hover:bg-zinc-600 text-white text-xs px-3 py-1.5 rounded-xl transition">
-                        {{ __('app.send') }}
-                    </button>
-                    @if($activePost['is_own'])
-                        <button wire:click="openEditPost"
-                            class="text-zinc-500 hover:text-blue-400 text-sm px-2 shrink-0 transition">
-                            ✏️
-                        </button>
-                        <button wire:click="confirmDeletePost({{ $activePost['id'] }})"
-                            class="text-zinc-500 hover:text-red-400 text-sm px-2 shrink-0 transition">
-                            🗑
-                        </button>
-                    @endif
-                    <button wire:click="closePost" class="text-zinc-500 hover:text-white text-sm px-2">✕</button>
                 </div>
             </div>
         </div>

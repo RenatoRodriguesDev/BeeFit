@@ -15,7 +15,7 @@
     <div x-show="open"
         x-transition
         @click.away="open = false"
-        class="absolute right-0 md:right-auto md:left-0 bottom-full mb-2 w-80 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl z-50 overflow-hidden"
+        class="fixed md:absolute inset-x-3 md:inset-x-auto bottom-20 md:bottom-0 md:left-full md:ml-3 md:w-80 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl z-50 overflow-hidden"
         style="display: none;">
 
         <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
