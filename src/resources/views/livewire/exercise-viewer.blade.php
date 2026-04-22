@@ -115,9 +115,10 @@
         {{-- MOBILE --}}
         <div class="lg:hidden" wire:key="mobile-{{ $exercise->id }}">
 
-            <div class="bg-zinc-950 w-full overflow-hidden flex items-center justify-center" style="height: 220px">
+            {{-- Media --}}
+            <div class="bg-zinc-950 w-full overflow-hidden flex items-center justify-center" style="height: 240px">
                 @if($exercise->has_video)
-                    <video controls autoplay loop muted class="w-full h-full object-cover">
+                    <video autoplay loop muted playsinline class="w-full h-full object-cover">
                         <source src="{{ asset($exercise->video_path) }}" type="video/mp4">
                     </video>
                 @elseif($exercise->thumbnail_path)
@@ -125,65 +126,74 @@
                         class="w-full h-full object-contain"
                         alt="{{ $exercise->translate()->name }}">
                 @else
-                    <svg class="w-12 h-12 text-zinc-700" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159"/>
-                    </svg>
+                    <div class="flex flex-col items-center gap-2 text-zinc-700">
+                        <svg class="w-14 h-14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159"/>
+                        </svg>
+                    </div>
                 @endif
             </div>
 
-            <div class="px-5 py-5 space-y-4">
+            {{-- Info + tabs --}}
+            <div class="px-5 pt-4 pb-6 space-y-4">
+
+                {{-- Name + tags --}}
                 <div>
-                    <h1 class="text-xl font-bold text-white">{{ $exercise->translate()->name }}</h1>
-                    <div class="flex flex-wrap gap-1.5 mt-2">
+                    <h1 class="text-xl font-bold text-white leading-tight">{{ $exercise->translate()->name }}</h1>
+                    <div class="flex flex-wrap gap-2 mt-2.5">
                         @if($exercise->equipment?->translate()?->name)
-                            <span class="text-xs px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-400">
+                            <span class="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-full bg-zinc-800 text-zinc-400 font-medium">
                                 {{ $exercise->equipment->translate()->name }}
                             </span>
                         @endif
                         @if($exercise->primaryMuscle?->translate()?->name)
-                            <span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                            <span class="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 font-medium">
                                 {{ $exercise->primaryMuscle->translate()->name }}
                             </span>
                         @endif
                     </div>
                 </div>
 
-                <div class="flex gap-1 bg-zinc-800/60 rounded-xl p-1 border border-zinc-800">
+                {{-- Tabs --}}
+                <div class="flex gap-1 bg-zinc-800/50 rounded-xl p-1">
                     <button wire:click="setTab('stats')"
-                        class="flex-1 py-2 rounded-lg text-xs font-medium transition
-                            {{ $tab === 'stats' ? 'bg-zinc-700 text-white shadow' : 'text-zinc-500 hover:text-zinc-300' }}">
+                        class="flex-1 py-2 rounded-lg text-xs font-semibold transition
+                            {{ $tab === 'stats' ? 'bg-zinc-700 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300' }}">
                         {{ __('app.statistics') }}
                     </button>
                     <button wire:click="setTab('history')"
-                        class="flex-1 py-2 rounded-lg text-xs font-medium transition
-                            {{ $tab === 'history' ? 'bg-zinc-700 text-white shadow' : 'text-zinc-500 hover:text-zinc-300' }}">
+                        class="flex-1 py-2 rounded-lg text-xs font-semibold transition
+                            {{ $tab === 'history' ? 'bg-zinc-700 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300' }}">
                         {{ __('app.history') }}
                     </button>
                     <button wire:click="setTab('howto')"
-                        class="flex-1 py-2 rounded-lg text-xs font-medium transition
-                            {{ $tab === 'howto' ? 'bg-zinc-700 text-white shadow' : 'text-zinc-500 hover:text-zinc-300' }}">
+                        class="flex-1 py-2 rounded-lg text-xs font-semibold transition
+                            {{ $tab === 'howto' ? 'bg-zinc-700 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300' }}">
                         {{ __('app.how_to') }}
                     </button>
                 </div>
 
-                @if($tab === 'stats')
-                    @include('livewire.partials.exercise-stats', ['exercise' => $exercise])
-                @endif
-
-                @if($tab === 'history')
-                    @livewire('exercise-history', ['exerciseId' => $exercise->id], key('m-h-'.$exercise->id))
-                @endif
-
-                @if($tab === 'howto')
-                    @php $desc = $exercise->translate()->description ?? null; @endphp
-                    @if($desc)
-                        <p class="text-sm text-zinc-400 leading-relaxed">{{ $desc }}</p>
-                    @else
-                        <div class="py-6 text-center">
-                            <p class="text-sm text-zinc-600">{{ __('app.exercise_instructions_here') }}</p>
-                        </div>
+                {{-- Tab content --}}
+                <div>
+                    @if($tab === 'stats')
+                        @include('livewire.partials.exercise-stats', ['exercise' => $exercise])
                     @endif
-                @endif
+
+                    @if($tab === 'history')
+                        @livewire('exercise-history', ['exerciseId' => $exercise->id], key('m-h-'.$exercise->id))
+                    @endif
+
+                    @if($tab === 'howto')
+                        @php $desc = $exercise->translate()->description ?? null; @endphp
+                        @if($desc)
+                            <p class="text-sm text-zinc-400 leading-relaxed">{{ $desc }}</p>
+                        @else
+                            <div class="py-8 text-center">
+                                <p class="text-sm text-zinc-600">{{ __('app.exercise_instructions_here') }}</p>
+                            </div>
+                        @endif
+                    @endif
+                </div>
             </div>
         </div>
 
