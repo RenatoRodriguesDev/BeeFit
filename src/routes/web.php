@@ -87,6 +87,9 @@ Route::middleware(['auth'])->group(function () {
 
 require __DIR__ . '/auth.php';
 
+// Shared routines (public)
+Route::get('/r/{token}', \App\Livewire\Routine\SharedRoutine::class)->name('routine.shared');
+
 // Legal pages
 Route::get('/privacy', fn() => view('privacy'))->name('privacy');
 Route::get('/terms', fn() => view('terms'))->name('terms');

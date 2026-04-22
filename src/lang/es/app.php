@@ -445,6 +445,19 @@ return [
     'trainer_leave_desc'           => '¿Estás seguro? Perderás acceso a todos los planes de entrenamiento asignados.',
     'trainer_left'                 => 'Has abandonado la relación con el entrenador.',
 
+    // ── Routine sharing ─────────────────────────────────────────────────
+    'share_routine'                => 'Compartir rutina',
+    'routine_sharing_active'       => 'Compartir activo — haz clic para desactivar',
+    'copy_link'                    => 'Copiar enlace',
+    'copied'                       => '¡Copiado!',
+    'shared_routine'               => 'Rutina compartida',
+    'shared_by'                    => 'Compartida por',
+    'save_routine'                 => 'Guardar en mi cuenta',
+    'routine_saved'                => '¡Rutina guardada con éxito!',
+    'routine_already_saved'        => 'Ya tienes esta rutina guardada.',
+    'routine_not_found'            => 'Rutina no encontrada o enlace inválido.',
+    'login_to_save_routine'        => 'Inicia sesión para guardar esta rutina.',
+
     // ── Shared labels ───────────────────────────────────────────────────
     'search_clients'               => 'Buscar alumnos...',
     'username_or_email'            => 'Usuario o email',

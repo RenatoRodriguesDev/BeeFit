@@ -446,6 +446,19 @@ return [
     'trainer_leave_desc'           => 'Are you sure? You will lose access to all assigned training plans.',
     'trainer_left'                 => 'You have left the trainer relationship.',
 
+    // ── Routine sharing ─────────────────────────────────────────────────
+    'share_routine'                => 'Share routine',
+    'routine_sharing_active'       => 'Sharing active — click to disable',
+    'copy_link'                    => 'Copy link',
+    'copied'                       => 'Copied!',
+    'shared_routine'               => 'Shared routine',
+    'shared_by'                    => 'Shared by',
+    'save_routine'                 => 'Save to my account',
+    'routine_saved'                => 'Routine saved successfully!',
+    'routine_already_saved'        => 'You already have this routine saved.',
+    'routine_not_found'            => 'Routine not found or invalid link.',
+    'login_to_save_routine'        => 'Sign in to save this routine.',
+
     // ── Shared labels ───────────────────────────────────────────────────
     'search_clients'               => 'Search clients...',
     'username_or_email'            => 'Username or email',

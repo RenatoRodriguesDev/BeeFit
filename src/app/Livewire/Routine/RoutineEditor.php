@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Routine;
 use App\Models\RoutineExercise;
 use App\Models\RoutineSet;
+use Illuminate\Support\Str;
 
 class RoutineEditor extends Component
 {
@@ -171,6 +172,19 @@ class RoutineEditor extends Component
         );
 
         $this->closeDeleteExerciseModal();
+    }
+
+    public function toggleShare(): void
+    {
+        abort_unless(auth()->user()->isPremium() || auth()->user()->isTrainer() || auth()->user()->isAdmin(), 403);
+
+        if ($this->routine->share_token) {
+            $this->routine->update(['share_token' => null]);
+        } else {
+            $this->routine->update(['share_token' => Str::random(32)]);
+        }
+
+        $this->routine->refresh();
     }
 
     public function render()
