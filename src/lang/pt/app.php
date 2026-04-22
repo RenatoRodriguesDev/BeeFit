@@ -210,6 +210,8 @@ return [
     'suggested_for_you' => 'Sugestões para ti',
 
     'active' => 'Ativo',
+    'routine_set_active'  => 'Marcar como ativa',
+    'routine_unpin'       => 'Remover marcação',
     'workout_in_progress' => 'Treino em progresso',
     'continue' => 'Continuar',
     'duration' => 'Duração',

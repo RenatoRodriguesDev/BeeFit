@@ -16,6 +16,18 @@ class RoutineList extends Component
 
     protected $listeners = ['refreshRoutines' => '$refresh', 'reorderRoutines'];
 
+    public function setActive(int $routineId): void
+    {
+        $routine = Routine::where('user_id', auth()->id())->findOrFail($routineId);
+
+        if ($routine->is_active) {
+            $routine->update(['is_active' => false]);
+        } else {
+            auth()->user()->routines()->update(['is_active' => false]);
+            $routine->update(['is_active' => true]);
+        }
+    }
+
     public function reorderRoutines(array $order): void
     {
         foreach ($order as $item) {

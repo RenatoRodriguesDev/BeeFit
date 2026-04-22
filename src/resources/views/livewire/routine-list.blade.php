@@ -21,18 +21,13 @@
 
                     {{-- Ícone --}}
                     <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center shrink-0 text-lg">
-                        💪
+                        {{ $routine->emoji ?? '💪' }}
                     </div>
 
                     {{-- Info --}}
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
                             <h2 class="font-semibold text-white truncate">{{ $routine->name }}</h2>
-                            @if($routine->is_active)
-                                <span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
-                                    {{ __('app.active') }}
-                                </span>
-                            @endif
                         </div>
                         <p class="text-xs text-zinc-500 mt-0.5">
                             {{ $routine->exercises_count }} {{ __('app.exercises') }}

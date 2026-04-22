@@ -209,6 +209,8 @@ return [
     'suggested_for_you' => 'Suggested for you',
 
     'active' => 'Active',
+    'routine_set_active'  => 'Mark as active',
+    'routine_unpin'       => 'Remove mark',
     'workout_in_progress' => 'Workout in progress',
     'continue' => 'Continue',
     'duration' => 'Duration',

@@ -209,6 +209,8 @@ return [
 
 
     'active' => 'Activo',
+    'routine_set_active'  => 'Marcar como activa',
+    'routine_unpin'       => 'Quitar marcación',
     'paused' => 'Pausado',
     'continue' => 'Continuar',
     'duration' => 'Duración',

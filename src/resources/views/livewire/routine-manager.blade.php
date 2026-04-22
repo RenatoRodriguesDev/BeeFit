@@ -14,16 +14,38 @@
 
                 <h2 class="text-lg font-semibold text-white">{{ __('app.new_routine') }}</h2>
 
-                <div>
-                    <input wire:model="name"
-                        type="text"
-                        class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm placeholder-zinc-500 focus:outline-none focus:border-zinc-500 transition"
-                        placeholder="Push Day, Leg Day…"
-                        autofocus>
-                    @error('name')
-                        <p class="text-xs text-red-400 mt-1.5">{{ $message }}</p>
-                    @enderror
+                {{-- Emoji + nome --}}
+                <div class="flex gap-3 items-start">
+                    <div class="shrink-0">
+                        <button type="button" wire:click="$toggle('showEmojiPicker')"
+                            class="w-12 h-12 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 flex items-center justify-center text-2xl transition"
+                            title="{{ __('app.choose_emoji') }}">
+                            {{ $emoji }}
+                        </button>
+                    </div>
+                    <div class="flex-1">
+                        <input wire:model="name"
+                            type="text"
+                            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm placeholder-zinc-500 focus:outline-none focus:border-zinc-500 transition"
+                            placeholder="Push Day, Leg Day…"
+                            autofocus>
+                        @error('name')
+                            <p class="text-xs text-red-400 mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
+
+                {{-- Emoji picker grid --}}
+                @if($showEmojiPicker)
+                    <div class="grid grid-cols-9 gap-1 p-3 bg-zinc-800 rounded-xl border border-zinc-700">
+                        @foreach(['💪','🏋️','🏃','🚴','🤸','🏊','⚽','🏀','🎯','🔥','⚡','🏆','💯','🧘','🥊','🏈','🤼','🧗','🎽','🥇','🦾','🏇','🛹','🏒','🎾','⛷️','🏄','🤾','🥋','🧲','🫀','🦵','🦶','🤲','👟','🩹','🌊','⛰️','🎪'] as $e)
+                            <button type="button" wire:click="selectEmoji('{{ $e }}')"
+                                class="text-xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-600 transition {{ $emoji === $e ? 'bg-zinc-600 ring-1 ring-zinc-400' : '' }}">
+                                {{ $e }}
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
 
                 <div class="flex gap-3">
                     <button wire:click="$set('showModal', false)"
