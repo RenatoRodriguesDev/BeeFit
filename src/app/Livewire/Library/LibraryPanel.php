@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Library;
 
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use App\Models\Exercise;
 use App\Models\Equipment;
@@ -13,12 +14,22 @@ class LibraryPanel extends Component
     public $equipment = '';
     public $muscle = '';
     public $activeExerciseId = null;
+    public int $limit = 30;
 
     public $showRoutineModal = false;
     public $selectedRoutineId = null;
     public $exerciseToAddId = null;
 
     protected $listeners = ['exerciseSelected'];
+
+    public function updatedSearch(): void { $this->limit = 30; }
+    public function updatedEquipment(): void { $this->limit = 30; }
+    public function updatedMuscle(): void { $this->limit = 30; }
+
+    public function loadMore(): void
+    {
+        $this->limit += 30;
+    }
 
     public function exerciseSelected($exerciseId)
     {
@@ -71,12 +82,19 @@ class LibraryPanel extends Component
 
     public function render()
     {
+        $locale   = app()->getLocale();
+        $fallback = config('app.fallback_locale');
+
+        $equipmentList = Cache::remember("equipment_list_{$locale}", 3600, fn () =>
+            Equipment::with('translations')->get()
+        );
+
+        $musclesList = Cache::remember("muscles_list_{$locale}", 3600, fn () =>
+            Muscle::with('translations')->get()
+        );
+
         $query = Exercise::query()
-            ->with([
-                'translations',
-                'equipment.translations',
-                'primaryMuscle.translations',
-            ]);
+            ->with(['translations', 'equipment.translations', 'primaryMuscle.translations']);
 
         if ($this->equipment) {
             $query->where('equipment_id', $this->equipment);
@@ -88,17 +106,18 @@ class LibraryPanel extends Component
 
         if ($this->search) {
             $term = $this->search;
-            $query->whereHas('translations', function ($q) use ($term) {
-                $q->whereIn('locale', [app()->getLocale(), config('app.fallback_locale')])
+            $query->whereHas('translations', function ($q) use ($term, $locale, $fallback) {
+                $q->whereIn('locale', [$locale, $fallback])
                   ->whereRaw('MATCH(name) AGAINST(? IN BOOLEAN MODE)', ["{$term}*"]);
             });
         }
 
-        return view('livewire.library-panel', [
-            'exercises'     => $query->get(),
-            'equipmentList' => Equipment::with('translations')->get(),
-            'musclesList'   => Muscle::with('translations')->get(),
-        ])
-            ->title(__('app.library'));
+        $total   = $query->count();
+        $exercises = $query->limit($this->limit)->get();
+        $hasMore = $total > $this->limit;
+
+        return view('livewire.library-panel', compact(
+            'exercises', 'equipmentList', 'musclesList', 'hasMore', 'total'
+        ))->title(__('app.library'));
     }
 }

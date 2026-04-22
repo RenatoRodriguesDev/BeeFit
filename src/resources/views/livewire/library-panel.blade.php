@@ -64,7 +64,7 @@
     {{-- Label --}}
     <div class="shrink-0 px-5 py-2.5 flex items-center justify-between">
         <span class="text-xs font-semibold text-zinc-500 uppercase tracking-wider">{{ __('app.exercises') }}</span>
-        <span class="text-xs text-zinc-600">{{ $exercises->count() }}</span>
+        <span class="text-xs text-zinc-600">{{ $exercises->count() }}@if($hasMore)+@endif / {{ $total }}</span>
     </div>
 
     {{-- Lista --}}
@@ -116,6 +116,24 @@
                 <p class="text-zinc-500 text-sm">{{ __('app.no_exercises_yet') }}</p>
             </div>
         @endforelse
+
+        {{-- Infinite scroll sentinel --}}
+        @if($hasMore)
+            <div
+                x-init="
+                    const observer = new IntersectionObserver(entries => {
+                        if (entries[0].isIntersecting) $wire.loadMore();
+                    }, { rootMargin: '100px' });
+                    observer.observe($el);
+                "
+                wire:key="load-more-sentinel"
+                class="flex justify-center py-4">
+                <svg class="w-5 h-5 animate-spin text-zinc-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                </svg>
+            </div>
+        @endif
     </div>
 
     {{-- Modal: adicionar a rotina --}}
