@@ -87,10 +87,10 @@ class LibraryPanel extends Component
         }
 
         if ($this->search) {
-            $term = strtolower($this->search);
+            $term = $this->search;
             $query->whereHas('translations', function ($q) use ($term) {
                 $q->whereIn('locale', [app()->getLocale(), config('app.fallback_locale')])
-                  ->whereRaw('LOWER(name) LIKE ?', ['%' . $term . '%']);
+                  ->whereRaw('MATCH(name) AGAINST(? IN BOOLEAN MODE)', ["{$term}*"]);
             });
         }
 
