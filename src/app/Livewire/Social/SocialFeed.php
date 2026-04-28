@@ -356,8 +356,12 @@ class SocialFeed extends Component
 
         $searchResults = [];
         if (strlen($this->search) >= 2) {
+            $term = '%' . mb_strtolower($this->search) . '%';
             $searchResults = User::where('id', '!=', $user->id)
-                ->where('name', 'like', "%{$this->search}%")
+                ->where(function ($q) use ($term) {
+                    $q->whereRaw('LOWER(name) LIKE ?', [$term])
+                      ->orWhereRaw('LOWER(username) LIKE ?', [$term]);
+                })
                 ->limit(8)
                 ->get();
         }
