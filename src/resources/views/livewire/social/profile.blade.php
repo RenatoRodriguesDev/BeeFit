@@ -266,7 +266,7 @@
                 @endif
 
                 {{-- RIGHT: Details --}}
-                <div class="flex flex-col flex-1 min-h-0 overflow-hidden">
+                <div class="flex flex-col flex-1 min-h-0 overflow-hidden" x-data="{ showComments: false }">
 
                     {{-- Header: user + actions --}}
                     <div class="shrink-0 flex items-center gap-3 px-4 py-3 border-b border-zinc-800">
@@ -346,7 +346,7 @@
                         @endif
 
                         {{-- Comments --}}
-                        <div class="space-y-3">
+                        <div x-show="showComments" x-transition class="space-y-3">
                             @foreach($modalComments as $comment)
                                 <div class="flex gap-2.5" wire:key="mc-{{ $comment['id'] }}">
                                     <a href="{{ route('social.profile', $comment['user']['username']) }}"
@@ -409,7 +409,13 @@
                             @else
                                 <span class="text-sm text-zinc-600">0 {{ __('app.likes') }}</span>
                             @endif
-                            <span class="ml-auto text-xs text-zinc-600">{{ $activePost['date'] }}</span>
+                            <button @click="showComments = !showComments"
+                                class="ml-auto flex items-center gap-1 transition"
+                                :class="showComments ? 'text-white' : 'text-zinc-500 hover:text-white'">
+                                <span>💬</span>
+                                <span class="text-xs">{{ count($modalComments) }}</span>
+                            </button>
+                            <span class="text-xs text-zinc-600">{{ $activePost['date'] }}</span>
                         </div>
 
                         {{-- Comment input --}}

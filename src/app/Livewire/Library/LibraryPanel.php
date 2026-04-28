@@ -3,6 +3,7 @@
 namespace App\Livewire\Library;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use App\Models\Exercise;
 use App\Models\Equipment;
@@ -107,8 +108,12 @@ class LibraryPanel extends Component
         if ($this->search) {
             $term = $this->search;
             $query->whereHas('translations', function ($q) use ($term, $locale, $fallback) {
-                $q->whereIn('locale', [$locale, $fallback])
-                  ->whereRaw('MATCH(name) AGAINST(? IN BOOLEAN MODE)', ["{$term}*"]);
+                $q->whereIn('locale', [$locale, $fallback]);
+                if (DB::getDriverName() === 'mysql') {
+                    $q->whereRaw('MATCH(name) AGAINST(? IN BOOLEAN MODE)', ["{$term}*"]);
+                } else {
+                    $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($term) . '%']);
+                }
             });
         }
 
