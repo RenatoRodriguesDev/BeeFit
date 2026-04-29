@@ -46,6 +46,11 @@ document.addEventListener('livewire:init', () => {
     initSortable();
 });
 
+// PWA service worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
 window.toast = function(message, type = 'success') {
     let bg = type === 'success'
         ? 'linear-gradient(to right, #10b981, #059669)'

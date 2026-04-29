@@ -14,6 +14,8 @@
     <meta name="robots" content="noindex, nofollow">{{-- app autenticada: não indexar --}}
 
     <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#eab308">
     <link rel="canonical" href="{{ url()->current() }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net">

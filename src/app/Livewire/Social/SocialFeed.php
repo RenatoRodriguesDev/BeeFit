@@ -354,7 +354,8 @@ class SocialFeed extends Component
             ->latest()
             ->paginate(10);
 
-        $searchResults = [];
+        $searchResults = collect();
+        $pendingIds    = [];
         if (strlen($this->search) >= 2) {
             $term = '%' . mb_strtolower($this->search) . '%';
             $searchResults = User::where('id', '!=', $user->id)
@@ -364,6 +365,14 @@ class SocialFeed extends Component
                 })
                 ->limit(8)
                 ->get();
+
+            // preload follow status in one query — avoid N+1 per result
+            $pendingIds = DB::table('follows')
+                ->where('follower_id', $user->id)
+                ->where('status', 'pending')
+                ->whereIn('following_id', $searchResults->pluck('id'))
+                ->pluck('following_id')
+                ->toArray();
         }
 
         // Suggestions: users followed by people the current user follows
@@ -385,7 +394,7 @@ class SocialFeed extends Component
                 ->values();
         }
 
-        return view('livewire.social.feed', compact('posts', 'searchResults', 'suggestions'))
+        return view('livewire.social.feed', compact('posts', 'searchResults', 'suggestions', 'followingIds', 'pendingIds'))
             ->title(__('app.feed'));
     }
 }

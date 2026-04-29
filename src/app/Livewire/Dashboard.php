@@ -2,12 +2,14 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 use Carbon\Carbon;
 use App\Models\PersonalRecord;
 use App\Models\Workout;
 use App\Models\WorkoutSet;
 
+#[Lazy]
 class Dashboard extends Component
 {
     public $currentMonth;
@@ -51,6 +53,21 @@ class Dashboard extends Component
             ->whereDate('started_at', $date)
             ->where('status', 'completed')
             ->get();
+    }
+
+    public function placeholder(): string
+    {
+        return <<<'HTML'
+        <div class="space-y-6 animate-pulse">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                @foreach(range(1,4) as $i)
+                <div class="bg-zinc-900 rounded-2xl p-4 h-20"></div>
+                @endforeach
+            </div>
+            <div class="bg-zinc-900 rounded-2xl h-64"></div>
+            <div class="bg-zinc-900 rounded-2xl h-40"></div>
+        </div>
+        HTML;
     }
 
     public function render()

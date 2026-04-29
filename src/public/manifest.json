@@ -1,0 +1,24 @@
+{
+    "name": "BeeFit",
+    "short_name": "BeeFit",
+    "description": "Regista treinos, acompanha recordes pessoais e atinge os teus objetivos.",
+    "start_url": "/dashboard",
+    "display": "standalone",
+    "background_color": "#09090b",
+    "theme_color": "#eab308",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/images/favicon.ico",
+            "sizes": "48x48",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "/images/beefit_v2_nobg.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["health", "fitness", "sports"]
+}

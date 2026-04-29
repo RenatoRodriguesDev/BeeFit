@@ -22,9 +22,8 @@
             <div class="space-y-1">
                 @foreach($searchResults as $found)
                     @php
-                        $me = auth()->user();
-                        $isFollowing = $me->isFollowing($found);
-                        $isPending   = ! $isFollowing && $me->isPendingFollow($found);
+                        $isFollowing = in_array($found->id, $followingIds);
+                        $isPending   = !$isFollowing && in_array($found->id, $pendingIds);
                     @endphp
                     <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-zinc-800 transition">
                         <a href="{{ route('social.profile', $found->username) }}" class="flex items-center gap-2 flex-1 min-w-0">
@@ -143,20 +142,19 @@
             @endif
 
             {{-- Actions --}}
-            <div class="px-3 py-2.5 flex items-center gap-4 border-b border-zinc-800/60">
-                <button wire:click="toggleLike({{ $post->id }})" wire:loading.attr="disabled" wire:target="toggleLike({{ $post->id }})"
-                    class="text-xl transition disabled:opacity-50 {{ $post->isLikedBy(auth()->user()) ? 'text-red-400' : 'text-zinc-500 hover:text-red-400' }}">
-                    {{ $post->isLikedBy(auth()->user()) ? '❤️' : '🤍' }}
+            @php $liked = $post->isLikedBy(auth()->user()); $likeCount = $post->likes->count(); @endphp
+            <div class="px-3 py-2.5 flex items-center gap-4 border-b border-zinc-800/60"
+                 x-data="{ liked: {{ $liked ? 'true' : 'false' }}, count: {{ $likeCount }} }">
+                <button @click="liked = !liked; count += liked ? 1 : -1; $wire.toggleLike({{ $post->id }})"
+                    class="text-xl transition" :class="liked ? 'text-red-400' : 'text-zinc-500 hover:text-red-400'">
+                    <span x-text="liked ? '❤️' : '🤍'"></span>
                 </button>
 
-                @if($post->likes->count() > 0)
-                    <button wire:click="loadPostLikers({{ $post->id }})"
-                        class="text-xs text-zinc-400 hover:text-white transition">
-                        {{ $post->likes->count() }} {{ __('app.likes') }}
-                    </button>
-                @else
-                    <span class="text-xs text-zinc-700">0 {{ __('app.likes') }}</span>
-                @endif
+                <button wire:click="loadPostLikers({{ $post->id }})"
+                    class="text-xs transition hover:text-white"
+                    :class="count > 0 ? 'text-zinc-400' : 'text-zinc-700'">
+                    <span x-text="count"></span> {{ __('app.likes') }}
+                </button>
 
                 <button wire:click="toggleComments({{ $post->id }})"
                     class="ml-auto flex items-center gap-1 text-sm transition {{ $expandedPostId === $post->id ? 'text-white' : 'text-zinc-500 hover:text-white' }}">
@@ -234,10 +232,33 @@
             @endif
         </div>
     @empty
-        <div class="text-center py-16 text-zinc-500">
-            <div class="text-4xl mb-3">🏋️</div>
-            <p class="font-medium text-zinc-400">{{ __('app.no_posts_yet') }}</p>
-            <p class="text-sm mt-1">{{ __('app.follow_to_see_feed') }}</p>
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 text-center space-y-4">
+            <div class="text-5xl">🏋️</div>
+            <div>
+                <p class="font-semibold text-white">{{ __('app.no_posts_yet') }}</p>
+                <p class="text-sm text-zinc-500 mt-1">{{ __('app.follow_to_see_feed') }}</p>
+            </div>
+            @if($suggestions->isNotEmpty())
+                <div class="text-left space-y-2 pt-2 border-t border-zinc-800">
+                    <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wider">{{ __('app.suggested_for_you') }}</p>
+                    @foreach($suggestions as $s)
+                        <div class="flex items-center gap-3 py-1.5">
+                            <a href="{{ route('social.profile', $s->username) }}" class="flex items-center gap-2 flex-1 min-w-0">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold overflow-hidden shrink-0">
+                                    @if($s->avatar_path)
+                                        <img src="{{ avatar_url($s->avatar_path) }}" class="w-full h-full object-cover">
+                                    @else {{ $s->initials() }} @endif
+                                </div>
+                                <span class="text-sm text-white truncate">{{ $s->name }}</span>
+                            </a>
+                            <button wire:click="follow({{ $s->id }})"
+                                class="text-xs bg-white text-black hover:bg-zinc-200 px-3 py-1 rounded-lg transition font-medium">
+                                {{ __('app.follow') }}
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
     @endforelse
 

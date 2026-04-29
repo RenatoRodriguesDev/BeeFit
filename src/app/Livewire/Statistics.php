@@ -6,11 +6,25 @@ use App\Models\PersonalRecord;
 use App\Models\Workout;
 use App\Models\WorkoutExercise;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 
+#[Lazy]
 class Statistics extends Component
 {
     public string $search = '';
+
+    public function placeholder(): string
+    {
+        return <<<'HTML'
+        <div class="space-y-4 animate-pulse">
+            <div class="bg-zinc-900 rounded-2xl h-12"></div>
+            @foreach(range(1,5) as $i)
+            <div class="bg-zinc-900 rounded-2xl h-16"></div>
+            @endforeach
+        </div>
+        HTML;
+    }
 
     public function render()
     {
