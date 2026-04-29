@@ -117,32 +117,33 @@
                                             <div x-data="{ open: false, videoUrl: null }" class="bg-zinc-800/50 rounded-xl overflow-hidden">
 
                                                 {{-- Routine header row --}}
-                                                <div class="flex items-center gap-3 p-3">
-                                                    <button @click="open = !open" class="flex-1 flex items-center gap-2 text-left min-w-0">
-                                                        <svg class="w-4 h-4 text-zinc-500 shrink-0 transition-transform duration-200" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <div class="flex items-center gap-2 p-3">
+                                                    <button @click="open = !open" class="shrink-0 p-1 text-zinc-500">
+                                                        <svg class="w-4 h-4 transition-transform duration-200" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                                                         </svg>
-                                                        <div class="flex items-center gap-2 min-w-0">
+                                                    </button>
+                                                    <button @click="open = !open" class="flex-1 text-left min-w-0">
+                                                        <div class="flex flex-wrap items-center gap-1.5">
                                                             @if($entry->day_label)
                                                                 <span class="text-xs bg-yellow-500/15 text-yellow-400 px-2 py-0.5 rounded-full font-medium shrink-0">
                                                                     {{ __('app.day_' . strtolower($entry->day_label)) }}
                                                                 </span>
                                                             @endif
-                                                            <p class="text-sm font-medium text-white truncate">{{ $entry->routine->name }}</p>
+                                                            <p class="text-sm font-medium text-white truncate">{{$entry->routine->name}}</p>
                                                         </div>
-                                                        <p class="text-xs text-zinc-500 shrink-0">
-                                                            {{ $entry->routine->exercises_count }} {{ __('app.exercises') }}
-                                                            @if($entry->notes) · {{ $entry->notes }} @endif
+                                                        <p class="text-xs text-zinc-500 mt-0.5">
+                                                            {{$entry->routine->exercises_count}} {{ __('app.exercises') }}
+                                                            @if($entry->notes) · {{$entry->notes}} @endif
                                                         </p>
                                                     </button>
-
-                                                    <button wire:click="startWorkoutFromPlan({{ $entry->routine_id }}, {{ $assignment->id }})"
+                                                    <button wire:click="startWorkoutFromPlan({{$entry->routine_id}}, {{$assignment->id}})"
                                                             wire:loading.attr="disabled"
-                                                            class="shrink-0 flex items-center gap-1.5 bg-yellow-500 hover:bg-yellow-400 disabled:opacity-50 text-zinc-900 text-xs font-semibold px-3 py-2 rounded-xl transition">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/>
+                                                            class="shrink-0 flex items-center gap-1.5 bg-yellow-500 hover:bg-yellow-400 disabled:opacity-50 text-zinc-900 font-semibold rounded-xl transition px-2.5 py-2 sm:px-3">
+                                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M8 5v14l11-7z"/>
                                                         </svg>
-                                                        {{ __('app.start_workout') }}
+                                                        <span class="hidden sm:inline text-xs">{{ __('app.start_workout') }}</span>
                                                     </button>
                                                 </div>
 
