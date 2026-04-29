@@ -441,7 +441,7 @@
                                                 wire:keydown.enter="addComment"
                                                 wire:keydown.escape="cancelReply"
                                                 type="text"
-                                                placeholder="@{{ $replyingToUsername }}…"
+                                                placeholder="{{ '@' . $replyingToUsername }}…"
                                                 autofocus
                                                 class="flex-1 bg-zinc-800 text-xs text-white rounded-xl px-3 py-1.5 outline-none focus:ring-1 focus:ring-zinc-600 placeholder-zinc-600 min-w-0">
                                             <button wire:click="addComment"

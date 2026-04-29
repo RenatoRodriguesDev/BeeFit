@@ -142,6 +142,7 @@ return [
     'subscription_activated' => '¡Suscripción activada! Bienvenido al premium.',
     'routine_limit_reached'     => 'Has alcanzado el límite de 5 rutinas del plan gratuito. Mejora tu plan para crear más.',
     'upgrade_to_create_more'    => 'Mejora tu plan para crear más rutinas',
+    'reply'                     => 'Responder',
     'physical_metrics' => 'Métricas físicas',
     'upload_photo_hint' => 'Sube una nueva foto para reemplazar la actual.',
     'edit' => 'Editar',
