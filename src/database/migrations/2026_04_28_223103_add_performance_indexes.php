@@ -9,9 +9,23 @@ return new class extends Migration
 {
     private function indexExists(string $table, string $index): bool
     {
-        $indexes = collect(DB::select("SHOW INDEX FROM `{$table}`"))
-            ->pluck('Key_name')->unique()->toArray();
-        return in_array($index, $indexes);
+        $driver = DB::getDriverName();
+
+        if ($driver === 'pgsql') {
+            return DB::select(
+                "SELECT 1 FROM pg_indexes WHERE tablename = ? AND indexname = ?",
+                [$table, $index]
+            ) !== [];
+        }
+
+        // MySQL / SQLite
+        try {
+            $indexes = collect(DB::select("SHOW INDEX FROM `{$table}`"))
+                ->pluck('Key_name')->unique()->toArray();
+            return in_array($index, $indexes);
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     public function up(): void
