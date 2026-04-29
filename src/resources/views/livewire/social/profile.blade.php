@@ -346,49 +346,119 @@
                         @endif
 
                         {{-- Comments --}}
-                        <div class="space-y-3">
-                            @foreach($modalComments as $comment)
-                                <div class="flex gap-2.5" wire:key="mc-{{ $comment['id'] }}">
-                                    <a href="{{ route('social.profile', $comment['user']['username']) }}"
-                                        class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0 mt-0.5">
-                                        @if($comment['user']['avatar_path'])
-                                            <img src="{{ avatar_url($comment['user']['avatar_path']) }}" class="w-full h-full object-cover">
-                                        @else
-                                            {{ $comment['user']['initials'] }}
-                                        @endif
-                                    </a>
-                                    <div class="flex-1 min-w-0">
-                                        <div>
-                                            <a href="{{ route('social.profile', $comment['user']['username']) }}"
-                                                class="text-sm font-semibold text-white hover:underline">{{ $comment['user']['name'] }}</a>
-                                            <span class="text-sm text-zinc-300 ml-1.5 break-words">{{ $comment['body'] }}</span>
-                                        </div>
-                                        <div class="flex items-center gap-3 mt-1">
-                                            <span class="text-[11px] text-zinc-600">{{ $comment['created_at'] }}</span>
-                                            <button wire:click="toggleCommentLike({{ $comment['id'] }})"
-                                                class="text-[11px] font-semibold transition {{ $comment['liked'] ? 'text-red-400' : 'text-zinc-500 hover:text-zinc-300' }}">
-                                                {{ __('app.like') }}
-                                            </button>
-                                            @if($comment['likes'] > 0)
-                                                <button wire:click="loadCommentLikers({{ $comment['id'] }})"
-                                                    class="text-[11px] text-zinc-500 hover:text-white transition">
-                                                    {{ $comment['likes'] }} {{ __('app.likes') }}
-                                                </button>
+                        <div class="space-y-4">
+                            @forelse($modalComments as $comment)
+                                @php $isReplyingToThis = $replyingToId === $comment['id']; @endphp
+                                <div wire:key="mc-{{ $comment['id'] }}">
+
+                                    {{-- Top-level comment --}}
+                                    <div class="flex gap-2.5">
+                                        <a href="{{ route('social.profile', $comment['user']['username']) }}"
+                                            class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0 mt-0.5">
+                                            @if($comment['user']['avatar_path'])
+                                                <img src="{{ avatar_url($comment['user']['avatar_path']) }}" class="w-full h-full object-cover">
+                                            @else
+                                                {{ $comment['user']['initials'] }}
                                             @endif
-                                            @if($comment['user']['id'] === auth()->id())
-                                                <button wire:click="deleteComment({{ $comment['id'] }})"
-                                                    class="text-[11px] text-zinc-700 hover:text-red-400 transition">
-                                                    {{ __('app.delete') }}
+                                        </a>
+                                        <div class="flex-1 min-w-0">
+                                            <div>
+                                                <a href="{{ route('social.profile', $comment['user']['username']) }}"
+                                                    class="text-sm font-semibold text-white hover:underline">{{ $comment['user']['name'] }}</a>
+                                                <span class="text-sm text-zinc-300 ml-1.5 break-words">{{ $comment['body'] }}</span>
+                                            </div>
+                                            <div class="flex items-center gap-3 mt-1">
+                                                <span class="text-[11px] text-zinc-600">{{ $comment['created_at'] }}</span>
+                                                <button wire:click="toggleCommentLike({{ $comment['id'] }})"
+                                                    class="text-[11px] font-semibold transition {{ $comment['liked'] ? 'text-red-400' : 'text-zinc-500 hover:text-zinc-300' }}">
+                                                    {{ __('app.like') }}
                                                 </button>
-                                            @endif
+                                                @if($comment['likes'] > 0)
+                                                    <button wire:click="loadCommentLikers({{ $comment['id'] }})"
+                                                        class="text-[11px] text-zinc-500 hover:text-white transition">
+                                                        {{ $comment['likes'] }} {{ __('app.likes') }}
+                                                    </button>
+                                                @endif
+                                                <button wire:click="replyTo({{ $comment['id'] }}, '{{ $comment['user']['username'] }}')"
+                                                    class="text-[11px] font-semibold text-zinc-500 hover:text-zinc-200 transition">
+                                                    {{ __('app.reply') }}
+                                                </button>
+                                                @if($comment['user']['id'] === auth()->id())
+                                                    <button wire:click="deleteComment({{ $comment['id'] }})"
+                                                        class="text-[11px] text-zinc-700 hover:text-red-400 transition">
+                                                        {{ __('app.delete') }}
+                                                    </button>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
 
-                            @if(empty($modalComments))
+                                    {{-- Replies --}}
+                                    @if(!empty($comment['replies']))
+                                        <div class="ml-9 mt-2 space-y-3">
+                                            @foreach($comment['replies'] as $reply)
+                                                <div class="flex gap-2" wire:key="reply-{{ $reply['id'] }}">
+                                                    <a href="{{ route('social.profile', $reply['user']['username']) }}"
+                                                        class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[9px] font-bold overflow-hidden shrink-0 mt-0.5">
+                                                        @if($reply['user']['avatar_path'])
+                                                            <img src="{{ avatar_url($reply['user']['avatar_path']) }}" class="w-full h-full object-cover">
+                                                        @else
+                                                            {{ $reply['user']['initials'] }}
+                                                        @endif
+                                                    </a>
+                                                    <div class="flex-1 min-w-0">
+                                                        <div>
+                                                            <a href="{{ route('social.profile', $reply['user']['username']) }}"
+                                                                class="text-xs font-semibold text-white hover:underline">{{ $reply['user']['name'] }}</a>
+                                                            <span class="text-xs text-zinc-300 ml-1.5 break-words">{{ $reply['body'] }}</span>
+                                                        </div>
+                                                        <div class="flex items-center gap-3 mt-0.5">
+                                                            <span class="text-[10px] text-zinc-600">{{ $reply['created_at'] }}</span>
+                                                            <button wire:click="toggleCommentLike({{ $reply['id'] }})"
+                                                                class="text-[10px] font-semibold transition {{ $reply['liked'] ? 'text-red-400' : 'text-zinc-500 hover:text-zinc-300' }}">
+                                                                {{ __('app.like') }}
+                                                            </button>
+                                                            @if($reply['likes'] > 0)
+                                                                <span class="text-[10px] text-zinc-600">{{ $reply['likes'] }} {{ __('app.likes') }}</span>
+                                                            @endif
+                                                            @if($reply['user']['id'] === auth()->id())
+                                                                <button wire:click="deleteComment({{ $reply['id'] }})"
+                                                                    class="text-[10px] text-zinc-700 hover:text-red-400 transition">
+                                                                    {{ __('app.delete') }}
+                                                                </button>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+
+                                    {{-- Inline reply input --}}
+                                    @if($isReplyingToThis)
+                                        <div class="ml-9 mt-2 flex items-center gap-2">
+                                            <input wire:model="newComment"
+                                                wire:keydown.enter="addComment"
+                                                wire:keydown.escape="cancelReply"
+                                                type="text"
+                                                placeholder="@{{ $replyingToUsername }}…"
+                                                autofocus
+                                                class="flex-1 bg-zinc-800 text-xs text-white rounded-xl px-3 py-1.5 outline-none focus:ring-1 focus:ring-zinc-600 placeholder-zinc-600 min-w-0">
+                                            <button wire:click="addComment"
+                                                class="text-xs font-semibold text-yellow-400 hover:text-yellow-300 transition shrink-0">
+                                                {{ __('app.send') }}
+                                            </button>
+                                            <button wire:click="cancelReply"
+                                                class="text-xs text-zinc-600 hover:text-zinc-400 transition shrink-0">
+                                                ✕
+                                            </button>
+                                        </div>
+                                    @endif
+
+                                </div>
+                            @empty
                                 <p class="text-xs text-zinc-700 text-center py-4">{{ __('app.no_comments_yet') }}</p>
-                            @endif
+                            @endforelse
                         </div>
                     </div>
 
@@ -416,7 +486,8 @@
                             <span class="text-xs text-zinc-600">{{ $activePost['date'] }}</span>
                         </div>
 
-                        {{-- Comment input --}}
+                        {{-- Comment input (only shown when not replying to a specific comment) --}}
+                        @if(!$replyingToId)
                         <div class="flex items-center gap-2 px-4 pb-4">
                             <div class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[10px] font-bold overflow-hidden shrink-0">
                                 @if(auth()->user()->avatar_path)
@@ -429,10 +500,11 @@
                                 placeholder="{{ __('app.write_comment') }}"
                                 class="flex-1 bg-transparent text-sm text-white outline-none placeholder-zinc-600 min-w-0 border-b border-zinc-700 focus:border-zinc-400 pb-1 transition">
                             <button wire:click="addComment"
-                                class="text-sm font-semibold text-blue-400 hover:text-blue-300 transition shrink-0">
+                                class="text-sm font-semibold text-yellow-400 hover:text-yellow-300 transition shrink-0">
                                 {{ __('app.send') }}
                             </button>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

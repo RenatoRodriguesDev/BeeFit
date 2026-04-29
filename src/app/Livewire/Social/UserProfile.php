@@ -28,6 +28,8 @@ class UserProfile extends Component
     public ?array $activePost = null;
     public array $modalComments = [];
     public string $newComment = '';
+    public ?int $replyingToId = null;
+    public string $replyingToUsername = '';
     public ?array $postLikers = null;
     public ?array $commentLikers = null;
 
@@ -200,6 +202,8 @@ class UserProfile extends Component
         ];
 
         $this->newComment = '';
+        $this->replyingToId = null;
+        $this->replyingToUsername = '';
         $this->postLikers = null;
         $this->commentLikers = null;
         $this->refreshModalComments($postId);
@@ -256,17 +260,32 @@ class UserProfile extends Component
         $this->commentLikers = null;
     }
 
+    public function replyTo(int $commentId, string $username): void
+    {
+        $this->replyingToId = $commentId;
+        $this->replyingToUsername = $username;
+        $this->newComment = '';
+    }
+
+    public function cancelReply(): void
+    {
+        $this->replyingToId = null;
+        $this->replyingToUsername = '';
+        $this->newComment = '';
+    }
+
     public function addComment(): void
     {
         if (! $this->activePost || trim($this->newComment) === '') return;
 
-        $me    = Auth::user();
+        $me     = Auth::user();
         $postId = $this->activePost['id'];
 
         $comment = PostComment::create([
-            'post_id' => $postId,
-            'user_id' => $me->id,
-            'body'    => trim($this->newComment),
+            'post_id'   => $postId,
+            'user_id'   => $me->id,
+            'body'      => trim($this->newComment),
+            'parent_id' => $this->replyingToId,
         ]);
 
         $post = Post::with('user')->find($postId);
@@ -275,6 +294,8 @@ class UserProfile extends Component
         }
 
         $this->newComment = '';
+        $this->replyingToId = null;
+        $this->replyingToUsername = '';
         $this->refreshModalComments($postId);
     }
 
@@ -439,24 +460,31 @@ class UserProfile extends Component
     {
         $me = auth()->user();
 
-        $this->modalComments = PostComment::with(['user', 'likes'])
-            ->where('post_id', $postId)
-            ->oldest()
-            ->get()
-            ->map(fn($c) => [
+        $mapComment = function ($c) use ($me, &$mapComment) {
+            return [
                 'id'         => $c->id,
                 'body'       => $c->body,
                 'likes'      => $c->likes->count(),
-                'liked'      => $c->isLikedBy($me),
+                'liked'      => $c->likes->contains('user_id', $me->id),
                 'created_at' => $c->created_at->diffForHumans(),
-                'user' => [
+                'user'       => [
                     'id'          => $c->user->id,
                     'username'    => $c->user->username,
                     'name'        => $c->user->name,
                     'avatar_path' => $c->user->avatar_path,
                     'initials'    => $c->user->initials(),
                 ],
-            ])->toArray();
+                'replies' => $c->replies->map($mapComment)->toArray(),
+            ];
+        };
+
+        $this->modalComments = PostComment::with(['user', 'likes', 'replies.user', 'replies.likes'])
+            ->where('post_id', $postId)
+            ->whereNull('parent_id')
+            ->oldest()
+            ->get()
+            ->map($mapComment)
+            ->toArray();
     }
 
     // ─── Render ────────────────────────────────────────────────────
